@@ -12,5 +12,12 @@
     "role": "admin",
     "name": "angshu",
     "createdAt": "2026-10-27T18:08:35.308Z"
+  },
+  {
+    "username": "pakon",
+    "password": "$2a$10$Y2xu/TIB.jDuaBWtEj08bupwKWLCAeZEuko.VQEsqLd7k//gAnSN.",
+    "role": "collector",
+    "name": "pakon",
+    "createdAt": "2026-10-27T18:09:05.511Z"
   }
 ]
