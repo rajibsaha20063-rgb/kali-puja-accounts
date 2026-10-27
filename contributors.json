@@ -1,1 +1,18 @@
-[]
+[
+  {
+    "id": "slip_seed_ff_para1",
+    "paraId": 1,
+    "sectionType": "family",
+    "familyHeadName": "ff",
+    "donorName": "ff",
+    "targetAmount": 650,
+    "collectedAmount": 52,
+    "amount": 52,
+    "dueBalance": 598,
+    "paymentMode": "Cash",
+    "dateOfPayment": "20/10/2026",
+    "date": "20/10/2026",
+    "collectedBy": "Rajib",
+    "source": "spreadsheet_seed"
+  }
+]

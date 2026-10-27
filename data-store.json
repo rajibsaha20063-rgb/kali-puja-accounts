@@ -3,9 +3,9 @@
     {
       "id": 1,
       "source": "Para 1 Collection",
-      "target": 0,
-      "collected": 0,
-      "pending": 0
+      "target": 650,
+      "collected": 52,
+      "pending": 598
     },
     {
       "id": 2,
@@ -54,6 +54,7 @@
     {
       "id": 1,
       "category": "Light & Electricals",
+      "vendorName": "mola da",
       "budget": 4500,
       "advance": 0,
       "totalPaid": 0,
@@ -62,6 +63,7 @@
     {
       "id": 2,
       "category": "Pandal & Decoration",
+      "vendorName": "sayan da",
       "budget": 15000,
       "advance": 0,
       "totalPaid": 0,
@@ -70,6 +72,7 @@
     {
       "id": 3,
       "category": "Thakur / Idol",
+      "vendorName": "dulal dokan",
       "budget": 7500,
       "advance": 0,
       "totalPaid": 0,
@@ -78,6 +81,7 @@
     {
       "id": 4,
       "category": "Sound System",
+      "vendorName": "kaml",
       "budget": 8000,
       "advance": 0,
       "totalPaid": 0,
@@ -86,6 +90,7 @@
     {
       "id": 5,
       "category": "Dashakarma (Puja Items)",
+      "vendorName": "",
       "budget": 0,
       "advance": 0,
       "totalPaid": 0,
@@ -94,6 +99,7 @@
     {
       "id": 6,
       "category": "Pujari (Priest Honorarium)",
+      "vendorName": "",
       "budget": 0,
       "advance": 0,
       "totalPaid": 0,
@@ -102,6 +108,7 @@
     {
       "id": 7,
       "category": "Bhog & Prasad Grocery",
+      "vendorName": "",
       "budget": 0,
       "advance": 0,
       "totalPaid": 0,
@@ -110,6 +117,7 @@
     {
       "id": 8,
       "category": "Cook & Kitchen Staff",
+      "vendorName": "",
       "budget": 0,
       "advance": 0,
       "totalPaid": 0,
@@ -118,6 +126,7 @@
     {
       "id": 9,
       "category": "Cultural Program",
+      "vendorName": "",
       "budget": 0,
       "advance": 0,
       "totalPaid": 0,
@@ -126,6 +135,7 @@
     {
       "id": 10,
       "category": "Miscellaneous 1",
+      "vendorName": "",
       "budget": 0,
       "advance": 0,
       "totalPaid": 0,
@@ -134,6 +144,7 @@
     {
       "id": 11,
       "category": "Miscellaneous 2",
+      "vendorName": "",
       "budget": 0,
       "advance": 0,
       "totalPaid": 0,
@@ -142,6 +153,7 @@
     {
       "id": 12,
       "category": "Miscellaneous 3",
+      "vendorName": "",
       "budget": 0,
       "advance": 0,
       "totalPaid": 0,

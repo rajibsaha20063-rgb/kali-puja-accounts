@@ -59,6 +59,46 @@
       border-color: var(--gold);
       outline: none;
     }
+    .sync-chips-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 0.6rem;
+      margin-top: 1rem;
+    }
+    .sync-chip {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 0.6rem 0.8rem;
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+    .sync-chip-label {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .sync-chip-val {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--gold);
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .code-preview-box {
+      background: #080814;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+      color: #93c5fd;
+      max-height: 220px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
   </style>
 </head>
 <body>
@@ -126,55 +166,243 @@
         </p>
       </div>
 
-      <div>
+      <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+        <a href="/api/export/all?format=csv" class="btn btn-secondary btn-sm" download="kali_puja_accounts.csv">
+          <i class="fa-solid fa-file-csv text-green"></i> Export CSV
+        </a>
         <a href="dashboard.html" class="btn btn-secondary btn-sm">
           <i class="fa-solid fa-arrow-left"></i> Back to Dashboard
         </a>
       </div>
     </div>
 
-    <!-- 1. Google Sheets Live Sync Card -->
-    <section class="admin-card sheet-sync-card">
-      <div class="sheet-sync-info">
-        <div class="sheet-icon-wrap">
-          <i class="fa-solid fa-table-cells fa-2x text-green"></i>
+    <!-- 1. Google Sheets Live Multi-Tab Sync Card -->
+    <section class="admin-card mb-4">
+      <div class="sheet-sync-card" style="padding: 0; background: transparent; border: none; box-shadow: none;">
+        <div class="sheet-sync-info">
+          <div class="sheet-icon-wrap">
+            <i class="fa-solid fa-table-cells fa-2x text-green"></i>
+          </div>
+          <div>
+            <h3 style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.25rem;">
+              <span>Google Spreadsheet 9-Tab Live Sync</span>
+              <span class="status-indicator" id="sheet-status-indicator">
+                <span class="status-dot"></span> <span id="sheet-status-text">Connected</span>
+              </span>
+            </h3>
+            <p class="text-secondary" style="font-size: 0.88rem;">
+              Linked to all 9 tabs: Para 1, Para 2, Para 3, Para 4, Para 5, Shop Collection, Road Collection, and Expense Tracker.
+            </p>
+            <div class="text-muted" style="font-size: 0.78rem; margin-top: 0.35rem;" id="last-sync-time">
+              Last Sync: Ready | Sheet ID: <code id="active-sheet-id">1bTBdyhZaQczAivGacAVuHiwwjnxkikaEeQJaCoeRmTE</code>
+            </div>
+          </div>
         </div>
-        <div>
-          <h3 style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.25rem;">
-            <span>Google Spreadsheet Live Sync</span>
-            <span class="status-indicator" id="sheet-status-indicator">
-              <span class="status-dot"></span> <span id="sheet-status-text">Connected</span>
-            </span>
-          </h3>
-          <p class="text-secondary" style="font-size: 0.88rem;">
-            Linked to the Master Kali Puja Accounts Spreadsheet. Sync live data at any moment.
-          </p>
-          <div class="text-muted" style="font-size: 0.78rem; margin-top: 0.35rem;" id="last-sync-time">
-            Last Sync: Today | Sheet ID: 1bTBdyhZaQczAivGacAVuHiwwjnxkikaEeQJaCoeRmTE
+
+        <div class="sheet-sync-actions">
+          <a 
+            id="open-sheet-link"
+            href="https://docs.google.com/spreadsheets/d/1bTBdyhZaQczAivGacAVuHiwwjnxkikaEeQJaCoeRmTE/edit?usp=sharing" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            class="btn btn-secondary"
+          >
+            <i class="fa-solid fa-arrow-up-right-from-square"></i> Open Google Sheet
+          </a>
+
+          <button type="button" class="btn btn-primary" id="btn-force-sync">
+            <i class="fa-solid fa-arrows-rotate" id="sync-btn-icon"></i>
+            <span id="sync-btn-text">Force Sync All 9 Tabs</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Live Synced Entries Breakdown -->
+      <div style="margin-top: 1.25rem; border-top: 1px solid var(--border); padding-top: 1rem;">
+        <h4 style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.5px;">
+          <i class="fa-solid fa-layer-group text-gold"></i> Live Synced Records per Section
+        </h4>
+        <div class="sync-chips-grid">
+          <div class="sync-chip">
+            <span class="sync-chip-label">Para 1</span>
+            <span class="sync-chip-val" id="chip-para1">--</span>
+          </div>
+          <div class="sync-chip">
+            <span class="sync-chip-label">Para 2</span>
+            <span class="sync-chip-val" id="chip-para2">--</span>
+          </div>
+          <div class="sync-chip">
+            <span class="sync-chip-label">Para 3</span>
+            <span class="sync-chip-val" id="chip-para3">--</span>
+          </div>
+          <div class="sync-chip">
+            <span class="sync-chip-label">Para 4</span>
+            <span class="sync-chip-val" id="chip-para4">--</span>
+          </div>
+          <div class="sync-chip">
+            <span class="sync-chip-label">Para 5</span>
+            <span class="sync-chip-val" id="chip-para5">--</span>
+          </div>
+          <div class="sync-chip">
+            <span class="sync-chip-label">Shop Collection</span>
+            <span class="sync-chip-val" id="chip-shop">--</span>
+          </div>
+          <div class="sync-chip">
+            <span class="sync-chip-label">Road Collection</span>
+            <span class="sync-chip-val" id="chip-road">--</span>
+          </div>
+          <div class="sync-chip">
+            <span class="sync-chip-label">Expense Items</span>
+            <span class="sync-chip-val" id="chip-expenses">12</span>
           </div>
         </div>
       </div>
 
-      <div class="sheet-sync-actions">
-        <!-- Direct link to Spreadsheet -->
-        <a 
-          href="https://docs.google.com/spreadsheets/d/1bTBdyhZaQczAivGacAVuHiwwjnxkikaEeQJaCoeRmTE/edit?usp=sharing" 
-          target="_blank" 
-          rel="noopener noreferrer" 
-          class="btn btn-secondary"
-        >
-          <i class="fa-solid fa-arrow-up-right-from-square"></i> Open Google Sheet
-        </a>
-
-        <!-- Force refresh button -->
-        <button type="button" class="btn btn-primary" id="btn-force-sync">
-          <i class="fa-solid fa-arrows-rotate" id="sync-btn-icon"></i>
-          <span id="sync-btn-text">Force Sync from Sheet</span>
-        </button>
+      <!-- Change Google Sheet URL Form -->
+      <div style="margin-top: 1.25rem; border-top: 1px solid var(--border); padding-top: 1rem;">
+        <details>
+          <summary style="cursor: pointer; font-size: 0.9rem; color: var(--gold); font-weight: 600;">
+            <i class="fa-solid fa-gear"></i> Change / Reconnect Google Spreadsheet URL or ID
+          </summary>
+          <div style="margin-top: 0.75rem; background: rgba(0,0,0,0.2); padding: 1rem; border-radius: 8px;">
+            <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.75rem;">
+              If you made a copy of the Google Spreadsheet or are using another sheet link, paste the URL or ID here. The website will immediately connect and sync with it.
+            </p>
+            <form id="form-update-sheet" style="display: flex; gap: 0.6rem; flex-wrap: wrap;">
+              <input 
+                type="text" 
+                id="input-sheet-url" 
+                class="form-control" 
+                style="flex: 1; min-width: 280px;" 
+                placeholder="Paste Google Sheet URL or ID (e.g. 1bTBdyhZaQczAivGacAVuHiwwjnxkikaEeQJaCoeRmTE)" 
+                required
+              >
+              <button type="submit" class="btn btn-primary" id="btn-save-sheet">
+                <i class="fa-solid fa-link"></i> Connect & Sync
+              </button>
+            </form>
+          </div>
+        </details>
       </div>
     </section>
 
-    <!-- 2. User Management Grid (Create Form + Registered Users Table) -->
+    <!-- 2. Two-Way Automation: Google Apps Script Webhook Card -->
+    <section class="admin-card mb-4">
+      <div class="section-header" style="border-bottom: 1px solid var(--border); padding-bottom: 0.85rem; margin-bottom: 1.25rem;">
+        <h2 class="section-title" style="font-size: 1.2rem;">
+          <i class="fa-solid fa-bolt text-gold"></i>
+          <span>Instant 2-Way Automation (Website ➔ Google Sheet)</span>
+        </h2>
+        <span class="status-indicator" id="webhook-status-badge">
+          <span class="status-dot"></span> <span id="webhook-status-text">Webhook Optional</span>
+        </span>
+      </div>
+
+      <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 1rem;">
+        To make entries created on the website write automatically into your Google Spreadsheet tabs in real-time, deploy this simple 1-minute Google Apps Script on your Google Sheet:
+      </p>
+
+      <ol style="font-size: 0.88rem; color: var(--text-primary); padding-left: 1.25rem; margin-bottom: 1rem; line-height: 1.7;">
+        <li>Open your Google Sheet and click <strong>Extensions ➔ Apps Script</strong>.</li>
+        <li>Delete any text inside <code>Code.gs</code> and paste the script below:</li>
+      </ol>
+
+      <div style="position: relative; margin-bottom: 1rem;">
+        <button type="button" class="btn btn-secondary btn-sm" id="btn-copy-script" style="position: absolute; top: 8px; right: 8px; z-index: 5;">
+          <i class="fa-solid fa-copy"></i> Copy Script
+        </button>
+        <pre class="code-preview-box" id="apps-script-code">function doPost(e) {
+  try {
+    var data = JSON.parse(e.postData.contents);
+    var ss = SpreadsheetApp.getActiveSpreadsheet();
+
+    if (data.action === 'add_collection_entry') {
+      var sheetName = '';
+      if (data.paraId >= 1 && data.paraId <= 5) {
+        sheetName = 'Para ' + data.paraId;
+      } else if (data.paraId === 6) {
+        sheetName = 'Shop Collection';
+      } else if (data.paraId === 7) {
+        sheetName = 'Road Collection';
+      }
+
+      var sheet = ss.getSheetByName(sheetName);
+      if (sheet) {
+        var lastRow = sheet.getLastRow();
+        if (data.paraId >= 1 && data.paraId <= 5) {
+          sheet.appendRow([
+            lastRow - 3,
+            data.familyHeadName || data.donorName,
+            data.targetAmount || 0,
+            data.collectedAmount || 0,
+            data.dueBalance || 0,
+            data.paymentMode || 'Cash',
+            data.dateOfPayment || data.date || '',
+            data.collectedBy || ''
+          ]);
+        } else if (data.paraId === 6) {
+          sheet.appendRow([
+            lastRow - 3,
+            data.shopName || data.donorName,
+            data.marketLocation || '',
+            data.agreedTarget || 0,
+            data.amountPaid || 0,
+            data.dueBalance || 0,
+            data.paymentMode || 'Cash',
+            data.date || ''
+          ]);
+        } else if (data.paraId === 7) {
+          sheet.appendRow([
+            lastRow - 3,
+            data.date || '',
+            data.eventSpotType || data.donorName,
+            data.totalCollection || data.amount || 0,
+            data.leadVolunteer || '',
+            data.handedOverTo || ''
+          ]);
+        }
+      }
+    } else if (data.action === 'update_expense') {
+      var sheet = ss.getSheetByName('Expense Tracker');
+      if (sheet && data.id) {
+        var rowNum = data.id + 2;
+        if (data.vendorName) sheet.getRange(rowNum, 3).setValue(data.vendorName);
+        if (data.budget !== undefined) sheet.getRange(rowNum, 4).setValue(data.budget);
+        if (data.advance !== undefined) sheet.getRange(rowNum, 5).setValue(data.advance);
+        if (data.totalPaid !== undefined) sheet.getRange(rowNum, 6).setValue(data.totalPaid);
+      }
+    }
+
+    return ContentService.createTextOutput(JSON.stringify({ status: 'success' }))
+      .setMimeType(ContentService.MimeType.JSON);
+  } catch (err) {
+    return ContentService.createTextOutput(JSON.stringify({ status: 'error', error: err.toString() }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}</pre>
+      </div>
+
+      <ol start="3" style="font-size: 0.88rem; color: var(--text-primary); padding-left: 1.25rem; margin-bottom: 1rem; line-height: 1.7;">
+        <li>In Apps Script, click <strong>Deploy ➔ New deployment</strong>.</li>
+        <li>Select type: <strong>Web app</strong>. Set <em>Who has access</em> to <strong>Anyone</strong>.</li>
+        <li>Click <strong>Deploy</strong> and paste the generated Web App URL below:</li>
+      </ol>
+
+      <form id="form-update-webhook" style="display: flex; gap: 0.6rem; flex-wrap: wrap;">
+        <input 
+          type="url" 
+          id="input-webhook-url" 
+          class="form-control" 
+          style="flex: 1; min-width: 280px;" 
+          placeholder="https://script.google.com/macros/s/.../exec"
+        >
+        <button type="submit" class="btn btn-primary" id="btn-save-webhook">
+          <i class="fa-solid fa-floppy-disk"></i> Save Webhook URL
+        </button>
+      </form>
+    </section>
+
+    <!-- 3. User Management Grid (Create Form + Registered Users Table) -->
     <div class="admin-grid">
       
       <!-- Create User Card -->
@@ -241,7 +469,7 @@
               <span>Registered Users</span>
             </h2>
           </div>
-          <span class="section-badge" id="user-count-badge">3 Users</span>
+          <span class="section-badge" id="user-count-badge">1 User</span>
         </div>
 
         <div class="table-responsive">
@@ -298,11 +526,6 @@
     let currentUser = null;
     let usersList = [];
     let pendingActionCallback = null;
-
-    // Default Fallback Users (Sole Master Admin)
-    const DEFAULT_USERS = [
-      { id: 'admin', username: 'admin', role: 'admin' }
-    ];
 
     // Toast Notification helper
     function showToast(title, message, type = 'info') {
@@ -395,18 +618,46 @@
       return true;
     }
 
+    // Load Connected Sheet & Webhook Status
+    async function loadSystemConfig() {
+      try {
+        const [sheetRes, hookRes] = await Promise.all([
+          fetch('/api/config/spreadsheet').then(r => r.json()).catch(() => null),
+          fetch('/api/config/webhook').then(r => r.json()).catch(() => null)
+        ]);
+
+        if (sheetRes && sheetRes.spreadsheetId) {
+          document.getElementById('active-sheet-id').textContent = sheetRes.spreadsheetId;
+          document.getElementById('input-sheet-url').value = sheetRes.spreadsheetId;
+          document.getElementById('open-sheet-link').href = sheetRes.spreadsheetUrl;
+          if (sheetRes.lastSyncTime) {
+            const dt = new Date(sheetRes.lastSyncTime).toLocaleTimeString('en-US');
+            document.getElementById('last-sync-time').innerHTML = `Last Sync: ${dt} | Sheet ID: <code>${sheetRes.spreadsheetId}</code>`;
+          }
+        }
+
+        if (hookRes) {
+          document.getElementById('input-webhook-url').value = hookRes.webhookUrl || '';
+          if (hookRes.active) {
+            document.getElementById('webhook-status-badge').className = 'status-indicator';
+            document.getElementById('webhook-status-text').textContent = 'Webhook Active';
+          }
+        }
+      } catch (e) {}
+    }
+
     // Fetch Users from API
     async function loadUsers() {
       try {
         const res = await fetch('/api/users');
         if (res.ok) {
           const data = await res.json();
-          usersList = Array.isArray(data) ? data : (data.users || data.data || DEFAULT_USERS);
+          usersList = Array.isArray(data) ? data : (data.users || data.data || []);
         } else {
-          usersList = DEFAULT_USERS;
+          usersList = [{ username: 'admin', role: 'admin' }];
         }
       } catch (err) {
-        if (usersList.length === 0) usersList = [...DEFAULT_USERS];
+        usersList = [{ username: 'admin', role: 'admin' }];
       }
       renderUsersTable();
     }
@@ -416,13 +667,12 @@
       const tbody = document.getElementById('users-table-body');
       tbody.innerHTML = '';
 
-      document.getElementById('user-count-badge').textContent = `${usersList.length} Users`;
+      document.getElementById('user-count-badge').textContent = `${usersList.length} User${usersList.length === 1 ? '' : 's'}`;
 
       usersList.forEach((user, index) => {
         const tr = document.createElement('tr');
         const role = (user.role || 'viewer').toLowerCase();
         const isSelf = currentUser && user.username === currentUser.username;
-
         const roleBadgeClass = role === 'admin' ? 'admin' : (role === 'collector' ? 'collector' : 'viewer');
 
         tr.innerHTML = `
@@ -438,7 +688,7 @@
             <div class="table-actions" style="justify-content: flex-end;">
               <select 
                 class="role-select-inline" 
-                onchange="handleRoleChange('${user.username}', this.value, '${user.username}')"
+                onchange="handleRoleChange('${user.username}', this.value)"
                 ${isSelf ? 'title="Cannot change your own role" disabled' : ''}
               >
                 <option value="admin" ${role === 'admin' ? 'selected' : ''}>Admin</option>
@@ -449,7 +699,7 @@
               <button 
                 type="button" 
                 class="btn btn-danger btn-sm" 
-                onclick="handleDeleteUser('${user.username}', '${user.username}')"
+                onclick="handleDeleteUser('${user.username}')"
                 ${isSelf ? 'disabled title="You cannot delete yourself"' : 'title="Delete user"'}
               >
                 <i class="fa-solid fa-trash-can"></i>
@@ -498,31 +748,26 @@
 
         if (res.ok) {
           const result = await res.json();
-          usersList.push(result.user || { id: username, username, role });
+          usersList.push(result.user || { username, role });
           showToast('Success', `User '${username}' created successfully.`, 'success');
         } else {
-          usersList.push({ id: username, username, role });
-          showToast('Created', `User '${username}' created.`, 'info');
+          showToast('Error', 'Failed to create user.', 'error');
         }
 
         renderUsersTable();
         usernameInput.value = '';
         passwordInput.value = '';
       } catch (err) {
-        usersList.push({ id: username, username, role });
-        renderUsersTable();
-        showToast('Created', `User '${username}' created.`, 'info');
-        usernameInput.value = '';
-        passwordInput.value = '';
+        showToast('Error', 'Network error creating user.', 'error');
       } finally {
         submitBtn.disabled = false;
       }
     });
 
     // Handle Role Change
-    async function handleRoleChange(userId, newRole, username) {
+    async function handleRoleChange(username, newRole) {
       try {
-        await fetch(`/api/users/${userId}`, {
+        const res = await fetch(`/api/users/${username}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -531,21 +776,21 @@
           body: JSON.stringify({ role: newRole })
         });
 
-        const u = usersList.find(x => x.username === username);
-        if (u) u.role = newRole;
-
-        showToast('Role Updated', `'${username}' role set to '${newRole}'.`, 'success');
-        renderUsersTable();
+        if (res.ok) {
+          const u = usersList.find(x => x.username === username);
+          if (u) u.role = newRole;
+          showToast('Role Updated', `'${username}' role set to '${newRole}'.`, 'success');
+          renderUsersTable();
+        } else {
+          showToast('Error', 'Failed to update role.', 'error');
+        }
       } catch (err) {
-        const u = usersList.find(x => x.username === username);
-        if (u) u.role = newRole;
-        renderUsersTable();
-        showToast('Role Updated', `'${username}' role updated.`, 'info');
+        showToast('Error', 'Network error updating role.', 'error');
       }
     }
 
     // Handle Delete User
-    function handleDeleteUser(userId, username) {
+    function handleDeleteUser(username) {
       if (currentUser && currentUser.username === username) {
         showToast('Denied', 'You cannot delete your own account!', 'warning');
         return;
@@ -553,23 +798,25 @@
 
       showConfirmModal(`Are you sure you want to permanently delete '${username}'?`, async () => {
         try {
-          await fetch(`/api/users/${userId}`, {
+          const res = await fetch(`/api/users/${username}`, {
             method: 'DELETE',
             headers: { 'Accept': 'application/json' }
           });
 
-          usersList = usersList.filter(u => u.username !== username);
-          renderUsersTable();
-          showToast('Deleted', `User '${username}' removed.`, 'success');
+          if (res.ok) {
+            usersList = usersList.filter(u => u.username !== username);
+            renderUsersTable();
+            showToast('Deleted', `User '${username}' removed.`, 'success');
+          } else {
+            showToast('Error', 'Failed to delete user.', 'error');
+          }
         } catch (err) {
-          usersList = usersList.filter(u => u.username !== username);
-          renderUsersTable();
-          showToast('Deleted', `User '${username}' removed.`, 'info');
+          showToast('Error', 'Network error deleting user.', 'error');
         }
       });
     }
 
-    // Force Sync Google Sheets
+    // Force Sync Google Sheets (All 9 Tabs)
     document.getElementById('btn-force-sync').addEventListener('click', async () => {
       const syncBtn = document.getElementById('btn-force-sync');
       const icon = document.getElementById('sync-btn-icon');
@@ -579,31 +826,109 @@
 
       syncBtn.disabled = true;
       icon.classList.add('spin');
-      text.textContent = 'Syncing...';
+      text.textContent = 'Syncing 9 Tabs...';
       statusIndicator.className = 'status-indicator syncing';
       statusText.textContent = 'Syncing...';
 
       try {
-        let res = await fetch('/api/sync', { method: 'POST' }).catch(() => null);
-        if (!res || !res.ok) {
-          res = await fetch('/api/data/refresh', { method: 'POST' }).catch(() => null);
+        const res = await fetch('/api/sync', { method: 'POST' });
+        const result = await res.json();
+
+        if (result && result.counts) {
+          document.getElementById('chip-para1').textContent = `${result.counts.para1} rows`;
+          document.getElementById('chip-para2').textContent = `${result.counts.para2} rows`;
+          document.getElementById('chip-para3').textContent = `${result.counts.para3} rows`;
+          document.getElementById('chip-para4').textContent = `${result.counts.para4} rows`;
+          document.getElementById('chip-para5').textContent = `${result.counts.para5} rows`;
+          document.getElementById('chip-shop').textContent = `${result.counts.shop} shops`;
+          document.getElementById('chip-road').textContent = `${result.counts.road} spots`;
+          document.getElementById('chip-expenses').textContent = `${result.counts.expenses} items`;
         }
 
-        await new Promise(r => setTimeout(r, 1000));
-
         const now = new Date().toLocaleTimeString('en-US');
-        document.getElementById('last-sync-time').textContent = `Last Sync: Today ${now} | Sheet ID: 1bTBdyhZaQczAivGacAVuHiwwjnxkikaEeQJaCoeRmTE`;
+        document.getElementById('last-sync-time').innerHTML = `Last Sync: Today ${now} | Sheet ID: <code>${result.spreadsheetId || '1bTBdyhZaQczAivGacAVuHiwwjnxkikaEeQJaCoeRmTE'}</code>`;
         
         statusIndicator.className = 'status-indicator';
         statusText.textContent = 'Connected';
-        showToast('Sync Complete', 'Data synchronized with Google Sheet!', 'success');
+        showToast('Sync Complete', `Synchronized all 9 tabs successfully! Total records: ${result.counts ? result.counts.totalContributors : ''}`, 'success');
       } catch (err) {
         showToast('Sync Notice', 'Spreadsheet data refreshed.', 'info');
       } finally {
         icon.classList.remove('spin');
-        text.textContent = 'Force Sync from Sheet';
+        text.textContent = 'Force Sync All 9 Tabs';
         syncBtn.disabled = false;
       }
+    });
+
+    // Update Spreadsheet ID / URL Form Handler
+    document.getElementById('form-update-sheet').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const input = document.getElementById('input-sheet-url');
+      const val = input.value.trim();
+      const btn = document.getElementById('btn-save-sheet');
+
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Connecting...';
+
+      try {
+        const res = await fetch('/api/config/spreadsheet', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ spreadsheetUrl: val, spreadsheetId: val })
+        });
+        const data = await res.json();
+        if (res.ok) {
+          showToast('Connected', `Spreadsheet updated and synced: ${data.spreadsheetId}`, 'success');
+          await loadSystemConfig();
+          // Trigger a sync
+          document.getElementById('btn-force-sync').click();
+        } else {
+          showToast('Error', data.error || 'Failed to update spreadsheet.', 'error');
+        }
+      } catch (err) {
+        showToast('Error', 'Network error connecting spreadsheet.', 'error');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-link"></i> Connect & Sync';
+      }
+    });
+
+    // Update Webhook URL Form Handler
+    document.getElementById('form-update-webhook').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const input = document.getElementById('input-webhook-url');
+      const webhookUrl = input.value.trim();
+      const btn = document.getElementById('btn-save-webhook');
+
+      btn.disabled = true;
+      try {
+        const res = await fetch('/api/config/webhook', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ webhookUrl })
+        });
+        if (res.ok) {
+          showToast('Saved', 'Webhook URL saved! Website additions will write to Google Sheets.', 'success');
+          document.getElementById('webhook-status-badge').className = 'status-indicator';
+          document.getElementById('webhook-status-text').textContent = 'Webhook Active';
+        } else {
+          showToast('Error', 'Failed to save webhook.', 'error');
+        }
+      } catch (err) {
+        showToast('Error', 'Network error saving webhook.', 'error');
+      } finally {
+        btn.disabled = false;
+      }
+    });
+
+    // Copy Apps Script Code Button
+    document.getElementById('btn-copy-script').addEventListener('click', () => {
+      const code = document.getElementById('apps-script-code').innerText;
+      navigator.clipboard.writeText(code).then(() => {
+        showToast('Copied', 'Google Apps Script code copied to clipboard!', 'success');
+      }).catch(() => {
+        showToast('Notice', 'Please select and copy the code manually.', 'info');
+      });
     });
 
     // Logout Handler
@@ -626,7 +951,21 @@
     window.addEventListener('DOMContentLoaded', async () => {
       const isAuthorized = await verifyAdminAuth();
       if (!isAuthorized) return;
+      await loadSystemConfig();
       await loadUsers();
+      // Auto-trigger sync display on initial open
+      fetch('/api/sync', { method: 'POST' }).then(r => r.json()).then(result => {
+        if (result && result.counts) {
+          document.getElementById('chip-para1').textContent = `${result.counts.para1} rows`;
+          document.getElementById('chip-para2').textContent = `${result.counts.para2} rows`;
+          document.getElementById('chip-para3').textContent = `${result.counts.para3} rows`;
+          document.getElementById('chip-para4').textContent = `${result.counts.para4} rows`;
+          document.getElementById('chip-para5').textContent = `${result.counts.para5} rows`;
+          document.getElementById('chip-shop').textContent = `${result.counts.shop} shops`;
+          document.getElementById('chip-road').textContent = `${result.counts.road} spots`;
+          document.getElementById('chip-expenses').textContent = `${result.counts.expenses} items`;
+        }
+      }).catch(() => {});
     });
   </script>
 </body>

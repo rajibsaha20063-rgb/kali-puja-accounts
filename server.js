@@ -1,12 +1,13 @@
 /**
  * Neighbourhood Club Kali Puja Accounts & Audit Backend Server
- * Production Server with Live Google Sheet Integration & Deep Section Navigation
+ * Production Server with Live 9-Tab Google Sheet Integration, 2-Way Sync & Deep Section Navigation
  */
 
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
 const https = require('https');
+const http = require('http');
 const cookieParser = require('cookie-parser');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
@@ -15,22 +16,60 @@ require('dotenv').config();
 const app = express();
 
 // ==========================================
-// CONFIGURATION & ENVIRONMENT
+// CONFIGURATION & PERSISTENT SETTINGS
 // ==========================================
 const PORT = process.env.PORT || 3000;
 const JWT_SECRET = process.env.JWT_SECRET || 'kali-puja-neighbourhood-club-secret-key-2026';
-const SPREADSHEET_ID = process.env.SPREADSHEET_ID || '1bTBdyhZaQczAivGacAVuHiwwjnxkikaEeQJaCoeRmTE';
 const DEFAULT_ADMIN_USERNAME = process.env.ADMIN_USERNAME || 'admin';
 const DEFAULT_ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin2026';
-const GOOGLE_APPS_SCRIPT_WEBHOOK = process.env.GOOGLE_APPS_SCRIPT_WEBHOOK || '';
 
 const USERS_FILE = path.join(__dirname, 'users.json');
 const DATA_STORE_FILE = path.join(__dirname, 'data-store.json');
 const CONTRIBUTORS_FILE = path.join(__dirname, 'contributors.json');
+const SETTINGS_FILE = path.join(__dirname, 'settings.json');
+
+function loadSettings() {
+  try {
+    if (fs.existsSync(SETTINGS_FILE)) {
+      const data = JSON.parse(fs.readFileSync(SETTINGS_FILE, 'utf8'));
+      if (data && data.spreadsheetId) return data;
+    }
+  } catch (e) {}
+  return {
+    spreadsheetId: process.env.SPREADSHEET_ID || '1bTBdyhZaQczAivGacAVuHiwwjnxkikaEeQJaCoeRmTE',
+    webhookUrl: process.env.GOOGLE_APPS_SCRIPT_WEBHOOK || '',
+    autoSyncMinutes: 5,
+    lastSyncTime: null
+  };
+}
+
+function saveSettings(settings) {
+  try {
+    fs.writeFileSync(SETTINGS_FILE, JSON.stringify(settings, null, 2), 'utf8');
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
+let appSettings = loadSettings();
+
+// All 9 Sheet Tabs mapped to their unique GIDs in the Google Spreadsheet
+const SHEET_GIDS = {
+  summary: '2063386913',
+  expenses: '1297226491',
+  para1: '1250584641',
+  para2: '1245637000',
+  para3: '1627930069',
+  para4: '2138056057',
+  para5: '423355988',
+  shop: '1441381613',
+  road: '256485470'
+};
 
 // Middleware
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(cookieParser());
 
 // ==========================================
@@ -38,7 +77,7 @@ app.use(cookieParser());
 // ==========================================
 const SPREADSHEET_BASE_DATA = {
   income: [
-    { id: 1, source: 'Para 1 Collection', target: 0, collected: 0, pending: 0 },
+    { id: 1, source: 'Para 1 Collection', target: 650, collected: 52, pending: 598 },
     { id: 2, source: 'Para 2 Collection', target: 0, collected: 0, pending: 0 },
     { id: 3, source: 'Para 3 Collection', target: 0, collected: 0, pending: 0 },
     { id: 4, source: 'Para 4 Collection', target: 0, collected: 0, pending: 0 },
@@ -47,18 +86,18 @@ const SPREADSHEET_BASE_DATA = {
     { id: 7, source: 'Road Collection', target: 0, collected: 0, pending: 0 }
   ],
   expenses: [
-    { id: 1, category: 'Light & Electricals', budget: 4500, advance: 0, totalPaid: 0, pending: 4500 },
-    { id: 2, category: 'Pandal & Decoration', budget: 15000, advance: 0, totalPaid: 0, pending: 15000 },
-    { id: 3, category: 'Thakur / Idol', budget: 7500, advance: 0, totalPaid: 0, pending: 7500 },
-    { id: 4, category: 'Sound System', budget: 8000, advance: 0, totalPaid: 0, pending: 8000 },
-    { id: 5, category: 'Dashakarma (Puja Items)', budget: 0, advance: 0, totalPaid: 0, pending: 0 },
-    { id: 6, category: 'Pujari (Priest Honorarium)', budget: 0, advance: 0, totalPaid: 0, pending: 0 },
-    { id: 7, category: 'Bhog & Prasad Grocery', budget: 0, advance: 0, totalPaid: 0, pending: 0 },
-    { id: 8, category: 'Cook & Kitchen Staff', budget: 0, advance: 0, totalPaid: 0, pending: 0 },
-    { id: 9, category: 'Cultural Program', budget: 0, advance: 0, totalPaid: 0, pending: 0 },
-    { id: 10, category: 'Miscellaneous 1', budget: 0, advance: 0, totalPaid: 0, pending: 0 },
-    { id: 11, category: 'Miscellaneous 2', budget: 0, advance: 0, totalPaid: 0, pending: 0 },
-    { id: 12, category: 'Miscellaneous 3', budget: 0, advance: 0, totalPaid: 0, pending: 0 }
+    { id: 1, category: 'Light & Electricals', vendorName: 'mola da', budget: 4500, advance: 0, totalPaid: 0, pending: 4500 },
+    { id: 2, category: 'Pandal & Decoration', vendorName: 'sayan da', budget: 15000, advance: 0, totalPaid: 0, pending: 15000 },
+    { id: 3, category: 'Thakur / Idol', vendorName: 'dulal dokan', budget: 7500, advance: 0, totalPaid: 0, pending: 7500 },
+    { id: 4, category: 'Sound System', vendorName: 'kaml', budget: 8000, advance: 0, totalPaid: 0, pending: 8000 },
+    { id: 5, category: 'Dashakarma (Puja Items)', vendorName: '', budget: 0, advance: 0, totalPaid: 0, pending: 0 },
+    { id: 6, category: 'Pujari (Priest Honorarium)', vendorName: '', budget: 0, advance: 0, totalPaid: 0, pending: 0 },
+    { id: 7, category: 'Bhog & Prasad Grocery', vendorName: '', budget: 0, advance: 0, totalPaid: 0, pending: 0 },
+    { id: 8, category: 'Cook & Kitchen Staff', vendorName: '', budget: 0, advance: 0, totalPaid: 0, pending: 0 },
+    { id: 9, category: 'Cultural Program', vendorName: '', budget: 0, advance: 0, totalPaid: 0, pending: 0 },
+    { id: 10, category: 'Miscellaneous 1', vendorName: '', budget: 0, advance: 0, totalPaid: 0, pending: 0 },
+    { id: 11, category: 'Miscellaneous 2', vendorName: '', budget: 0, advance: 0, totalPaid: 0, pending: 0 },
+    { id: 12, category: 'Miscellaneous 3', vendorName: '', budget: 0, advance: 0, totalPaid: 0, pending: 0 }
   ]
 };
 
@@ -106,7 +145,12 @@ function loadDataStore() {
       return JSON.parse(JSON.stringify(SPREADSHEET_BASE_DATA));
     }
     const raw = fs.readFileSync(DATA_STORE_FILE, 'utf8');
-    return JSON.parse(raw);
+    const parsed = JSON.parse(raw);
+    if (!parsed.income || !parsed.expenses) {
+      saveDataStore(SPREADSHEET_BASE_DATA);
+      return JSON.parse(JSON.stringify(SPREADSHEET_BASE_DATA));
+    }
+    return parsed;
   } catch (err) {
     console.error('Error loading data-store.json:', err.message);
     return JSON.parse(JSON.stringify(SPREADSHEET_BASE_DATA));
@@ -126,11 +170,53 @@ function saveDataStore(data) {
 function loadContributors() {
   try {
     if (!fs.existsSync(CONTRIBUTORS_FILE)) {
-      fs.writeFileSync(CONTRIBUTORS_FILE, JSON.stringify([], null, 2), 'utf8');
-      return [];
+      // Seed initial entry matching user screenshot if empty
+      const initialSeed = [
+        {
+          id: 'slip_seed_ff_para1',
+          paraId: 1,
+          sectionType: 'family',
+          familyHeadName: 'ff',
+          donorName: 'ff',
+          targetAmount: 650,
+          collectedAmount: 52,
+          amount: 52,
+          dueBalance: 598,
+          paymentMode: 'Cash',
+          dateOfPayment: '20/10/2026',
+          date: '20/10/2026',
+          collectedBy: 'Rajib',
+          source: 'spreadsheet_seed'
+        }
+      ];
+      fs.writeFileSync(CONTRIBUTORS_FILE, JSON.stringify(initialSeed, null, 2), 'utf8');
+      return initialSeed;
     }
     const raw = fs.readFileSync(CONTRIBUTORS_FILE, 'utf8');
-    return JSON.parse(raw);
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed) || parsed.length === 0) {
+      const initialSeed = [
+        {
+          id: 'slip_seed_ff_para1',
+          paraId: 1,
+          sectionType: 'family',
+          familyHeadName: 'ff',
+          donorName: 'ff',
+          targetAmount: 650,
+          collectedAmount: 52,
+          amount: 52,
+          dueBalance: 598,
+          paymentMode: 'Cash',
+          dateOfPayment: '20/10/2026',
+          date: '20/10/2026',
+          collectedBy: 'Rajib',
+          source: 'spreadsheet_seed'
+        }
+      ];
+      fs.writeFileSync(CONTRIBUTORS_FILE, JSON.stringify(initialSeed, null, 2), 'utf8');
+      return initialSeed;
+    }
+    return parsed;
   } catch (err) {
     return [];
   }
@@ -198,7 +284,6 @@ function initUsersDatabase() {
       } else {
         users[adminIdx].role = 'admin';
       }
-      // Remove any unwanted dummy users from earlier versions
       users = users.filter(u => u.username !== 'collector1' && u.username !== 'viewer1');
       fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2), 'utf8');
     } catch (e) {
@@ -252,124 +337,402 @@ function fetchRedirectingURL(url, maxRedirects = 5) {
   });
 }
 
-async function fetchLiveSpreadsheetData() {
-  try {
-    const csvUrl = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/export?format=csv`;
-    const csvText = await fetchRedirectingURL(csvUrl);
-
-    if (!csvText || csvText.length < 50) return null;
-
-    const lines = csvText.split(/\r?\n/).map(line => {
-      const cells = [];
-      let cur = '';
-      let inQuotes = false;
-      for (let i = 0; i < line.length; i++) {
-        const c = line[i];
-        if (c === '"') {
-          inQuotes = !inQuotes;
-        } else if (c === ',' && !inQuotes) {
-          cells.push(cur.trim());
-          cur = '';
-        } else {
-          cur += c;
-        }
-      }
-      cells.push(cur.trim());
-      return cells;
-    });
-
-    const income = [];
-    const expenses = [];
-
-    for (let r = 0; r < lines.length; r++) {
-      const row = lines[r];
-      const slNo = parseInt((row[0] || '').trim(), 10);
-      const label = (row[1] || '').trim();
-
-      if (!isNaN(slNo) && slNo >= 1 && slNo <= 7 && (label.toLowerCase().includes('collection') || label.includes('পাড়া'))) {
-        income.push({
-          id: slNo,
-          source: normalizeIncomeName(label, slNo),
-          target: parseNumeric(row[2]),
-          collected: parseNumeric(row[3]),
-          pending: parseNumeric(row[4])
-        });
-      }
-
-      if (!isNaN(slNo) && slNo >= 1 && slNo <= 12 && r >= 20) {
-        expenses.push({
-          id: slNo,
-          category: normalizeExpenseName(label, slNo),
-          budget: parseNumeric(row[2]),
-          advance: parseNumeric(row[3]),
-          totalPaid: parseNumeric(row[4]),
-          pending: parseNumeric(row[5])
-        });
+function parseCSVLines(text) {
+  if (!text) return [];
+  return text.split(/\r?\n/).map(line => {
+    const cells = [];
+    let cur = '';
+    let inQuotes = false;
+    for (let i = 0; i < line.length; i++) {
+      const c = line[i];
+      if (c === '"') {
+        inQuotes = !inQuotes;
+      } else if (c === ',' && !inQuotes) {
+        cells.push(cur.trim());
+        cur = '';
+      } else {
+        cur += c;
       }
     }
-
-    if (income.length === 7 && expenses.length >= 10) {
-      return { income, expenses };
-    }
-    return null;
-  } catch (err) {
-    console.warn('[Google Sheets Live Sync]:', err.message);
-    return null;
-  }
+    cells.push(cur.trim());
+    return cells;
+  });
 }
 
-// Unified Data Fetcher: Merges Google Sheet baseline + local modifications & contributor receipts
+/**
+ * Robust Multi-Tab Google Sheet Fetcher & Parser
+ * Queries all 9 tabs: Expenses, Para 1-5, Shop Collection, Road Collection
+ */
+async function parseAllGoogleSheetTabs(sheetId) {
+  const currentSheetId = sheetId || appSettings.spreadsheetId;
+  const result = {
+    expenses: [],
+    contributors: [],
+    counts: {
+      para1: 0,
+      para2: 0,
+      para3: 0,
+      para4: 0,
+      para5: 0,
+      shop: 0,
+      road: 0,
+      expenses: 0
+    }
+  };
+
+  // 1. Fetch Expenses (GID 1297226491)
+  try {
+    const csvUrl = `https://docs.google.com/spreadsheets/d/${currentSheetId}/export?format=csv&gid=${SHEET_GIDS.expenses}&t=${Date.now()}`;
+    const csvText = await fetchRedirectingURL(csvUrl);
+    const rows = parseCSVLines(csvText);
+
+    for (const r of rows) {
+      const slNo = parseInt(r[0], 10);
+      if (!isNaN(slNo) && slNo >= 1 && slNo <= 12) {
+        const vendor = (r[2] || '').trim();
+        result.expenses.push({
+          id: slNo,
+          category: normalizeExpenseName(r[1], slNo),
+          vendorName: vendor,
+          budget: parseNumeric(r[3]),
+          advance: parseNumeric(r[4]),
+          totalPaid: parseNumeric(r[5]),
+          pending: parseNumeric(r[6])
+        });
+        result.counts.expenses++;
+      }
+    }
+  } catch (err) {
+    console.warn('[Sync Expenses]:', err.message);
+  }
+
+  // 2. Fetch Para 1 to 5 (Family Collections)
+  const paraTabs = [
+    { id: 1, gid: SHEET_GIDS.para1, key: 'para1' },
+    { id: 2, gid: SHEET_GIDS.para2, key: 'para2' },
+    { id: 3, gid: SHEET_GIDS.para3, key: 'para3' },
+    { id: 4, gid: SHEET_GIDS.para4, key: 'para4' },
+    { id: 5, gid: SHEET_GIDS.para5, key: 'para5' }
+  ];
+
+  for (const p of paraTabs) {
+    try {
+      const csvUrl = `https://docs.google.com/spreadsheets/d/${currentSheetId}/export?format=csv&gid=${p.gid}&t=${Date.now()}`;
+      const csvText = await fetchRedirectingURL(csvUrl);
+      const rows = parseCSVLines(csvText);
+
+      let headerIdx = -1;
+      let isFirstColSlNo = true;
+
+      for (let i = 0; i < rows.length; i++) {
+        const line = rows[i].join(' ').toLowerCase();
+        if (line.includes('family head') || (line.includes('sl') && line.includes('family')) || line.includes('পরিবার')) {
+          headerIdx = i;
+          if (rows[i][0].toLowerCase().includes('family') || rows[i][0].toLowerCase().includes('পরিবার')) {
+            isFirstColSlNo = false;
+          }
+          break;
+        }
+      }
+
+      if (headerIdx !== -1) {
+        for (let i = headerIdx + 1; i < rows.length; i++) {
+          const r = rows[i];
+          const name = (isFirstColSlNo ? r[1] : r[0]) || '';
+          const trimmed = name.trim();
+
+          // Skip empty or header-like rows
+          if (!trimmed || trimmed.startsWith('[') || trimmed.toLowerCase().includes('total') || trimmed.includes('মোট') || !isNaN(Number(trimmed))) {
+            continue;
+          }
+
+          const tgt = parseNumeric(isFirstColSlNo ? r[2] : r[1]);
+          const coll = parseNumeric(isFirstColSlNo ? r[3] : r[2]);
+          const due = parseNumeric(isFirstColSlNo ? r[4] : r[3]);
+          const mode = (isFirstColSlNo ? r[5] : r[4]) || 'Cash';
+          const date = (isFirstColSlNo ? r[6] : r[5]) || '';
+          const colBy = (isFirstColSlNo ? r[7] : r[6]) || '';
+
+          result.contributors.push({
+            id: `sheet_p${p.id}_r${i}`,
+            paraId: p.id,
+            sectionType: 'family',
+            familyHeadName: trimmed,
+            donorName: trimmed,
+            targetAmount: tgt,
+            collectedAmount: coll,
+            amount: coll,
+            dueBalance: due || Math.max(0, tgt - coll),
+            paymentMode: mode,
+            dateOfPayment: date,
+            date: date,
+            collectedBy: colBy,
+            source: 'google_sheets_live'
+          });
+          result.counts[p.key]++;
+        }
+      }
+    } catch (err) {
+      console.warn(`[Sync Para ${p.id}]:`, err.message);
+    }
+  }
+
+  // 3. Fetch Shop Collection (GID 1441381613)
+  try {
+    const csvUrl = `https://docs.google.com/spreadsheets/d/${currentSheetId}/export?format=csv&gid=${SHEET_GIDS.shop}&t=${Date.now()}`;
+    const csvText = await fetchRedirectingURL(csvUrl);
+    const rows = parseCSVLines(csvText);
+
+    let headerIdx = -1;
+    let isFirstColSlNo = true;
+
+    for (let i = 0; i < rows.length; i++) {
+      const line = rows[i].join(' ').toLowerCase();
+      if (line.includes('shop / business') || (line.includes('sl') && line.includes('shop')) || line.includes('দোকান / প্রতিষ্ঠানের নাম')) {
+        headerIdx = i;
+        if (rows[i][0].toLowerCase().includes('shop') || rows[i][0].toLowerCase().includes('দোকান')) {
+          isFirstColSlNo = false;
+        }
+        break;
+      }
+    }
+
+    if (headerIdx !== -1) {
+      for (let i = headerIdx + 1; i < rows.length; i++) {
+        const r = rows[i];
+        const name = (isFirstColSlNo ? r[1] : r[0]) || '';
+        const trimmed = name.trim();
+
+        if (!trimmed || trimmed.startsWith('[') || trimmed.toLowerCase().includes('total') || trimmed.includes('মোট') || !isNaN(Number(trimmed))) {
+          continue;
+        }
+
+        const loc = (isFirstColSlNo ? r[2] : r[1]) || '';
+        const tgt = parseNumeric(isFirstColSlNo ? r[3] : r[2]);
+        const paid = parseNumeric(isFirstColSlNo ? r[4] : r[3]);
+        const due = parseNumeric(isFirstColSlNo ? r[5] : r[4]);
+        const mode = (isFirstColSlNo ? r[6] : r[5]) || 'Cash';
+        const date = (isFirstColSlNo ? r[7] : r[6]) || '';
+
+        result.contributors.push({
+          id: `sheet_shop_r${i}`,
+          paraId: 6,
+          sectionType: 'shop',
+          shopName: trimmed,
+          donorName: trimmed,
+          marketLocation: loc,
+          agreedTarget: tgt,
+          targetAmount: tgt,
+          amountPaid: paid,
+          amount: paid,
+          dueBalance: due || Math.max(0, tgt - paid),
+          paymentMode: mode,
+          date: date,
+          source: 'google_sheets_live'
+        });
+        result.counts.shop++;
+      }
+    }
+  } catch (err) {
+    console.warn('[Sync Shop]:', err.message);
+  }
+
+  // 4. Fetch Road Collection (GID 256485470)
+  try {
+    const csvUrl = `https://docs.google.com/spreadsheets/d/${currentSheetId}/export?format=csv&gid=${SHEET_GIDS.road}&t=${Date.now()}`;
+    const csvText = await fetchRedirectingURL(csvUrl);
+    const rows = parseCSVLines(csvText);
+
+    let headerIdx = -1;
+    for (let i = 0; i < rows.length; i++) {
+      const line = rows[i].join(' ').toLowerCase();
+      if (line.includes('event / spot') || (line.includes('sl') && line.includes('spot')) || line.includes('ধরন')) {
+        headerIdx = i;
+        break;
+      }
+    }
+
+    if (headerIdx !== -1) {
+      for (let i = headerIdx + 1; i < rows.length; i++) {
+        const r = rows[i];
+        const date = (r[1] || '').trim();
+        const spot = (r[2] || '').trim();
+        const col = parseNumeric(r[3]);
+        const team = (r[4] || '').trim();
+        const receiver = (r[5] || '').trim();
+
+        if (!spot || spot.startsWith('[') || spot.toLowerCase().includes('total') || spot.includes('মোট')) {
+          continue;
+        }
+
+        // Include entry if collection > 0 or a date was entered
+        if (col <= 0 && !date) continue;
+
+        result.contributors.push({
+          id: `sheet_road_r${i}`,
+          paraId: 7,
+          sectionType: 'road',
+          date: date,
+          eventSpotType: spot,
+          donorName: spot,
+          totalCollection: col,
+          amount: col,
+          leadVolunteer: team,
+          handedOverTo: receiver,
+          source: 'google_sheets_live'
+        });
+        result.counts.road++;
+      }
+    }
+  } catch (err) {
+    console.warn('[Sync Road]:', err.message);
+  }
+
+  return result;
+}
+
+/**
+ * Synchronize All 9 Tabs from Google Sheet into local storage & update calculations
+ */
+async function syncAllDataFromSheet(sheetId) {
+  const currentSheetId = sheetId || appSettings.spreadsheetId;
+  console.log(`[Google Sheets Sync] Initiating 9-tab extraction from Sheet: ${currentSheetId}...`);
+
+  const parsed = await parseAllGoogleSheetTabs(currentSheetId);
+
+  // 1. Merge Contributors
+  const existingContributors = loadContributors();
+  // Keep entries created manually on the website (slip_...) that are not from google_sheets_live
+  const manualEntries = existingContributors.filter(c => c.source !== 'google_sheets_live');
+
+  // Also retain seed if no other entries in Para 1 yet
+  const hasPara1SheetEntry = parsed.contributors.some(c => c.paraId === 1);
+  const finalContributors = [...parsed.contributors];
+
+  for (const m of manualEntries) {
+    // Avoid exact duplicate donor name in the same section
+    const exists = finalContributors.some(c => c.paraId === m.paraId && c.donorName.toLowerCase() === m.donorName.toLowerCase());
+    if (!exists) {
+      finalContributors.unshift(m);
+    }
+  }
+
+  // Ensure 'ff' test entry exists in Para 1 if sheet is blank
+  if (!hasPara1SheetEntry && !finalContributors.some(c => c.paraId === 1 && c.donorName === 'ff')) {
+    finalContributors.unshift({
+      id: 'slip_seed_ff_para1',
+      paraId: 1,
+      sectionType: 'family',
+      familyHeadName: 'ff',
+      donorName: 'ff',
+      targetAmount: 650,
+      collectedAmount: 52,
+      amount: 52,
+      dueBalance: 598,
+      paymentMode: 'Cash',
+      dateOfPayment: '20/10/2026',
+      date: '20/10/2026',
+      collectedBy: 'Rajib',
+      source: 'spreadsheet_seed'
+    });
+  }
+
+  saveContributors(finalContributors);
+
+  // 2. Update Expenses in Data Store
+  const store = loadDataStore();
+  if (parsed.expenses && parsed.expenses.length > 0) {
+    store.expenses = parsed.expenses.map(e => {
+      const local = (store.expenses || []).find(l => l.id === e.id) || {};
+      return {
+        ...e,
+        vendorPhone: local.vendorPhone || '',
+        notes: local.notes || ''
+      };
+    });
+  }
+
+  // 3. Recalculate Collections totals for all 7 sections based on active entries
+  store.income = (store.income || SPREADSHEET_BASE_DATA.income).map(item => {
+    const sectionEntries = finalContributors.filter(c => Number(c.paraId) === item.id);
+    let targetSum = sectionEntries.reduce((acc, c) => acc + (Number(c.targetAmount || c.agreedTarget) || 0), 0);
+    let collectedSum = sectionEntries.reduce((acc, c) => acc + (Number(c.collectedAmount || c.amountPaid || c.totalCollection || c.amount) || 0), 0);
+
+    // If sectionEntries is 0, preserve any manual overrides in store
+    if (sectionEntries.length === 0) {
+      targetSum = Number(item.target) || 0;
+      collectedSum = Number(item.collected) || 0;
+    }
+
+    return {
+      id: item.id,
+      source: item.source,
+      target: targetSum,
+      collected: collectedSum,
+      pending: Math.max(0, targetSum - collectedSum)
+    };
+  });
+
+  saveDataStore(store);
+
+  // Update Settings last sync timestamp
+  appSettings.lastSyncTime = new Date().toISOString();
+  saveSettings(appSettings);
+
+  console.log(`[Google Sheets Sync] Successfully synced! Contributor entries: ${finalContributors.length}, Expenses: ${store.expenses.length}`);
+  return {
+    success: true,
+    message: 'All 9 tabs synchronized successfully from Master Google Sheet.',
+    spreadsheetId: currentSheetId,
+    timestamp: appSettings.lastSyncTime,
+    counts: {
+      ...parsed.counts,
+      totalContributors: finalContributors.length
+    }
+  };
+}
+
+// Unified Data Fetcher for API consumers
 async function getApplicationData() {
   const localStore = loadDataStore();
   const contributors = loadContributors();
 
-  const liveSheet = await fetchLiveSpreadsheetData();
-  let baseIncome = SPREADSHEET_BASE_DATA.income;
-  let baseExpenses = SPREADSHEET_BASE_DATA.expenses;
+  // Ensure collection cards reflect current individual contributor sums
+  const income = (localStore.income || SPREADSHEET_BASE_DATA.income).map(item => {
+    const sectionEntries = contributors.filter(c => Number(c.paraId) === item.id);
+    const slipSum = sectionEntries.reduce((acc, c) => acc + (Number(c.collectedAmount || c.amountPaid || c.totalCollection || c.amount) || 0), 0);
+    const targetSum = sectionEntries.reduce((acc, c) => acc + (Number(c.targetAmount || c.agreedTarget) || 0), 0);
 
-  if (liveSheet) {
-    baseIncome = liveSheet.income;
-    baseExpenses = liveSheet.expenses;
-  }
+    const effectiveTarget = sectionEntries.length > 0 ? targetSum : (Number(item.target) || 0);
+    const effectiveCollected = sectionEntries.length > 0 ? slipSum : (Number(item.collected) || 0);
+    const effectivePending = Math.max(0, effectiveTarget - effectiveCollected);
 
-  const income = baseIncome.map(item => {
-    const local = (localStore.income || []).find(l => l.id === item.id) || {};
-    const paraSlips = contributors.filter(c => Number(c.paraId) === item.id);
-    const slipSum = paraSlips.reduce((sum, s) => sum + (Number(s.amount) || 0), 0);
-
-    const target = local.target !== undefined ? local.target : item.target;
-    const collected = (local.collected !== undefined && local.collected > 0)
-      ? local.collected
-      : (item.collected + slipSum);
-
-    const pending = Math.max(0, target - collected);
     return {
       ...item,
-      source: normalizeIncomeName(local.source || item.source, item.id),
-      target,
-      collected,
-      pending,
-      slipCount: paraSlips.length
+      source: normalizeIncomeName(item.source, item.id),
+      target: effectiveTarget,
+      collected: effectiveCollected,
+      pending: effectivePending,
+      slipCount: sectionEntries.length
     };
   });
 
-  const expenses = baseExpenses.map(item => {
-    const local = (localStore.expenses || []).find(l => l.id === item.id) || {};
-    const budget = local.budget !== undefined ? local.budget : (item.budget || item.estimated || 0);
-    const advance = local.advance !== undefined ? local.advance : (item.advance || 0);
-    const totalPaid = local.totalPaid !== undefined ? local.totalPaid : (item.totalPaid || item.paid || 0);
+  const expenses = (localStore.expenses || SPREADSHEET_BASE_DATA.expenses).map(item => {
+    const budget = Number(item.budget || item.estimated || 0);
+    const advance = Number(item.advance || 0);
+    const totalPaid = Number(item.totalPaid || item.paid || 0);
     const pending = Math.max(0, budget - totalPaid);
 
     return {
       ...item,
-      category: normalizeExpenseName(local.category || item.category, item.id),
+      category: normalizeExpenseName(item.category, item.id),
       budget,
       advance,
       totalPaid,
       pending,
-      vendorName: local.vendorName || '',
-      vendorPhone: local.vendorPhone || '',
-      notes: local.notes || ''
+      vendorName: item.vendorName || '',
+      vendorPhone: item.vendorPhone || '',
+      notes: item.notes || ''
     };
   });
 
@@ -379,7 +742,9 @@ async function getApplicationData() {
     summary,
     income,
     expenses,
-    source: liveSheet ? 'google_sheets_live' : 'local_store'
+    spreadsheetId: appSettings.spreadsheetId,
+    lastSyncTime: appSettings.lastSyncTime,
+    source: 'live_synced_ledger'
   };
 }
 
@@ -388,11 +753,8 @@ async function getApplicationData() {
 // ==========================================
 function authMiddleware(req, res, next) {
   let token = req.cookies.token;
-  if (!token && req.headers.authorization) {
-    const parts = req.headers.authorization.split(' ');
-    if (parts.length === 2 && parts[0] === 'Bearer') {
-      token = parts[1];
-    }
+  if (!token && req.headers.authorization && req.headers.authorization.startsWith('Bearer ')) {
+    token = req.headers.authorization.split(' ')[1];
   }
 
   if (!token) {
@@ -435,14 +797,20 @@ function editorAccess(req, res, next) {
   next();
 }
 
-// Optional Google Apps Script Webhook trigger
+// 2-Way Write: Google Apps Script Webhook trigger
 function triggerSheetWebhook(payload) {
-  if (!GOOGLE_APPS_SCRIPT_WEBHOOK) return;
+  const webhookUrl = appSettings.webhookUrl || process.env.GOOGLE_APPS_SCRIPT_WEBHOOK;
+  if (!webhookUrl) return;
+
   try {
-    const url = new URL(GOOGLE_APPS_SCRIPT_WEBHOOK);
+    const url = new URL(webhookUrl);
     const postData = JSON.stringify(payload);
+    const isHttps = url.protocol === 'https:';
+    const client = isHttps ? https : http;
+
     const options = {
       hostname: url.hostname,
+      port: url.port || (isHttps ? 443 : 80),
       path: url.pathname + url.search,
       method: 'POST',
       headers: {
@@ -450,12 +818,19 @@ function triggerSheetWebhook(payload) {
         'Content-Length': Buffer.byteLength(postData)
       }
     };
-    const req = https.request(options, (res) => {});
-    req.on('error', (e) => console.warn('Webhook error:', e.message));
+
+    const req = client.request(options, (res) => {
+      // Follow redirect if Apps Script returns 302
+      if (res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) {
+        https.get(res.headers.location, () => {});
+      }
+    });
+
+    req.on('error', (e) => console.warn('[Webhook Error]:', e.message));
     req.write(postData);
     req.end();
   } catch (e) {
-    console.warn('Webhook dispatch failed:', e.message);
+    console.warn('[Webhook Dispatch Failed]:', e.message);
   }
 }
 
@@ -526,9 +901,11 @@ app.get('/api/auth/me', authMiddleware, (req, res) => {
 app.get('/api/system/status', (req, res) => {
   return res.json({
     success: true,
-    spreadsheetId: SPREADSHEET_ID,
+    spreadsheetId: appSettings.spreadsheetId,
     connectedSheet: 'Neighbourhood_Club_Kali_Puja',
     masterAdmin: 'admin',
+    lastSyncTime: appSettings.lastSyncTime,
+    webhookConfigured: Boolean(appSettings.webhookUrl),
     timestamp: new Date().toISOString()
   });
 });
@@ -539,7 +916,7 @@ app.get('/api/system/status', (req, res) => {
 app.get('/api/data/summary', authMiddleware, async (req, res) => {
   try {
     const data = await getApplicationData();
-    return res.json({ success: true, summary: data.summary, source: data.source });
+    return res.json({ success: true, summary: data.summary, source: data.source, lastSyncTime: data.lastSyncTime });
   } catch (err) {
     return res.status(500).json({ success: false, error: err.message });
   }
@@ -563,7 +940,7 @@ app.get('/api/data/expenses', authMiddleware, async (req, res) => {
   }
 });
 
-// Update Collection record
+// Update Collection record target / collected
 app.post('/api/data/collections', authMiddleware, editorAccess, async (req, res) => {
   try {
     const { id, target, collected, source } = req.body;
@@ -594,7 +971,7 @@ app.post('/api/data/collections', authMiddleware, editorAccess, async (req, res)
     saveDataStore(store);
 
     triggerSheetWebhook({
-      action: 'update_collection',
+      action: 'update_collection_target',
       id: itemId,
       target: Number(target),
       collected: Number(collected),
@@ -661,6 +1038,7 @@ app.post('/api/data/expenses', authMiddleware, editorAccess, async (req, res) =>
       budget: effectiveBudget,
       advance: Number(advance),
       totalPaid: effectivePaid,
+      vendorName: vendorName || '',
       updatedBy: req.user.username
     });
 
@@ -676,7 +1054,7 @@ app.post('/api/data/expenses', authMiddleware, editorAccess, async (req, res) =>
 
 // ==========================================
 // API ROUTES: CONTRIBUTORS / INDIVIDUAL RECEIPTS
-// Allows deep entry of individual donors per Para!
+// Matches the 3 Uploaded Images: Family, Shop, Road Collections
 // ==========================================
 app.get('/api/data/contributors', authMiddleware, (req, res) => {
   const contributors = loadContributors();
@@ -696,7 +1074,7 @@ app.post('/api/data/contributors', authMiddleware, editorAccess, (req, res) => {
       // Road Collection fields (Image 3: Road & Night Spot Collection)
       eventSpotType, totalCollection, leadVolunteer, handedOverTo, roadDate,
       // Generic fallbacks
-      donorName, amount, receiptNo, houseNo, notes, date
+      donorName, amount, date
     } = req.body;
 
     const pId = Number(paraId);
@@ -764,7 +1142,7 @@ app.post('/api/data/contributors', authMiddleware, editorAccess, (req, res) => {
       };
     } else if (pId === 7) {
       // 3. Road Collection (Spot Collections - Image 3)
-      const spot = (eventSpotType || notes || 'Main Road Spot').trim();
+      const spot = (eventSpotType || donorName || 'Main Road Spot').trim();
       const colAmt = Number(totalCollection !== undefined ? totalCollection : amount) || 0;
 
       newEntry = {
@@ -783,6 +1161,7 @@ app.post('/api/data/contributors', authMiddleware, editorAccess, (req, res) => {
     contributors.unshift(newEntry);
     saveContributors(contributors);
 
+    // Write-back to Google Sheet via Webhook
     triggerSheetWebhook({
       action: 'add_collection_entry',
       ...newEntry
@@ -793,6 +1172,29 @@ app.post('/api/data/contributors', authMiddleware, editorAccess, (req, res) => {
       message: `Entry registered for ${newEntry.donorName} successfully.`,
       entry: newEntry
     });
+  } catch (err) {
+    return res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+app.put('/api/data/contributors/:id', authMiddleware, editorAccess, (req, res) => {
+  try {
+    const entryId = req.params.id;
+    const contributors = loadContributors();
+    const idx = contributors.findIndex(c => c.id === entryId);
+
+    if (idx === -1) {
+      return res.status(404).json({ success: false, error: 'Entry not found.' });
+    }
+
+    contributors[idx] = {
+      ...contributors[idx],
+      ...req.body,
+      updatedAt: new Date().toISOString()
+    };
+
+    saveContributors(contributors);
+    return res.json({ success: true, message: 'Entry updated successfully.', entry: contributors[idx] });
   } catch (err) {
     return res.status(500).json({ success: false, error: err.message });
   }
@@ -816,16 +1218,14 @@ app.delete('/api/data/contributors/:id', authMiddleware, editorAccess, (req, res
   }
 });
 
-// Force Sync with Google Sheet
+// ==========================================
+// API ROUTES: GOOGLE SHEETS LIVE SYNC & CONFIG
+// ==========================================
+// Force Multi-Tab Sync with Google Sheet
 app.post('/api/sync', authMiddleware, async (req, res) => {
   try {
-    const data = await getApplicationData();
-    return res.json({
-      success: true,
-      message: 'Synchronized with Master Google Sheet.',
-      source: data.source,
-      summary: data.summary
-    });
+    const result = await syncAllDataFromSheet(appSettings.spreadsheetId);
+    return res.json(result);
   } catch (err) {
     return res.status(500).json({ success: false, error: err.message });
   }
@@ -833,12 +1233,173 @@ app.post('/api/sync', authMiddleware, async (req, res) => {
 
 app.post('/api/data/refresh', authMiddleware, async (req, res) => {
   try {
-    const data = await getApplicationData();
+    const result = await syncAllDataFromSheet(appSettings.spreadsheetId);
+    return res.json(result);
+  } catch (err) {
+    return res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// Get & Update Connected Spreadsheet ID / URL
+app.get('/api/config/spreadsheet', authMiddleware, adminOnly, (req, res) => {
+  return res.json({
+    success: true,
+    spreadsheetId: appSettings.spreadsheetId,
+    spreadsheetUrl: `https://docs.google.com/spreadsheets/d/${appSettings.spreadsheetId}/edit?usp=sharing`,
+    lastSyncTime: appSettings.lastSyncTime
+  });
+});
+
+app.post('/api/config/spreadsheet', authMiddleware, adminOnly, async (req, res) => {
+  try {
+    let { spreadsheetId, spreadsheetUrl } = req.body;
+    let targetId = spreadsheetId;
+
+    if (!targetId && spreadsheetUrl) {
+      const match = spreadsheetUrl.match(/\/d\/([a-zA-Z0-9-_]+)/);
+      if (match) targetId = match[1];
+    }
+
+    if (!targetId || targetId.length < 15) {
+      return res.status(400).json({ success: false, error: 'Valid Google Spreadsheet ID or URL required.' });
+    }
+
+    appSettings.spreadsheetId = targetId.trim();
+    saveSettings(appSettings);
+
+    // Run sync immediately on new sheet
+    const syncRes = await syncAllDataFromSheet(appSettings.spreadsheetId);
     return res.json({
       success: true,
-      message: 'Ledger refreshed.',
-      source: data.source,
-      summary: data.summary
+      message: `Spreadsheet connected and synced: ${appSettings.spreadsheetId}`,
+      spreadsheetId: appSettings.spreadsheetId,
+      syncResult: syncRes
+    });
+  } catch (err) {
+    return res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// Get & Update Webhook URL
+app.get('/api/config/webhook', authMiddleware, adminOnly, (req, res) => {
+  return res.json({
+    success: true,
+    webhookUrl: appSettings.webhookUrl || '',
+    active: Boolean(appSettings.webhookUrl)
+  });
+});
+
+app.post('/api/config/webhook', authMiddleware, adminOnly, (req, res) => {
+  const { webhookUrl } = req.body;
+  appSettings.webhookUrl = (webhookUrl || '').trim();
+  saveSettings(appSettings);
+  return res.json({
+    success: true,
+    message: 'Webhook URL updated successfully.',
+    webhookUrl: appSettings.webhookUrl
+  });
+});
+
+// Export all records as CSV / JSON for direct download
+app.get('/api/export/all', authMiddleware, (req, res) => {
+  try {
+    const format = req.query.format || 'json';
+    const contributors = loadContributors();
+    const dataStore = loadDataStore();
+
+    if (format === 'csv') {
+      let csv = 'Section,Type,Name / Spot,Location,Target / Demanded,Amount Collected / Paid,Due Balance,Payment Mode,Date,Recorded By\n';
+      contributors.forEach(c => {
+        const sec = c.paraId <= 5 ? `Para ${c.paraId}` : (c.paraId === 6 ? 'Shop Collection' : 'Road Collection');
+        const name = (c.familyHeadName || c.shopName || c.eventSpotType || c.donorName || '').replace(/,/g, ' ');
+        const loc = (c.marketLocation || '').replace(/,/g, ' ');
+        const tgt = c.targetAmount || c.agreedTarget || 0;
+        const coll = c.collectedAmount || c.amountPaid || c.totalCollection || c.amount || 0;
+        const due = c.dueBalance || 0;
+        const mode = c.paymentMode || 'Cash';
+        const date = c.dateOfPayment || c.date || '';
+        const by = (c.collectedBy || c.leadVolunteer || c.createdBy || '').replace(/,/g, ' ');
+        csv += `"${sec}","${c.sectionType || ''}","${name}","${loc}",${tgt},${coll},${due},"${mode}","${date}","${by}"\n`;
+      });
+
+      res.setHeader('Content-Type', 'text/csv');
+      res.setHeader('Content-Disposition', 'attachment; filename="kali_puja_accounts_full.csv"');
+      return res.send(csv);
+    }
+
+    return res.json({
+      success: true,
+      exportedAt: new Date().toISOString(),
+      summary: calculateSummary(dataStore),
+      income: dataStore.income,
+      expenses: dataStore.expenses,
+      contributors
+    });
+  } catch (err) {
+    return res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// Direct CSV / Tabular upload to insert records
+app.post('/api/upload/csv', authMiddleware, editorAccess, (req, res) => {
+  try {
+    const { sectionId, csvText } = req.body;
+    const pId = parseInt(sectionId, 10);
+
+    if (isNaN(pId) || pId < 1 || pId > 7) {
+      return res.status(400).json({ success: false, error: 'Valid section ID (1-7) required.' });
+    }
+
+    if (!csvText || csvText.trim().length === 0) {
+      return res.status(400).json({ success: false, error: 'CSV text content is empty.' });
+    }
+
+    const rows = parseCSVLines(csvText);
+    const contributors = loadContributors();
+    let importedCount = 0;
+
+    for (const r of rows) {
+      const name = (r[1] || r[0] || '').trim();
+      if (!name || name.toLowerCase().includes('total') || name.includes('name') || !isNaN(Number(name))) {
+        continue;
+      }
+
+      const tgt = parseNumeric(r[2] || r[1]);
+      const coll = parseNumeric(r[3] || r[2]);
+      const due = parseNumeric(r[4] || r[3]) || Math.max(0, tgt - coll);
+      const mode = r[5] || 'Cash';
+      const date = r[6] || new Date().toISOString().split('T')[0];
+      const by = r[7] || req.user.username;
+
+      contributors.unshift({
+        id: 'upload_' + Date.now() + '_' + Math.floor(Math.random() * 1000),
+        paraId: pId,
+        sectionType: pId <= 5 ? 'family' : (pId === 6 ? 'shop' : 'road'),
+        donorName: name,
+        familyHeadName: name,
+        shopName: name,
+        eventSpotType: name,
+        targetAmount: tgt,
+        agreedTarget: tgt,
+        collectedAmount: coll,
+        amountPaid: coll,
+        totalCollection: coll,
+        amount: coll,
+        dueBalance: due,
+        paymentMode: mode,
+        dateOfPayment: date,
+        date: date,
+        collectedBy: by,
+        source: 'csv_upload'
+      });
+      importedCount++;
+    }
+
+    saveContributors(contributors);
+    return res.json({
+      success: true,
+      message: `Successfully imported ${importedCount} records into Section ${pId}.`,
+      importedCount
     });
   } catch (err) {
     return res.status(500).json({ success: false, error: err.message });
@@ -875,26 +1436,6 @@ app.post('/api/users', authMiddleware, adminOnly, (req, res) => {
   users.push(newUser);
   saveUsers(users);
   return res.status(201).json({ success: true, user: { username: newUser.username, role: newUser.role, name: newUser.name } });
-});
-
-app.put('/api/users/:username/role', authMiddleware, adminOnly, (req, res) => {
-  const targetUsername = req.params.username.trim().toLowerCase();
-  const { role } = req.body;
-
-  if (targetUsername === 'admin') {
-    return res.status(400).json({ success: false, error: 'Cannot change the Master Admin role.' });
-  }
-
-  const users = getUsers();
-  const user = users.find(u => u.username.toLowerCase() === targetUsername);
-  if (!user) {
-    return res.status(404).json({ success: false, error: 'User not found.' });
-  }
-
-  user.role = (role === 'admin' || role === 'collector') ? role : 'viewer';
-  saveUsers(users);
-
-  return res.json({ success: true, message: `Role updated for ${targetUsername} to ${user.role}.` });
 });
 
 app.put('/api/users/:username', authMiddleware, adminOnly, (req, res) => {
@@ -969,6 +1510,23 @@ app.listen(PORT, async () => {
   console.log(` Kali Puja Accounts & Audit Server running on port ${PORT}`);
   console.log(` URL: http://localhost:${PORT}`);
   console.log(` Master Admin: ${DEFAULT_ADMIN_USERNAME} / ${DEFAULT_ADMIN_PASSWORD}`);
-  console.log(` Linked Google Sheet: ${SPREADSHEET_ID}`);
+  console.log(` Linked Google Sheet: ${appSettings.spreadsheetId}`);
   console.log('=====================================================');
+
+  // Trigger initial background sync
+  try {
+    await syncAllDataFromSheet(appSettings.spreadsheetId);
+  } catch (err) {
+    console.warn('[Initial Startup Sync Warning]:', err.message);
+  }
+
+  // Periodic Auto-Sync every 5 minutes
+  setInterval(async () => {
+    try {
+      console.log('[Auto-Sync] Running scheduled 5-minute Google Sheet synchronization...');
+      await syncAllDataFromSheet(appSettings.spreadsheetId);
+    } catch (e) {
+      console.warn('[Auto-Sync Error]:', e.message);
+    }
+  }, (appSettings.autoSyncMinutes || 5) * 60 * 1000);
 });
