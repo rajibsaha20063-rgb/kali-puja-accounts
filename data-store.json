@@ -54,11 +54,13 @@
     {
       "id": 1,
       "category": "Light & Electricals",
-      "vendorName": "mola da",
+      "vendorName": "malay da",
       "budget": 4500,
       "advance": 0,
       "totalPaid": 0,
-      "pending": 4500
+      "pending": 4500,
+      "vendorPhone": "",
+      "notes": ""
     },
     {
       "id": 2,
@@ -67,7 +69,9 @@
       "budget": 15000,
       "advance": 0,
       "totalPaid": 0,
-      "pending": 15000
+      "pending": 15000,
+      "vendorPhone": "",
+      "notes": ""
     },
     {
       "id": 3,
@@ -76,16 +80,20 @@
       "budget": 7500,
       "advance": 0,
       "totalPaid": 0,
-      "pending": 7500
+      "pending": 7500,
+      "vendorPhone": "",
+      "notes": ""
     },
     {
       "id": 4,
       "category": "Sound System",
-      "vendorName": "kaml",
+      "vendorName": "kamal",
       "budget": 8000,
       "advance": 0,
       "totalPaid": 0,
-      "pending": 8000
+      "pending": 8000,
+      "vendorPhone": "",
+      "notes": ""
     },
     {
       "id": 5,
@@ -94,7 +102,9 @@
       "budget": 0,
       "advance": 0,
       "totalPaid": 0,
-      "pending": 0
+      "pending": 0,
+      "vendorPhone": "",
+      "notes": ""
     },
     {
       "id": 6,
@@ -103,7 +113,9 @@
       "budget": 0,
       "advance": 0,
       "totalPaid": 0,
-      "pending": 0
+      "pending": 0,
+      "vendorPhone": "",
+      "notes": ""
     },
     {
       "id": 7,
@@ -112,7 +124,9 @@
       "budget": 0,
       "advance": 0,
       "totalPaid": 0,
-      "pending": 0
+      "pending": 0,
+      "vendorPhone": "",
+      "notes": ""
     },
     {
       "id": 8,
@@ -121,7 +135,9 @@
       "budget": 0,
       "advance": 0,
       "totalPaid": 0,
-      "pending": 0
+      "pending": 0,
+      "vendorPhone": "",
+      "notes": ""
     },
     {
       "id": 9,
@@ -130,7 +146,9 @@
       "budget": 0,
       "advance": 0,
       "totalPaid": 0,
-      "pending": 0
+      "pending": 0,
+      "vendorPhone": "",
+      "notes": ""
     },
     {
       "id": 10,
@@ -139,7 +157,9 @@
       "budget": 0,
       "advance": 0,
       "totalPaid": 0,
-      "pending": 0
+      "pending": 0,
+      "vendorPhone": "",
+      "notes": ""
     },
     {
       "id": 11,
@@ -148,7 +168,9 @@
       "budget": 0,
       "advance": 0,
       "totalPaid": 0,
-      "pending": 0
+      "pending": 0,
+      "vendorPhone": "",
+      "notes": ""
     },
     {
       "id": 12,
@@ -157,7 +179,9 @@
       "budget": 0,
       "advance": 0,
       "totalPaid": 0,
-      "pending": 0
+      "pending": 0,
+      "vendorPhone": "",
+      "notes": ""
     }
   ]
 }

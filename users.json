@@ -1,9 +1,9 @@
 [
   {
     "username": "admin",
-    "password": "$2a$10$IEeePzjUDmFhkkW0Qg7NJ.PjuIc0jjXdbkCvOfnSe1pYZg4Ahcvzq",
+    "password": "$2a$10$27I74k8KKOlEmjv3yUm5U.9Mzrogl7AG7KLpn64tlOtu02CaR34Z2",
     "role": "admin",
-    "name": "Super Admin",
-    "createdAt": "2026-10-27T12:00:00.000Z"
+    "name": "Master Admin",
+    "createdAt": "2026-10-27T18:00:23.239Z"
   }
 ]

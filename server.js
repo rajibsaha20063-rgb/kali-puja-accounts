@@ -23,19 +23,120 @@ const JWT_SECRET = process.env.JWT_SECRET || 'kali-puja-neighbourhood-club-secre
 const DEFAULT_ADMIN_USERNAME = process.env.ADMIN_USERNAME || 'admin';
 const DEFAULT_ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin2026';
 
+const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
+const GITHUB_REPO = process.env.GITHUB_REPO || 'rajibsaha20063-rgb/kali-puja-accounts';
+const PERSISTENT_BRANCH = 'persistent-db';
+
 const USERS_FILE = path.join(__dirname, 'users.json');
 const DATA_STORE_FILE = path.join(__dirname, 'data-store.json');
 const CONTRIBUTORS_FILE = path.join(__dirname, 'contributors.json');
 const SETTINGS_FILE = path.join(__dirname, 'settings.json');
 const DELETED_ENTRIES_FILE = path.join(__dirname, 'deleted-entries.json');
 
+// Memory cache of GitHub file SHAs for fast updates
+const cloudFileShas = {};
+
+function githubApiRequest(endpoint, method = 'GET', data = null) {
+  return new Promise((resolve) => {
+    if (!GITHUB_TOKEN) return resolve(null);
+    try {
+      const options = {
+        hostname: 'api.github.com',
+        path: endpoint,
+        method,
+        headers: {
+          'User-Agent': 'Kali-Puja-Server',
+          'Authorization': `Bearer ${GITHUB_TOKEN}`,
+          'Accept': 'application/vnd.github.v3+json',
+          'Content-Type': 'application/json'
+        }
+      };
+
+      const req = https.request(options, (res) => {
+        let body = '';
+        res.on('data', chunk => body += chunk);
+        res.on('end', () => {
+          try {
+            const parsed = body ? JSON.parse(body) : null;
+            if (res.statusCode >= 200 && res.statusCode < 300) {
+              resolve(parsed);
+            } else {
+              resolve(null);
+            }
+          } catch (e) {
+            resolve(null);
+          }
+        });
+      });
+      req.on('error', () => resolve(null));
+      if (data) req.write(JSON.stringify(data));
+      req.end();
+    } catch (e) {
+      resolve(null);
+    }
+  });
+}
+
+// Fetch file from persistent-db branch at server startup
+async function fetchCloudPersistentFile(filename) {
+  if (!GITHUB_TOKEN) return null;
+  const res = await githubApiRequest(`/repos/${GITHUB_REPO}/contents/${filename}?ref=${PERSISTENT_BRANCH}`);
+  if (res && res.content) {
+    cloudFileShas[filename] = res.sha;
+    try {
+      const decoded = Buffer.from(res.content, 'base64').toString('utf8');
+      return JSON.parse(decoded);
+    } catch (e) {
+      return null;
+    }
+  }
+  return null;
+}
+
+// Save file to persistent-db branch (in background, non-blocking)
+async function saveCloudPersistentFile(filename, dataObj) {
+  if (!GITHUB_TOKEN) return false;
+  try {
+    if (!cloudFileShas[filename]) {
+      const existing = await githubApiRequest(`/repos/${GITHUB_REPO}/contents/${filename}?ref=${PERSISTENT_BRANCH}`);
+      if (existing && existing.sha) {
+        cloudFileShas[filename] = existing.sha;
+      }
+    }
+
+    const contentBase64 = Buffer.from(JSON.stringify(dataObj, null, 2), 'utf8').toString('base64');
+    const payload = {
+      message: `Sync ${filename} [auto-persistent]`,
+      content: contentBase64,
+      branch: PERSISTENT_BRANCH
+    };
+    if (cloudFileShas[filename]) {
+      payload.sha = cloudFileShas[filename];
+    }
+
+    const res = await githubApiRequest(`/repos/${GITHUB_REPO}/contents/${filename}`, 'PUT', payload);
+    if (res && res.content && res.content.sha) {
+      cloudFileShas[filename] = res.content.sha;
+      return true;
+    }
+  } catch (e) {}
+  return false;
+}
+
 function loadDeletedSignatures() {
   try {
     if (fs.existsSync(DELETED_ENTRIES_FILE)) {
-      return JSON.parse(fs.readFileSync(DELETED_ENTRIES_FILE, 'utf8'));
+      const data = JSON.parse(fs.readFileSync(DELETED_ENTRIES_FILE, 'utf8'));
+      if (Array.isArray(data)) return data;
+      if (data && typeof data === 'object') {
+        const arr = [];
+        if (Array.isArray(data.signatures)) arr.push(...data.signatures);
+        if (Array.isArray(data.ids)) arr.push(...data.ids);
+        return arr;
+      }
     }
   } catch (e) {}
-  return [];
+  return ['1_ff', 'slip_seed_ff_para1'];
 }
 
 function saveDeletedSignature(sig) {
@@ -44,6 +145,7 @@ function saveDeletedSignature(sig) {
     if (!list.includes(sig)) {
       list.push(sig);
       fs.writeFileSync(DELETED_ENTRIES_FILE, JSON.stringify(list, null, 2), 'utf8');
+      saveCloudPersistentFile('deleted-entries.json', list);
     }
   } catch (e) {}
 }
@@ -51,6 +153,7 @@ function saveDeletedSignature(sig) {
 function clearDeletedSignatures() {
   try {
     fs.writeFileSync(DELETED_ENTRIES_FILE, JSON.stringify([], null, 2), 'utf8');
+    saveCloudPersistentFile('deleted-entries.json', []);
   } catch (e) {}
 }
 
@@ -72,6 +175,7 @@ function loadSettings() {
 function saveSettings(settings) {
   try {
     fs.writeFileSync(SETTINGS_FILE, JSON.stringify(settings, null, 2), 'utf8');
+    saveCloudPersistentFile('settings.json', settings);
     return true;
   } catch (e) {
     return false;
@@ -292,6 +396,7 @@ function getUsers() {
 function saveUsers(users) {
   try {
     fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2), 'utf8');
+    saveCloudPersistentFile('users.json', users);
     return true;
   } catch (err) {
     return false;
@@ -299,6 +404,32 @@ function saveUsers(users) {
 }
 
 initUsersDatabase();
+
+// Restore persistent data on server startup (Render Sleep Proof)
+(async function restoreCloudPersistence() {
+  try {
+    const cloudSettings = await fetchCloudPersistentFile('settings.json');
+    if (cloudSettings && cloudSettings.spreadsheetId) {
+      appSettings = { ...appSettings, ...cloudSettings };
+      fs.writeFileSync(SETTINGS_FILE, JSON.stringify(appSettings, null, 2), 'utf8');
+      console.log('[Cloud Persistence] Restored settings from persistent-db:', appSettings.spreadsheetId, Boolean(appSettings.webhookUrl));
+    }
+
+    const cloudUsers = await fetchCloudPersistentFile('users.json');
+    if (cloudUsers && Array.isArray(cloudUsers) && cloudUsers.length > 0) {
+      fs.writeFileSync(USERS_FILE, JSON.stringify(cloudUsers, null, 2), 'utf8');
+      console.log(`[Cloud Persistence] Restored ${cloudUsers.length} users from persistent-db.`);
+    }
+
+    const cloudDeletions = await fetchCloudPersistentFile('deleted-entries.json');
+    if (cloudDeletions && Array.isArray(cloudDeletions)) {
+      fs.writeFileSync(DELETED_ENTRIES_FILE, JSON.stringify(cloudDeletions, null, 2), 'utf8');
+      console.log(`[Cloud Persistence] Restored ${cloudDeletions.length} deleted signatures from persistent-db.`);
+    }
+  } catch (err) {
+    console.error('[Cloud Persistence] Notice on boot sync:', err.message);
+  }
+})();
 
 // ==========================================
 // GOOGLE SHEETS LIVE CSV PARSER
