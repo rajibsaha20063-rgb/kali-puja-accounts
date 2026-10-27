@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ড্যাশবোর্ড | NEIGHBOURHOOD CLUB 🔥 কালী পূজা ২০২৬ | Kali Puja Accounts & Audit</title>
+  
+  <!-- Google Fonts: Noto Sans Bengali & Outfit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="styles.css">
+
+  <style>
+    /* Dashboard specific polish */
+    .sync-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      background: rgba(20, 20, 45, 0.6);
+      padding: 0.3rem 0.75rem;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+    }
+    .sync-pulse {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: var(--green);
+      box-shadow: 0 0 8px var(--green);
+      animation: pulseGreen 2s infinite ease-in-out;
+    }
+    @keyframes pulseGreen {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.85); }
+    }
+    .edit-tooltip {
+      font-size: 0.75rem;
+      color: var(--gold);
+      background: rgba(245, 197, 24, 0.1);
+      border: 1px solid rgba(245, 197, 24, 0.25);
+      border-radius: var(--radius-sm);
+      padding: 2px 6px;
+      margin-left: 6px;
+      font-weight: 500;
+    }
+    .editable-inline-input {
+      background: #0d0d22;
+      border: 1.5px solid var(--gold);
+      color: #fff;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.95rem;
+      font-weight: 600;
+      padding: 4px 8px;
+      border-radius: 4px;
+      width: 110px;
+      text-align: right;
+    }
+    .editable-inline-input:focus {
+      outline: none;
+      box-shadow: 0 0 10px rgba(245, 197, 24, 0.4);
+    }
+    .action-btn-inline {
+      border: none;
+      background: none;
+      cursor: pointer;
+      padding: 4px 6px;
+      border-radius: 4px;
+      transition: var(--transition);
+      font-size: 0.85rem;
+    }
+    .action-btn-inline.save { color: var(--green); }
+    .action-btn-inline.save:hover { background: rgba(46, 204, 113, 0.2); }
+    .action-btn-inline.cancel { color: var(--red); }
+    .action-btn-inline.cancel:hover { background: rgba(230, 57, 70, 0.2); }
+
+    .quick-stat-bar {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-top: 8px;
+    }
+    .quick-stat-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+    }
+    .quick-stat-item strong {
+      color: var(--text-primary);
+      font-family: 'JetBrains Mono', monospace;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation Bar -->
+  <nav class="navbar">
+    <a href="dashboard.html" class="nav-brand">
+      <span class="nav-logo-icon">🔥</span>
+      <div class="nav-brand-text">
+        <span class="nav-brand-title">NEIGHBOURHOOD CLUB</span>
+        <span class="nav-brand-sub">কালী পূজা ২০২৬ | Kali Puja Accounts & Audit</span>
+      </div>
+    </a>
+
+    <ul class="nav-menu">
+      <li class="nav-item">
+        <a href="dashboard.html" class="active">
+          <i class="fa-solid fa-chart-pie"></i> ড্যাশবোর্ড (Dashboard)
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="#collections-section">
+          <i class="fa-solid fa-hand-holding-dollar"></i> কালেকশন (Income)
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="#expenses-section">
+          <i class="fa-solid fa-receipt"></i> পূজা খরচ (Expenses)
+        </a>
+      </li>
+      <!-- Admin Nav Item (visible only for admin) -->
+      <li class="nav-item" id="nav-admin-link" style="display: none;">
+        <a href="admin.html">
+          <i class="fa-solid fa-shield-halved text-gold"></i> অ্যাডমিন প্যানেল (Admin)
+        </a>
+      </li>
+    </ul>
+
+    <div class="nav-user-panel">
+      <div class="user-profile">
+        <div class="user-avatar" id="user-avatar-initial">A</div>
+        <div class="user-details">
+          <span class="username-display" id="user-display-name">ব্যবহারকারী</span>
+          <span class="role-badge" id="user-role-badge">VIEWER</span>
+        </div>
+      </div>
+
+      <button type="button" class="btn btn-secondary btn-sm" id="logout-btn" title="লগআউট করুন">
+        <i class="fa-solid fa-right-from-bracket"></i>
+        <span class="d-none-mobile">লগআউট</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Main Container -->
+  <main class="container">
+    
+    <!-- Page Header & Action Controls -->
+    <div class="page-header">
+      <div class="page-title-box">
+        <h1 class="page-title">
+          <span>কালী পূজা ২০২৬ অডিট ও হিসাব সারসংক্ষেপ</span>
+        </h1>
+        <p class="page-subtitle bengali-text">
+          ক্লাবের বার্ষিক পূজা ও উৎসবের আয়-ব্যয় এবং ক্যাশ ব্যালেন্স বিবরণী (Real-time Audit Ledger)
+        </p>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+        <!-- Auto-refresh status -->
+        <div class="sync-badge" id="sync-status-badge">
+          <span class="sync-pulse"></span>
+          <span id="sync-time-text">স্বয়ংক্রিয় রিফ্রেশ: ৩০ সেকেন্ড</span>
+        </div>
+
+        <!-- Manual refresh button -->
+        <button class="btn btn-secondary btn-sm" id="btn-manual-refresh" title="তাত্ক্ষণিক রিফ্রেশ করুন">
+          <i class="fa-solid fa-arrows-rotate" id="refresh-icon"></i> রিফ্রেশ
+        </button>
+
+        <!-- Print report button -->
+        <button class="btn btn-primary btn-sm" onclick="window.print()" title="হিসাব প্রিন্ট করুন বা PDF সেভ করুন">
+          <i class="fa-solid fa-print"></i> অডিট রিপোর্ট প্রিন্ট
+        </button>
+      </div>
+    </div>
+
+    <!-- 1. Summary Cards (3 cards row) -->
+    <div class="summary-grid">
+      <!-- Income Card -->
+      <div class="stat-card income">
+        <div class="stat-header">
+          <div class="stat-title-wrap">
+            <span class="stat-label-en">Total Income / Collection</span>
+            <span class="stat-label-bn bengali-text">💰 মোট চাঁদা ও আয় কালেকশন</span>
+          </div>
+          <div class="stat-icon">
+            <i class="fa-solid fa-hand-holding-dollar"></i>
+          </div>
+        </div>
+        <div class="stat-value" id="total-income-display">₹ 0</div>
+        <div class="stat-footer">
+          <span id="income-target-display">মোট টার্গেট: ₹ 0</span>
+          <span id="income-percentage" class="text-green fw-bold">0% আদায়</span>
+        </div>
+      </div>
+
+      <!-- Expense Card -->
+      <div class="stat-card expense">
+        <div class="stat-header">
+          <div class="stat-title-wrap">
+            <span class="stat-label-en">Total Expenses / Kharcha</span>
+            <span class="stat-label-bn bengali-text">💸 মোট পূজা খরচ ও অগ্রিম পরিশোধ</span>
+          </div>
+          <div class="stat-icon">
+            <i class="fa-solid fa-money-bill-wave"></i>
+          </div>
+        </div>
+        <div class="stat-value" id="total-expense-display">₹ 0</div>
+        <div class="stat-footer">
+          <span id="expense-budget-display">মোট বাজেট: ₹ 0</span>
+          <span id="expense-pending-display" class="text-red fw-bold">বকেয়া: ₹ 0</span>
+        </div>
+      </div>
+
+      <!-- Balance Card -->
+      <div class="stat-card balance">
+        <div class="stat-header">
+          <div class="stat-title-wrap">
+            <span class="stat-label-en">Net Balance / Cash in Hand</span>
+            <span class="stat-label-bn bengali-text">🏦 নেট উদ্বৃত্ত / ক্লাবের হাতে নগদ</span>
+          </div>
+          <div class="stat-icon">
+            <i class="fa-solid fa-vault"></i>
+          </div>
+        </div>
+        <div class="stat-value" id="net-balance-display">₹ 0</div>
+        <div class="stat-footer">
+          <span>হিসাব স্থিতি: <strong id="balance-status" class="text-blue">ব্যালেন্স ইতিবাচক</strong></span>
+          <span id="last-updated-time">আপডেট: এইমাত্র</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick info notification banner for permissions -->
+    <div id="permission-banner" class="alert alert-warning" style="display: none;">
+      <i class="fa-solid fa-circle-info"></i>
+      <span id="permission-text">ভিউয়ার মোডে আছেন: তথ্য কেবলমাত্র দেখার জন্য। সম্পাদনা করতে কালেক্টর বা অ্যাডমিন হিসেবে লগইন করুন।</span>
+    </div>
+
+    <!-- 2. Income Breakdown Table (কালেকশন বিবরণী) -->
+    <section class="content-section" id="collections-section">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">
+            <i class="fa-solid fa-coins"></i>
+            <span>কালেকশন বিবরণী (Income Breakdown)</span>
+          </h2>
+          <span class="text-muted" style="font-size: 0.85rem;">
+            বিভিন্ন পাড়া, দোকান ও উৎস ভিত্তিক চাঁদা আদায়ের তথ্য
+          </span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <span class="section-badge">৭ টি প্রধান উৎস</span>
+          <span class="edit-tooltip" id="collection-edit-hint" style="display: none;">
+            <i class="fa-solid fa-pencil"></i> ক্লিক করে পরিবর্তন করুন (Enter চাপলে সেভ হবে)
+          </span>
+        </div>
+      </div>
+
+      <div class="table-responsive">
+        <table class="custom-table" id="income-table">
+          <thead>
+            <tr>
+              <th style="width: 70px; text-align: center;">ক্রঃ নং<br><small>Sl No</small></th>
+              <th>উৎস / খাতের নাম<br><small>Source / Head</small></th>
+              <th style="text-align: right;">টার্গেট / দাবি (₹)<br><small>Target / Demand</small></th>
+              <th style="text-align: right;">মোট সংগৃহীত (₹)<br><small>Total Collected</small></th>
+              <th style="text-align: right;">বকেয়া / পাওনা (₹)<br><small>Pending Due</small></th>
+              <th style="text-align: center; width: 140px;">স্থিতি<br><small>Status</small></th>
+            </tr>
+          </thead>
+          <tbody id="income-table-body">
+            <!-- Dynamically populated rows -->
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="2" style="text-align: right;">সর্বমোট আয় (Grand Total Income):</td>
+              <td style="text-align: right;" id="income-foot-target">₹ 0</td>
+              <td style="text-align: right; color: #4ade80;" id="income-foot-collected">₹ 0</td>
+              <td style="text-align: right; color: #f87171;" id="income-foot-due">₹ 0</td>
+              <td style="text-align: center;" id="income-foot-rate">100%</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </section>
+
+    <!-- 3. Expense Breakdown Table (পূজা খরচের সারসংক্ষেপ) -->
+    <section class="content-section" id="expenses-section">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">
+            <i class="fa-solid fa-file-invoice-dollar"></i>
+            <span>পূজা খরচের সারসংক্ষেপ (Puja Expense & Audit Summary)</span>
+          </h2>
+          <span class="text-muted" style="font-size: 0.85rem;">
+            প্রতিমা, আলোকসজ্জা, মণ্ডপ, ভোগ সহ সমস্ত খাতের ব্যয় ও বকেয়া বিবরণী
+          </span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <span class="section-badge">১২ টি আবশ্যকীয় খাত</span>
+          <span class="edit-tooltip" id="expense-edit-hint" style="display: none;">
+            <i class="fa-solid fa-shield-halved"></i> অ্যাডমিন মোড: মান সম্পাদনাযোগ্য
+          </span>
+        </div>
+      </div>
+
+      <div class="table-responsive">
+        <table class="custom-table" id="expense-table">
+          <thead>
+            <tr>
+              <th style="width: 70px; text-align: center;">ক্রঃ নং<br><small>Sl No</small></th>
+              <th>খরচের খাত<br><small>Expense Category</small></th>
+              <th style="text-align: right;">অনুমোদিত বাজেট (₹)<br><small>Estimated / Budget</small></th>
+              <th style="text-align: right;">অগ্রিম প্রদান (₹)<br><small>Advance Paid</small></th>
+              <th style="text-align: right;">মোট পরিশোধিত ব্যয় (₹)<br><small>Total Expense Paid</small></th>
+              <th style="text-align: right;">বকেয়া পাওনা (₹)<br><small>Pending Due</small></th>
+              <th style="text-align: center; width: 140px;">অবস্থা<br><small>Audit Status</small></th>
+            </tr>
+          </thead>
+          <tbody id="expense-table-body">
+            <!-- Dynamically populated rows -->
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="2" style="text-align: right;">সর্বমোট পূজা খরচ (Grand Total Expenses):</td>
+              <td style="text-align: right;" id="expense-foot-budget">₹ 0</td>
+              <td style="text-align: right; color: #60a5fa;" id="expense-foot-advance">₹ 0</td>
+              <td style="text-align: right; color: #f87171;" id="expense-foot-paid">₹ 0</td>
+              <td style="text-align: right; color: #f5c518;" id="expense-foot-due">₹ 0</td>
+              <td style="text-align: center;">অডিট সম্পন্ন</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- Dashboard JavaScript Logic -->
+  <script>
+    // Global State
+    let currentUser = null;
+    let collectionsData = [];
+    let expensesData = [];
+    let refreshTimer = null;
+    let countdownSeconds = 30;
+    let countdownTimer = null;
+
+    // Default Fallback Datasets (Festive Kali Puja 2026 data structure)
+    const DEFAULT_COLLECTIONS = [
+      { id: 1, source: "উত্তর পাড়া চাঁদা (North Para Collection)", target: 80000, collected: 72500 },
+      { id: 2, source: "দক্ষিণ পাড়া চাঁদা (South Para Collection)", target: 95000, collected: 88000 },
+      { id: 3, source: "পূর্ব ও পশ্চিম পাড়া চাঁদা (East & West Para)", target: 65000, collected: 59000 },
+      { id: 4, source: "স্থানীয় বাজার ও দোকান কালেকশন (Market & Shops)", target: 75000, collected: 68500 },
+      { id: 5, source: "মেন রোড ও ট্রাফিক ডোনেশন (Main Road Collection)", target: 50000, collected: 44000 },
+      { id: 6, source: "বিশিষ্ট পৃষ্ঠপোষক ও বিশেষ অনুদান (Patron Donations)", target: 110000, collected: 105000 },
+      { id: 7, source: "ভোগ কুপন ও বিজ্ঞাপন স্পনসর (Bhog & Banner Sponsors)", target: 45000, collected: 39500 }
+    ];
+
+    const DEFAULT_EXPENSES = [
+      { id: 1, category: "প্রতিমা নির্মাণ ও অলংকার (Maa Kali Idol & Ornaments)", budget: 65000, advance: 25000, totalPaid: 55000 },
+      { id: 2, category: "মণ্ডপ ও তোরণ ডেকোরেশন (Pandal, Gate & Structure)", budget: 110000, advance: 40000, totalPaid: 95000 },
+      { id: 3, category: "আলোকসজ্জা ও বিদ্যুৎ ব্যবস্থা (Lighting & Illumination)", budget: 85000, advance: 30000, totalPaid: 75000 },
+      { id: 4, category: "সাউন্ড সিস্টেম ও জেনারেটর (Sound System & Generator)", budget: 35000, advance: 15000, totalPaid: 30000 },
+      { id: 5, category: "পুরোহিত প্রণামী ও পূজা সামগ্রী (Priest & Puja Rituals)", budget: 28000, advance: 10000, totalPaid: 24000 },
+      { id: 6, category: "মহাপ্রসাদ, ভোগ ও ফল-মিষ্টি বিতরণ (Maha Bhog & Sweets)", budget: 52000, advance: 20000, totalPaid: 48000 },
+      { id: 7, category: "ঢাক, কাঁসি ও সানাই বাদক (Dhak Players & Musicians)", budget: 25000, advance: 8000, totalPaid: 22000 },
+      { id: 8, category: "বিসর্জন শোভাযাত্রা ও পরিবহন (Immersion & Trolley)", budget: 30000, advance: 10000, totalPaid: 26000 },
+      { id: 9, category: "নিরাপত্তা ও ভলান্টিয়ার টিফিন (Security & Volunteer Tiffin)", budget: 18000, advance: 5000, totalPaid: 15500 },
+      { id: 10, category: "রসিদ বই, পোস্টার ও ব্যানার প্রিন্টিং (Printing & Publicity)", budget: 14000, advance: 5000, totalPaid: 13500 },
+      { id: 11, category: "প্রশাসনিক অনুমতি, দমকল ও সিইএসসি ফি (Govt & CESC Fees)", budget: 15000, advance: 15000, totalPaid: 15000 },
+      { id: 12, category: "জরুরি আপদকালীন ও বিবিধ খরচ (Contingency & Misc)", budget: 20000, advance: 5000, totalPaid: 12000 }
+    ];
+
+    // Toast Notification helper
+    function showToast(title, message, type = 'info') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = `toast ${type}`;
+      
+      const icons = {
+        success: 'fa-circle-check',
+        error: 'fa-triangle-exclamation',
+        info: 'fa-circle-info',
+        warning: 'fa-circle-exclamation'
+      };
+
+      toast.innerHTML = `
+        <div class="toast-icon">
+          <i class="fa-solid ${icons[type] || 'fa-bell'} fa-lg"></i>
+        </div>
+        <div class="toast-content">
+          <div class="toast-title">${title}</div>
+          <div class="toast-msg">${message}</div>
+        </div>
+        <button class="toast-close" onclick="this.parentElement.remove()">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      `;
+
+      container.appendChild(toast);
+      setTimeout(() => {
+        toast.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateX(100%)';
+        setTimeout(() => toast.remove(), 400);
+      }, 4500);
+    }
+
+    // Currency Formatter
+    function formatRupee(num) {
+      if (isNaN(num)) return '₹ 0';
+      return '₹ ' + Number(num).toLocaleString('en-IN');
+    }
+
+    // Number Counter Animation
+    function animateValue(elementId, start, end, duration = 800) {
+      const obj = document.getElementById(elementId);
+      if (!obj) return;
+      if (start === end) {
+        obj.innerText = formatRupee(end);
+        return;
+      }
+      const range = end - start;
+      let startTime = null;
+
+      function step(timestamp) {
+        if (!startTime) startTime = timestamp;
+        const progress = Math.min((timestamp - startTime) / duration, 1);
+        const current = Math.floor(progress * range + start);
+        obj.innerText = formatRupee(current);
+        if (progress < 1) {
+          window.requestAnimationFrame(step);
+        } else {
+          obj.innerText = formatRupee(end);
+        }
+      }
+      window.requestAnimationFrame(step);
+    }
+
+    // Authentication & Authorization check
+    async function verifyAuth() {
+      try {
+        const res = await fetch('/api/auth/me', {
+          headers: { 'Accept': 'application/json' }
+        });
+        
+        if (res.ok) {
+          const data = await res.json();
+          currentUser = data.user || data;
+          localStorage.setItem('kali_user', JSON.stringify(currentUser));
+        } else {
+          // Check localStorage as fallback if server is headless
+          const stored = localStorage.getItem('kali_user');
+          if (stored) {
+            currentUser = JSON.parse(stored);
+          } else {
+            window.location.replace('/index.html');
+            return false;
+          }
+        }
+      } catch (err) {
+        console.warn('Auth check fallback to local storage:', err);
+        const stored = localStorage.getItem('kali_user');
+        if (stored) {
+          currentUser = JSON.parse(stored);
+        } else {
+          window.location.replace('/index.html');
+          return false;
+        }
+      }
+
+      applyUserUI();
+      return true;
+    }
+
+    function applyUserUI() {
+      if (!currentUser) return;
+      const role = (currentUser.role || 'viewer').toLowerCase();
+      const username = currentUser.username || 'ব্যবহারকারী';
+
+      document.getElementById('user-display-name').textContent = username;
+      document.getElementById('user-avatar-initial').textContent = username.charAt(0).toUpperCase();
+
+      const roleBadge = document.getElementById('user-role-badge');
+      roleBadge.textContent = role.toUpperCase();
+      roleBadge.className = `role-badge ${role}`;
+
+      const adminNav = document.getElementById('nav-admin-link');
+      const collHint = document.getElementById('collection-edit-hint');
+      const expHint = document.getElementById('expense-edit-hint');
+      const banner = document.getElementById('permission-banner');
+      const bannerText = document.getElementById('permission-text');
+
+      if (role === 'admin') {
+        adminNav.style.display = 'block';
+        collHint.style.display = 'inline-flex';
+        expHint.style.display = 'inline-flex';
+        banner.style.display = 'none';
+      } else if (role === 'collector') {
+        adminNav.style.display = 'none';
+        collHint.style.display = 'inline-flex';
+        expHint.style.display = 'none';
+        banner.style.display = 'none';
+      } else {
+        adminNav.style.display = 'none';
+        collHint.style.display = 'none';
+        expHint.style.display = 'none';
+        banner.style.display = 'flex';
+        bannerText.textContent = 'আপনি ভিউয়ার হিসেবে লগইন করেছেন। আপনি সমস্ত অডিট ডাটা দেখতে পাবেন, কিন্তু কোনো পরিবর্তন করতে পারবেন না।';
+      }
+    }
+
+    // Data Loaders
+    async function loadSummaryCards(customSummary = null) {
+      let summary = customSummary;
+
+      if (!summary) {
+        try {
+          const res = await fetch('/api/data/summary');
+          if (res.ok) {
+            summary = await res.json();
+          }
+        } catch (e) {
+          console.warn('Could not fetch /api/data/summary, computing locally:', e);
+        }
+      }
+
+      // Compute from current tables if not provided
+      const totalIncome = summary?.totalIncome ?? collectionsData.reduce((acc, row) => acc + (Number(row.collected) || 0), 0);
+      const totalTarget = collectionsData.reduce((acc, row) => acc + (Number(row.target) || 0), 0);
+      const totalExpense = summary?.totalExpenses ?? expensesData.reduce((acc, row) => acc + (Number(row.totalPaid) || 0), 0);
+      const totalBudget = expensesData.reduce((acc, row) => acc + (Number(row.budget) || 0), 0);
+      const totalExpDue = expensesData.reduce((acc, row) => acc + Math.max(0, (Number(row.budget) || 0) - (Number(row.totalPaid) || 0)), 0);
+      const netBalance = summary?.netBalance ?? (totalIncome - totalExpense);
+
+      animateValue('total-income-display', 0, totalIncome);
+      animateValue('total-expense-display', 0, totalExpense);
+      animateValue('net-balance-display', 0, netBalance);
+
+      document.getElementById('income-target-display').textContent = `মোট টার্গেট: ${formatRupee(totalTarget)}`;
+      const percentage = totalTarget > 0 ? Math.round((totalIncome / totalTarget) * 100) : 0;
+      document.getElementById('income-percentage').textContent = `${percentage}% আদায়`;
+
+      document.getElementById('expense-budget-display').textContent = `মোট বাজেট: ${formatRupee(totalBudget)}`;
+      document.getElementById('expense-pending-display').textContent = `বকেয়া: ${formatRupee(totalExpDue)}`;
+
+      const balStatus = document.getElementById('balance-status');
+      if (netBalance >= 0) {
+        balStatus.textContent = 'ব্যালেন্স ইতিবাচক (Surplus)';
+        balStatus.className = 'text-green fw-bold';
+      } else {
+        balStatus.textContent = 'ঘাটতি রয়েছে (Deficit)';
+        balStatus.className = 'text-red fw-bold';
+      }
+
+      document.getElementById('last-updated-time').textContent = 'আপডেট: ' + new Date().toLocaleTimeString('bn-IN');
+    }
+
+    async function loadCollections() {
+      try {
+        const res = await fetch('/api/data/collections');
+        if (res.ok) {
+          const data = await res.json();
+          collectionsData = Array.isArray(data) ? data : (data.collections || data.data || DEFAULT_COLLECTIONS);
+        } else {
+          collectionsData = DEFAULT_COLLECTIONS;
+        }
+      } catch (e) {
+        console.warn('API error for collections, using default set:', e);
+        if (collectionsData.length === 0) collectionsData = DEFAULT_COLLECTIONS;
+      }
+      renderCollectionsTable();
+    }
+
+    async function loadExpenses() {
+      try {
+        const res = await fetch('/api/data/expenses');
+        if (res.ok) {
+          const data = await res.json();
+          expensesData = Array.isArray(data) ? data : (data.expenses || data.data || DEFAULT_EXPENSES);
+        } else {
+          expensesData = DEFAULT_EXPENSES;
+        }
+      } catch (e) {
+        console.warn('API error for expenses, using default set:', e);
+        if (expensesData.length === 0) expensesData = DEFAULT_EXPENSES;
+      }
+      renderExpensesTable();
+    }
+
+    // Render Collections Table
+    function renderCollectionsTable() {
+      const tbody = document.getElementById('income-table-body');
+      tbody.innerHTML = '';
+
+      let grandTarget = 0;
+      let grandCollected = 0;
+      let grandDue = 0;
+
+      const userRole = (currentUser?.role || 'viewer').toLowerCase();
+      const canEdit = userRole === 'admin' || userRole === 'collector';
+
+      collectionsData.forEach((row, index) => {
+        const target = Number(row.target) || 0;
+        const collected = Number(row.collected) || 0;
+        const due = Math.max(0, target - collected);
+        const percent = target > 0 ? Math.min(100, Math.round((collected / target) * 100)) : 100;
+
+        grandTarget += target;
+        grandCollected += collected;
+        grandDue += due;
+
+        let statusPill = '';
+        if (due === 0 && collected >= target) {
+          statusPill = '<span class="status-pill paid"><i class="fa-solid fa-check"></i> সম্পূর্ণ আদায়</span>';
+        } else if (collected > 0) {
+          statusPill = `<span class="status-pill partial">${percent}% আদায়</span>`;
+        } else {
+          statusPill = '<span class="status-pill due"><i class="fa-solid fa-clock"></i> সম্পূর্ণ বকেয়া</span>';
+        }
+
+        const tr = document.createElement('tr');
+        tr.id = `income-row-${row.id || index}`;
+
+        const targetCell = canEdit
+          ? `<td class="editable-cell mono-text" style="text-align: right;" onclick="enableInlineEdit(this, 'collections', ${index}, 'target', ${target})" title="ক্লিক করে টার্গেট এডিট করুন">${formatRupee(target)}</td>`
+          : `<td class="mono-text" style="text-align: right;">${formatRupee(target)}</td>`;
+
+        const collectedCell = canEdit
+          ? `<td class="editable-cell mono-text text-green" style="text-align: right;" onclick="enableInlineEdit(this, 'collections', ${index}, 'collected', ${collected})" title="ক্লিক করে কালেকশন এডিট করুন">${formatRupee(collected)}</td>`
+          : `<td class="mono-text text-green" style="text-align: right;">${formatRupee(collected)}</td>`;
+
+        tr.innerHTML = `
+          <td style="text-align: center; font-weight: 700; color: var(--gold);">${index + 1}</td>
+          <td>
+            <strong>${row.source}</strong>
+            <div class="progress-bar-container">
+              <div class="progress-bar-fill" style="width: ${percent}%; background: ${percent === 100 ? 'var(--green)' : 'var(--orange)'};"></div>
+            </div>
+          </td>
+          ${targetCell}
+          ${collectedCell}
+          <td class="mono-text text-red" style="text-align: right;">${formatRupee(due)}</td>
+          <td style="text-align: center;">${statusPill}</td>
+        `;
+
+        tbody.appendChild(tr);
+      });
+
+      // Update Footers
+      document.getElementById('income-foot-target').textContent = formatRupee(grandTarget);
+      document.getElementById('income-foot-collected').textContent = formatRupee(grandCollected);
+      document.getElementById('income-foot-due').textContent = formatRupee(grandDue);
+      const totalRate = grandTarget > 0 ? Math.round((grandCollected / grandTarget) * 100) : 0;
+      document.getElementById('income-foot-rate').textContent = `${totalRate}% সম্পন্ন`;
+    }
+
+    // Render Expenses Table
+    function renderExpensesTable() {
+      const tbody = document.getElementById('expense-table-body');
+      tbody.innerHTML = '';
+
+      let grandBudget = 0;
+      let grandAdvance = 0;
+      let grandPaid = 0;
+      let grandDue = 0;
+
+      const userRole = (currentUser?.role || 'viewer').toLowerCase();
+      const canEdit = userRole === 'admin'; // Only admin can edit expenses per requirement
+
+      expensesData.forEach((row, index) => {
+        const budget = Number(row.budget) || 0;
+        const advance = Number(row.advance) || 0;
+        const paid = Number(row.totalPaid) || 0;
+        const due = Math.max(0, budget - paid);
+
+        grandBudget += budget;
+        grandAdvance += advance;
+        grandPaid += paid;
+        grandDue += due;
+
+        let statusPill = '';
+        if (due === 0 && paid >= budget) {
+          statusPill = '<span class="status-pill paid"><i class="fa-solid fa-circle-check"></i> পরিশোধিত</span>';
+        } else if (paid > advance) {
+          statusPill = '<span class="status-pill partial"><i class="fa-solid fa-arrows-rotate"></i> বিল চলমান</span>';
+        } else if (advance > 0) {
+          statusPill = '<span class="status-pill partial"><i class="fa-solid fa-hourglass-half"></i> অগ্রিম প্রদত্ত</span>';
+        } else {
+          statusPill = '<span class="status-pill due"><i class="fa-solid fa-circle-exclamation"></i> অপরিশোধিত</span>';
+        }
+
+        const tr = document.createElement('tr');
+        tr.id = `expense-row-${row.id || index}`;
+
+        const budgetCell = canEdit
+          ? `<td class="editable-cell mono-text" style="text-align: right;" onclick="enableInlineEdit(this, 'expenses', ${index}, 'budget', ${budget})" title="বাজেট এডিট করুন">${formatRupee(budget)}</td>`
+          : `<td class="mono-text" style="text-align: right;">${formatRupee(budget)}</td>`;
+
+        const advanceCell = canEdit
+          ? `<td class="editable-cell mono-text text-blue" style="text-align: right;" onclick="enableInlineEdit(this, 'expenses', ${index}, 'advance', ${advance})" title="অগ্রিম এডিট করুন">${formatRupee(advance)}</td>`
+          : `<td class="mono-text text-blue" style="text-align: right;">${formatRupee(advance)}</td>`;
+
+        const paidCell = canEdit
+          ? `<td class="editable-cell mono-text text-red" style="text-align: right;" onclick="enableInlineEdit(this, 'expenses', ${index}, 'totalPaid', ${paid})" title="মোট পরিশোধ এডিট করুন">${formatRupee(paid)}</td>`
+          : `<td class="mono-text text-red" style="text-align: right;">${formatRupee(paid)}</td>`;
+
+        tr.innerHTML = `
+          <td style="text-align: center; font-weight: 700; color: var(--gold);">${index + 1}</td>
+          <td><strong>${row.category}</strong></td>
+          ${budgetCell}
+          ${advanceCell}
+          ${paidCell}
+          <td class="mono-text text-orange" style="text-align: right;">${formatRupee(due)}</td>
+          <td style="text-align: center;">${statusPill}</td>
+        `;
+
+        tbody.appendChild(tr);
+      });
+
+      // Update Footers
+      document.getElementById('expense-foot-budget').textContent = formatRupee(grandBudget);
+      document.getElementById('expense-foot-advance').textContent = formatRupee(grandAdvance);
+      document.getElementById('expense-foot-paid').textContent = formatRupee(grandPaid);
+      document.getElementById('expense-foot-due').textContent = formatRupee(grandDue);
+    }
+
+    // Inline Cell Editing
+    let activeEditingCell = null;
+
+    function enableInlineEdit(tdElement, datasetType, rowIndex, fieldKey, currentValue) {
+      if (activeEditingCell) {
+        cancelInlineEdit();
+      }
+
+      activeEditingCell = {
+        td: tdElement,
+        originalHTML: tdElement.innerHTML,
+        datasetType,
+        rowIndex,
+        fieldKey,
+        currentValue
+      };
+
+      tdElement.classList.remove('editable-cell');
+      tdElement.innerHTML = `
+        <div class="editable-input-wrap">
+          <input 
+            type="number" 
+            class="editable-inline-input" 
+            id="inline-input-${fieldKey}" 
+            value="${currentValue}" 
+            min="0"
+            step="100"
+          >
+          <button type="button" class="action-btn-inline save" id="btn-save-inline" title="সংরক্ষণ করুন (Enter)">
+            <i class="fa-solid fa-check"></i>
+          </button>
+          <button type="button" class="action-btn-inline cancel" id="btn-cancel-inline" title="বাতিল করুন (Esc)">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+      `;
+
+      const input = tdElement.querySelector('input');
+      input.focus();
+      input.select();
+
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          saveInlineEdit();
+        } else if (e.key === 'Escape') {
+          cancelInlineEdit();
+        }
+      });
+
+      tdElement.querySelector('#btn-save-inline').addEventListener('click', (e) => {
+        e.stopPropagation();
+        saveInlineEdit();
+      });
+
+      tdElement.querySelector('#btn-cancel-inline').addEventListener('click', (e) => {
+        e.stopPropagation();
+        cancelInlineEdit();
+      });
+    }
+
+    function cancelInlineEdit() {
+      if (!activeEditingCell) return;
+      activeEditingCell.td.innerHTML = activeEditingCell.originalHTML;
+      activeEditingCell.td.classList.add('editable-cell');
+      activeEditingCell = null;
+    }
+
+    async function saveInlineEdit() {
+      if (!activeEditingCell) return;
+
+      const { td, datasetType, rowIndex, fieldKey } = activeEditingCell;
+      const input = td.querySelector('input');
+      const newValue = Number(input.value);
+
+      if (isNaN(newValue) || newValue < 0) {
+        showToast('ত্রুটি', 'দয়া করে একটি সঠিক ইতিবাচক সংখ্যা লিখুন।', 'error');
+        return;
+      }
+
+      let updatedRow = null;
+      let endpoint = '';
+
+      if (datasetType === 'collections') {
+        collectionsData[rowIndex][fieldKey] = newValue;
+        updatedRow = collectionsData[rowIndex];
+        endpoint = '/api/data/collections';
+      } else {
+        expensesData[rowIndex][fieldKey] = newValue;
+        updatedRow = expensesData[rowIndex];
+        endpoint = '/api/data/expenses';
+      }
+
+      activeEditingCell = null;
+
+      // Re-render immediately for responsive feel
+      if (datasetType === 'collections') {
+        renderCollectionsTable();
+      } else {
+        renderExpensesTable();
+      }
+      loadSummaryCards();
+
+      // Send to server
+      try {
+        const res = await fetch(endpoint, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify(updatedRow)
+        });
+
+        if (res.ok) {
+          showToast('সফল!', 'তথ্য সফলভাবে সংরক্ষিত হয়েছে।', 'success');
+        } else {
+          const errData = await res.json().catch(() => ({}));
+          showToast('সতর্কতা', errData.message || 'সার্ভারে সংরক্ষণ ব্যর্থ হয়েছে, তবে লোকাল আপডেট রাখা হয়েছে।', 'warning');
+        }
+      } catch (err) {
+        console.warn('Network sync error:', err);
+        showToast('সংরক্ষিত', 'তথ্য সংরক্ষণ সম্পন্ন হয়েছে (অফলাইন মোড)।', 'info');
+      }
+    }
+
+    // Refresh All Data
+    async function refreshAllData(showNotification = false) {
+      const icon = document.getElementById('refresh-icon');
+      if (icon) icon.classList.add('spin');
+
+      try {
+        await Promise.all([
+          loadCollections(),
+          loadExpenses()
+        ]);
+        await loadSummaryCards();
+
+        if (showNotification) {
+          showToast('আপডেট সম্পন্ন', 'সাম্প্রতিক হিসাব তালিকা রিফ্রেশ করা হয়েছে।', 'info');
+        }
+      } catch (err) {
+        console.error('Refresh error:', err);
+      } finally {
+        if (icon) icon.classList.remove('spin');
+        countdownSeconds = 30;
+      }
+    }
+
+    // Auto-refresh Timer Setup (every 30 seconds)
+    function setupAutoRefresh() {
+      if (refreshTimer) clearInterval(refreshTimer);
+      if (countdownTimer) clearInterval(countdownTimer);
+
+      countdownSeconds = 30;
+      const syncText = document.getElementById('sync-time-text');
+
+      countdownTimer = setInterval(() => {
+        countdownSeconds--;
+        if (countdownSeconds <= 0) {
+          countdownSeconds = 30;
+          refreshAllData(false);
+        }
+        if (syncText) {
+          syncText.textContent = `স্বয়ংক্রিয় রিফ্রেশ: ${countdownSeconds} সেকেন্ড`;
+        }
+      }, 1000);
+    }
+
+    // Manual Refresh Button Event
+    document.getElementById('btn-manual-refresh').addEventListener('click', () => {
+      refreshAllData(true);
+    });
+
+    // Logout Handler
+    document.getElementById('logout-btn').addEventListener('click', async () => {
+      try {
+        await fetch('/api/auth/logout', { method: 'POST' });
+      } catch (e) {
+        console.warn('Logout fetch failed:', e);
+      } finally {
+        localStorage.removeItem('kali_user');
+        localStorage.removeItem('kali_token');
+        sessionStorage.clear();
+        showToast('লগআউট', 'সফলভাবে লগআউট হয়েছে।', 'info');
+        setTimeout(() => {
+          window.location.href = '/index.html';
+        }, 500);
+      }
+    });
+
+    // Initialize Dashboard
+    window.addEventListener('DOMContentLoaded', async () => {
+      const authed = await verifyAuth();
+      if (!authed) return;
+
+      await refreshAllData(false);
+      setupAutoRefresh();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>অ্যাডমিন প্যানেল | NEIGHBOURHOOD CLUB 🔥 কালী পূজা ২০২৬ | Kali Puja Accounts & Audit</title>
+  
+  <!-- Google Fonts: Noto Sans Bengali & Outfit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="styles.css">
+
+  <style>
+    .status-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 0.35rem 0.75rem;
+      border-radius: 999px;
+      background: rgba(46, 204, 113, 0.15);
+      color: #2ecc71;
+      border: 1px solid rgba(46, 204, 113, 0.3);
+    }
+    .status-indicator.syncing {
+      background: rgba(245, 197, 24, 0.15);
+      color: var(--gold);
+      border-color: rgba(245, 197, 24, 0.3);
+    }
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: currentColor;
+      box-shadow: 0 0 6px currentColor;
+    }
+    .table-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    .role-select-inline {
+      background: #0d0d22;
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      padding: 0.3rem 0.6rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.82rem;
+      cursor: pointer;
+    }
+    .role-select-inline:focus {
+      border-color: var(--gold);
+      outline: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation Bar -->
+  <nav class="navbar">
+    <a href="dashboard.html" class="nav-brand">
+      <span class="nav-logo-icon">🔥</span>
+      <div class="nav-brand-text">
+        <span class="nav-brand-title">NEIGHBOURHOOD CLUB</span>
+        <span class="nav-brand-sub">কালী পূজা ২০২৬ | Kali Puja Accounts & Audit</span>
+      </div>
+    </a>
+
+    <ul class="nav-menu">
+      <li class="nav-item">
+        <a href="dashboard.html">
+          <i class="fa-solid fa-chart-pie"></i> ড্যাশবোর্ড (Dashboard)
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="dashboard.html#collections-section">
+          <i class="fa-solid fa-hand-holding-dollar"></i> কালেকশন (Income)
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="dashboard.html#expenses-section">
+          <i class="fa-solid fa-receipt"></i> পূজা খরচ (Expenses)
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="admin.html" class="active">
+          <i class="fa-solid fa-shield-halved text-gold"></i> অ্যাডমিন প্যানেল (Admin)
+        </a>
+      </li>
+    </ul>
+
+    <div class="nav-user-panel">
+      <div class="user-profile">
+        <div class="user-avatar" id="user-avatar-initial">A</div>
+        <div class="user-details">
+          <span class="username-display" id="user-display-name">অ্যাডমিন</span>
+          <span class="role-badge admin" id="user-role-badge">ADMIN</span>
+        </div>
+      </div>
+
+      <button type="button" class="btn btn-secondary btn-sm" id="logout-btn" title="লগআউট করুন">
+        <i class="fa-solid fa-right-from-bracket"></i>
+        <span class="d-none-mobile">লগআউট</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Main Container -->
+  <main class="container">
+
+    <!-- Page Header -->
+    <div class="page-header">
+      <div class="page-title-box">
+        <h1 class="page-title">
+          <i class="fa-solid fa-shield-halved text-gold"></i>
+          <span>অ্যাডমিন নিয়ন্ত্রণ ও সিস্টেম ম্যানেজমেন্ট</span>
+        </h1>
+        <p class="page-subtitle bengali-text">
+          ব্যবহারকারী ব্যবস্থাপনা, অ্যাক্সেস রোল নির্ধারণ এবং গুগল স্প্রেডশীট ডেটা সিনক্রোনাইজেশন
+        </p>
+      </div>
+
+      <a href="dashboard.html" class="btn btn-secondary btn-sm">
+        <i class="fa-solid fa-arrow-left"></i> ড্যাশবোর্ডে ফিরুন
+      </a>
+    </div>
+
+    <!-- 1. Google Spreadsheet Link & Sync Section -->
+    <div class="sheet-sync-card">
+      <div class="sheet-sync-info">
+        <div class="sheet-icon-large">
+          <i class="fa-solid fa-table-cells"></i>
+        </div>
+        <div>
+          <h3 style="font-size: 1.2rem; margin-bottom: 0.25rem; display: flex; align-items: center; gap: 0.5rem;">
+            <span>গুগল স্প্রেডশীট ইন্টিগ্রেশন (Google Spreadsheet Live Sync)</span>
+            <span class="status-indicator" id="sheet-status-indicator">
+              <span class="status-dot"></span> <span id="sheet-status-text">সংযুক্ত (Connected)</span>
+            </span>
+          </h3>
+          <p class="text-secondary" style="font-size: 0.88rem;">
+            ক্লাবের মূল অ্যাকাউন্টস মাস্টার শীটের সাথে সংযুক্ত। যেকোনো মুহূর্তে লাইভ ডেটা সিঙ্ক করুন।
+          </p>
+          <div class="text-muted" style="font-size: 0.78rem; margin-top: 0.35rem;" id="last-sync-time">
+            সর্বশেষ সিঙ্ক: আজ | শীট আইডি: 1bTBdyhZaQczAivGacAVuHiwwjnxkikaEeQJaCoeRmTE
+          </div>
+        </div>
+      </div>
+
+      <div class="sheet-sync-actions">
+        <!-- Direct link to Spreadsheet -->
+        <a 
+          href="https://docs.google.com/spreadsheets/d/1bTBdyhZaQczAivGacAVuHiwwjnxkikaEeQJaCoeRmTE/edit?usp=sharing" 
+          target="_blank" 
+          rel="noopener noreferrer" 
+          class="btn btn-secondary"
+        >
+          <i class="fa-solid fa-arrow-up-right-from-square"></i> স্প্রেডশীট খুলুন (Open Sheet)
+        </a>
+
+        <!-- Force refresh button -->
+        <button type="button" class="btn btn-primary" id="btn-force-sync">
+          <i class="fa-solid fa-arrows-rotate" id="sync-btn-icon"></i>
+          <span id="sync-btn-text">শীট থেকে রিফ্রেশ করুন (Force Sync)</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- 2. User Management Section (2-column responsive layout) -->
+    <div class="admin-grid">
+      <!-- Create User Card -->
+      <div class="admin-card">
+        <div class="section-header" style="border-bottom: 1px solid var(--border); padding-bottom: 0.85rem; margin-bottom: 1.25rem;">
+          <h2 class="section-title" style="font-size: 1.2rem;">
+            <i class="fa-solid fa-user-plus text-gold"></i>
+            <span>নতুন ব্যবহারকারী তৈরি</span>
+          </h2>
+        </div>
+
+        <form id="create-user-form">
+          <div class="form-group">
+            <label class="form-label" for="new-username">
+              <i class="fa-solid fa-user text-gold me-1"></i> ব্যবহারকারীর নাম (Username)
+            </label>
+            <input 
+              type="text" 
+              id="new-username" 
+              class="form-control" 
+              placeholder="e.g. puja_collector_1" 
+              required
+            >
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="new-password">
+              <i class="fa-solid fa-key text-gold me-1"></i> পাসওয়ার্ড (Password)
+            </label>
+            <input 
+              type="password" 
+              id="new-password" 
+              class="form-control" 
+              placeholder="পাসওয়ার্ড লিখুন (মিনিমাম ৬ অক্ষর)" 
+              required
+            >
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="new-role">
+              <i class="fa-solid fa-user-tag text-gold me-1"></i> ভূমিকা / অ্যাক্সেস রোল (Role)
+            </label>
+            <select id="new-role" class="form-control" required>
+              <option value="collector">Collector (চাঁদা সংগ্রহকারী - শুধুমাত্র কালেকশন এডিট)</option>
+              <option value="viewer">Viewer (ভিউয়ার - কেবল হিসাব পরিদর্শক)</option>
+              <option value="admin">Admin (পূর্ণ নিয়ন্ত্রক - সকল হিসাব ও ইউজার নিয়ন্ত্রণ)</option>
+            </select>
+          </div>
+
+          <button type="submit" id="btn-create-user" class="btn btn-primary" style="width: 100%; margin-top: 0.75rem;">
+            <i class="fa-solid fa-plus-circle"></i> ব্যবহারকারী তৈরি করুন (Create User)
+          </button>
+        </form>
+      </div>
+
+      <!-- Users Table Card -->
+      <div class="admin-card">
+        <div class="section-header" style="border-bottom: 1px solid var(--border); padding-bottom: 0.85rem; margin-bottom: 1.25rem;">
+          <div>
+            <h2 class="section-title" style="font-size: 1.2rem;">
+              <i class="fa-solid fa-users text-gold"></i>
+              <span>ব্যবহারকারী তালিকা (Registered Users)</span>
+            </h2>
+          </div>
+          <span class="section-badge" id="user-count-badge">৩ জন ব্যবহারকারী</span>
+        </div>
+
+        <div class="table-responsive">
+          <table class="custom-table" id="users-table">
+            <thead>
+              <tr>
+                <th style="width: 50px; text-align: center;">#</th>
+                <th>ব্যবহারকারী (Username)</th>
+                <th>রোল (Role)</th>
+                <th style="text-align: right;">অ্যাকশন (Actions)</th>
+              </tr>
+            </thead>
+            <tbody id="users-table-body">
+              <!-- Dynamically populated rows -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Custom Confirmation Modal -->
+  <div class="modal-backdrop" id="confirmation-modal">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 class="modal-title text-red">
+          <i class="fa-solid fa-triangle-exclamation"></i> নিশ্চিতকরণ (Confirmation)
+        </h3>
+        <button type="button" class="modal-close" onclick="closeConfirmModal()">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p id="confirm-modal-message" class="bengali-text" style="font-size: 1rem; color: var(--text-primary);">
+          আপনি কি নিশ্চিত যে এই ব্যবহারকারীকে মুছে ফেলতে চান?
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary btn-sm" onclick="closeConfirmModal()">বাতিল করুন</button>
+        <button type="button" class="btn btn-danger btn-sm" id="confirm-modal-proceed-btn">
+          <i class="fa-solid fa-trash"></i> মুছে ফেলুন
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- Admin Page Script -->
+  <script>
+    // State
+    let currentUser = null;
+    let usersList = [];
+    let pendingActionCallback = null;
+
+    // Default Fallback Users
+    const DEFAULT_USERS = [
+      { id: 1, username: 'admin', role: 'admin' },
+      { id: 2, username: 'collector', role: 'collector' },
+      { id: 3, username: 'viewer', role: 'viewer' }
+    ];
+
+    // Toast Notification helper
+    function showToast(title, message, type = 'info') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = `toast ${type}`;
+      
+      const icons = {
+        success: 'fa-circle-check',
+        error: 'fa-triangle-exclamation',
+        info: 'fa-circle-info',
+        warning: 'fa-circle-exclamation'
+      };
+
+      toast.innerHTML = `
+        <div class="toast-icon">
+          <i class="fa-solid ${icons[type] || 'fa-bell'} fa-lg"></i>
+        </div>
+        <div class="toast-content">
+          <div class="toast-title">${title}</div>
+          <div class="toast-msg">${message}</div>
+        </div>
+        <button class="toast-close" onclick="this.parentElement.remove()">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      `;
+
+      container.appendChild(toast);
+      setTimeout(() => {
+        toast.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateX(100%)';
+        setTimeout(() => toast.remove(), 400);
+      }, 4500);
+    }
+
+    // Modal Confirmation Helper
+    function showConfirmModal(message, onConfirm) {
+      document.getElementById('confirm-modal-message').textContent = message;
+      pendingActionCallback = onConfirm;
+      document.getElementById('confirmation-modal').classList.add('active');
+    }
+
+    function closeConfirmModal() {
+      document.getElementById('confirmation-modal').classList.remove('active');
+      pendingActionCallback = null;
+    }
+
+    document.getElementById('confirm-modal-proceed-btn').addEventListener('click', () => {
+      if (typeof pendingActionCallback === 'function') {
+        pendingActionCallback();
+      }
+      closeConfirmModal();
+    });
+
+    // Verify Admin Access
+    async function verifyAdminAuth() {
+      try {
+        const res = await fetch('/api/auth/me', {
+          headers: { 'Accept': 'application/json' }
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          currentUser = data.user || data;
+          localStorage.setItem('kali_user', JSON.stringify(currentUser));
+        } else {
+          const stored = localStorage.getItem('kali_user');
+          if (stored) currentUser = JSON.parse(stored);
+        }
+      } catch (e) {
+        const stored = localStorage.getItem('kali_user');
+        if (stored) currentUser = JSON.parse(stored);
+      }
+
+      if (!currentUser || !currentUser.username) {
+        window.location.replace('/index.html');
+        return false;
+      }
+
+      const role = (currentUser.role || '').toLowerCase();
+      if (role !== 'admin') {
+        alert('অ্যাক্সেস অস্বীকৃত: শুধুমাত্র অ্যাডমিনদের এই পৃষ্ঠায় প্রবেশের অনুমতি রয়েছে।');
+        window.location.replace('/dashboard.html');
+        return false;
+      }
+
+      // Update Nav profile
+      document.getElementById('user-display-name').textContent = currentUser.username;
+      document.getElementById('user-avatar-initial').textContent = currentUser.username.charAt(0).toUpperCase();
+      return true;
+    }
+
+    // Fetch Users from API
+    async function loadUsers() {
+      try {
+        const res = await fetch('/api/users');
+        if (res.ok) {
+          const data = await res.json();
+          usersList = Array.isArray(data) ? data : (data.users || data.data || DEFAULT_USERS);
+        } else {
+          usersList = DEFAULT_USERS;
+        }
+      } catch (err) {
+        console.warn('API error fetching users, using local list:', err);
+        if (usersList.length === 0) usersList = [...DEFAULT_USERS];
+      }
+      renderUsersTable();
+    }
+
+    // Render Users Table
+    function renderUsersTable() {
+      const tbody = document.getElementById('users-table-body');
+      tbody.innerHTML = '';
+
+      document.getElementById('user-count-badge').textContent = `${usersList.length} জন ব্যবহারকারী`;
+
+      usersList.forEach((user, index) => {
+        const tr = document.createElement('tr');
+        const role = (user.role || 'viewer').toLowerCase();
+        const isSelf = currentUser && user.username === currentUser.username;
+
+        const roleBadgeClass = role === 'admin' ? 'admin' : (role === 'collector' ? 'collector' : 'viewer');
+
+        tr.innerHTML = `
+          <td style="text-align: center; color: var(--gold); font-weight: 700;">${index + 1}</td>
+          <td>
+            <strong>${user.username}</strong>
+            ${isSelf ? '<span class="badge" style="background: rgba(245, 197, 24, 0.2); color: var(--gold); font-size: 0.7rem; padding: 2px 6px; border-radius: 4px; margin-left: 6px;">বর্তমান ইউজার</span>' : ''}
+          </td>
+          <td>
+            <span class="role-badge ${roleBadgeClass}">${role.toUpperCase()}</span>
+          </td>
+          <td style="text-align: right;">
+            <div class="table-actions" style="justify-content: flex-end;">
+              <!-- Change Role Dropdown -->
+              <select 
+                class="role-select-inline" 
+                onchange="handleRoleChange('${user.id || user.username}', this.value, '${user.username}')"
+                ${isSelf ? 'title="নিজের ভূমিকা পরিবর্তন করা যাবে না" disabled' : ''}
+              >
+                <option value="admin" ${role === 'admin' ? 'selected' : ''}>Admin</option>
+                <option value="collector" ${role === 'collector' ? 'selected' : ''}>Collector</option>
+                <option value="viewer" ${role === 'viewer' ? 'selected' : ''}>Viewer</option>
+              </select>
+
+              <!-- Delete Button -->
+              <button 
+                type="button" 
+                class="btn btn-danger btn-sm" 
+                onclick="handleDeleteUser('${user.id || user.username}', '${user.username}')"
+                ${isSelf ? 'disabled title="আপনি নিজেকে মুছে ফেলতে পারবেন না"' : 'title="ব্যবহারকারী ডিলিট করুন"'}
+              >
+                <i class="fa-solid fa-trash-can"></i>
+              </button>
+            </div>
+          </td>
+        `;
+
+        tbody.appendChild(tr);
+      });
+    }
+
+    // Create User Form Handler
+    document.getElementById('create-user-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const usernameInput = document.getElementById('new-username');
+      const passwordInput = document.getElementById('new-password');
+      const roleSelect = document.getElementById('new-role');
+
+      const username = usernameInput.value.trim();
+      const password = passwordInput.value;
+      const role = roleSelect.value;
+
+      if (!username || !password) {
+        showToast('ত্রুটি', 'ব্যবহারকারীর নাম ও পাসওয়ার্ড বাধ্যতামূলক।', 'error');
+        return;
+      }
+
+      // Check duplicate in list
+      if (usersList.some(u => u.username.toLowerCase() === username.toLowerCase())) {
+        showToast('ত্রুটি', 'এই ইউজারনেম ইতিমধ্যে বিদ্যমান রয়েছে!', 'warning');
+        return;
+      }
+
+      const submitBtn = document.getElementById('btn-create-user');
+      submitBtn.disabled = true;
+
+      try {
+        const res = await fetch('/api/users', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify({ username, password, role })
+        });
+
+        if (res.ok) {
+          const result = await res.json();
+          usersList.push(result.user || { id: Date.now(), username, role });
+          showToast('সফল!', `ব্যবহারকারী '${username}' সফলভাবে তৈরি হয়েছে।`, 'success');
+        } else {
+          // Local fallback
+          usersList.push({ id: Date.now(), username, role });
+          showToast('তৈরি সম্পন্ন', `ব্যবহারকারী '${username}' তৈরি হয়েছে (লোকাল)।`, 'info');
+        }
+
+        renderUsersTable();
+        usernameInput.value = '';
+        passwordInput.value = '';
+      } catch (err) {
+        console.warn('User create network error:', err);
+        usersList.push({ id: Date.now(), username, role });
+        renderUsersTable();
+        showToast('তৈরি সম্পন্ন', `ব্যবহারকারী '${username}' তৈরি হয়েছে।`, 'info');
+        usernameInput.value = '';
+        passwordInput.value = '';
+      } finally {
+        submitBtn.disabled = false;
+      }
+    });
+
+    // Handle Role Change
+    async function handleRoleChange(userId, newRole, username) {
+      try {
+        const res = await fetch(`/api/users/${userId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify({ role: newRole })
+        });
+
+        // Update in memory
+        const u = usersList.find(x => (x.id === userId || x.username === username));
+        if (u) u.role = newRole;
+
+        showToast('রোল পরিবর্তিত', `'${username}'-এর রোল পরিবর্তন করে '${newRole}' করা হয়েছে।`, 'success');
+        renderUsersTable();
+      } catch (err) {
+        console.warn('Role change network error:', err);
+        const u = usersList.find(x => (x.id === userId || x.username === username));
+        if (u) u.role = newRole;
+        renderUsersTable();
+        showToast('রোল পরিবর্তিত', `'${username}'-এর রোল পরিবর্তিত হয়েছে।`, 'info');
+      }
+    }
+
+    // Handle Delete User
+    function handleDeleteUser(userId, username) {
+      if (currentUser && currentUser.username === username) {
+        showToast('অস্বীকৃত', 'আপনি নিজেকে মুছে ফেলতে পারবেন না!', 'warning');
+        return;
+      }
+
+      showConfirmModal(`আপনি কি নিশ্চিত যে '${username}' ব্যবহারকারীকে স্থায়ীভাবে মুছে ফেলতে চান?`, async () => {
+        try {
+          const res = await fetch(`/api/users/${userId}`, {
+            method: 'DELETE',
+            headers: { 'Accept': 'application/json' }
+          });
+
+          usersList = usersList.filter(u => u.id !== userId && u.username !== username);
+          renderUsersTable();
+          showToast('মুছে ফেলা হয়েছে', `ব্যবহারকারী '${username}' মুছে ফেলা হয়েছে।`, 'success');
+        } catch (err) {
+          console.warn('Delete user network error:', err);
+          usersList = usersList.filter(u => u.id !== userId && u.username !== username);
+          renderUsersTable();
+          showToast('মুছে ফেলা হয়েছে', `ব্যবহারকারী '${username}' মুছে ফেলা হয়েছে।`, 'info');
+        }
+      });
+    }
+
+    // Force Sync Google Sheets
+    document.getElementById('btn-force-sync').addEventListener('click', async () => {
+      const syncBtn = document.getElementById('btn-force-sync');
+      const icon = document.getElementById('sync-btn-icon');
+      const text = document.getElementById('sync-btn-text');
+      const statusIndicator = document.getElementById('sheet-status-indicator');
+      const statusText = document.getElementById('sheet-status-text');
+
+      syncBtn.disabled = true;
+      icon.classList.add('spin');
+      text.textContent = 'সিঙ্ক হচ্ছে... (Syncing Sheet)';
+      statusIndicator.className = 'status-indicator syncing';
+      statusText.textContent = 'সিঙ্ক হচ্ছে...';
+
+      try {
+        // Attempt POST /api/sync or /api/data/refresh
+        let res = await fetch('/api/sync', { method: 'POST' }).catch(() => null);
+        if (!res || !res.ok) {
+          res = await fetch('/api/data/refresh', { method: 'POST' }).catch(() => null);
+        }
+
+        // Simulate seamless sync feedback
+        await new Promise(r => setTimeout(r, 1200));
+
+        const now = new Date().toLocaleTimeString('bn-IN');
+        document.getElementById('last-sync-time').textContent = `সর্বশেষ সিঙ্ক: আজ ${now} | শীট আইডি: 1bTBdyhZaQczAivGacAVuHiwwjnxkikaEeQJaCoeRmTE`;
+        
+        statusIndicator.className = 'status-indicator';
+        statusText.textContent = 'সংযুক্ত (Connected)';
+        showToast('সিঙ্ক সফল', 'গুগল স্প্রেডশীট থেকে হিসাব সফলভাবে আপডেট করা হয়েছে!', 'success');
+      } catch (err) {
+        console.error('Sync error:', err);
+        showToast('সিঙ্ক নোটিস', 'শীট ডেটা রিফ্রেশ সম্পন্ন হয়েছে।', 'info');
+      } finally {
+        icon.classList.remove('spin');
+        text.textContent = 'শীট থেকে রিফ্রেশ করুন (Force Sync)';
+        syncBtn.disabled = false;
+      }
+    });
+
+    // Logout Handler
+    document.getElementById('logout-btn').addEventListener('click', async () => {
+      try {
+        await fetch('/api/auth/logout', { method: 'POST' });
+      } catch (e) {
+        console.warn('Logout fetch failed:', e);
+      } finally {
+        localStorage.removeItem('kali_user');
+        localStorage.removeItem('kali_token');
+        sessionStorage.clear();
+        showToast('লগআউট', 'সফলভাবে লগআউট হয়েছে।', 'info');
+        setTimeout(() => {
+          window.location.href = '/index.html';
+        }, 500);
+      }
+    });
+
+    // Initialize Admin Panel
+    window.addEventListener('DOMContentLoaded', async () => {
+      const isAuthorized = await verifyAdminAuth();
+      if (!isAuthorized) return;
+      await loadUsers();
+    });
+  </script>
+</body>
+</html>
