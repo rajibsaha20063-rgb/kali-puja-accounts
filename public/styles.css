@@ -79,7 +79,7 @@ html {
 }
 
 html {
-  background-color: #06040d;
+  background-color: #0c0a1a;
 }
 
 body {
@@ -1579,7 +1579,7 @@ select.form-control option {
   z-index: -2;
   pointer-events: none;
   overflow: hidden;
-  background: #06040d;
+  background: transparent;
 }
 
 .puja-bg-slide {
@@ -1589,31 +1589,31 @@ select.form-control option {
   background-position: center center;
   background-repeat: no-repeat;
   opacity: 0;
-  filter: brightness(0.68) contrast(1.22) saturate(1.28);
+  filter: brightness(0.86) contrast(1.12) saturate(1.24);
   transition: opacity 1.6s ease-in-out, transform 20s linear;
   transform: scale(1.02);
 }
 
 .puja-bg-slide.active {
-  opacity: 0.65;
+  opacity: 0.82;
   transform: scale(1.08);
 }
 
 .puja-bg-overlay {
   position: fixed;
   inset: 0;
-  background: radial-gradient(circle at 50% 25%, rgba(12, 8, 28, 0.35) 0%, rgba(7, 5, 18, 0.72) 65%, rgba(3, 2, 8, 0.88) 100%);
+  background: radial-gradient(circle at 50% 20%, rgba(14, 10, 32, 0.22) 0%, rgba(10, 7, 24, 0.55) 60%, rgba(6, 4, 15, 0.76) 100%);
   z-index: -1;
   pointer-events: none;
 }
 
-/* Translucent Frosted Glass Cards to let the deep, dark Puja theme shine through */
+/* Translucent Frosted Glass Cards to let the deep, rich Puja theme shine through */
 .content-section, .stat-card, .admin-card {
-  background: rgba(18, 16, 36, 0.84) !important;
+  background: rgba(18, 16, 36, 0.78) !important;
   backdrop-filter: blur(14px) !important;
   -webkit-backdrop-filter: blur(14px) !important;
-  border: 1px solid rgba(245, 197, 24, 0.22) !important;
-  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.65), 0 0 18px rgba(245, 197, 24, 0.05) !important;
+  border: 1px solid rgba(245, 197, 24, 0.28) !important;
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.55), 0 0 20px rgba(245, 197, 24, 0.08) !important;
 }
 
 .navbar {
@@ -1657,32 +1657,34 @@ select.form-control option {
 
 /* Official Club Logo & User Badges */
 .nav-logo-img {
-  width: 50px;
-  height: 50px;
+  width: 52px;
+  height: 52px;
   object-fit: contain;
-  border-radius: 50%;
-  filter: drop-shadow(0 0 12px rgba(245, 197, 24, 0.75));
-  transition: transform 0.3s ease;
+  background: transparent !important;
+  border-radius: 0;
+  filter: drop-shadow(0 0 10px rgba(245, 197, 24, 0.85)) drop-shadow(0 0 16px rgba(230, 57, 70, 0.5));
+  transition: transform 0.3s ease, filter 0.3s ease;
   flex-shrink: 0;
 }
 .nav-brand:hover .nav-logo-img {
-  transform: rotate(4deg) scale(1.08);
-  filter: drop-shadow(0 0 18px rgba(230, 57, 70, 0.9));
+  transform: rotate(4deg) scale(1.1);
+  filter: drop-shadow(0 0 18px rgba(245, 197, 24, 1)) drop-shadow(0 0 26px rgba(230, 57, 70, 0.85));
 }
 
 .auth-logo-img {
-  width: 124px;
-  height: 124px;
+  width: 135px;
+  height: 135px;
   margin: 0 auto 16px auto;
   display: block;
   object-fit: contain;
-  border-radius: 50%;
-  filter: drop-shadow(0 0 24px rgba(245, 197, 24, 0.85));
+  background: transparent !important;
+  border-radius: 0;
+  filter: drop-shadow(0 0 22px rgba(245, 197, 24, 0.9)) drop-shadow(0 0 35px rgba(230, 57, 70, 0.6));
   animation: pulseLogo 3s infinite ease-in-out;
 }
 @keyframes pulseLogo {
-  0%, 100% { filter: drop-shadow(0 0 18px rgba(245, 197, 24, 0.75)); transform: scale(1); }
-  50% { filter: drop-shadow(0 0 30px rgba(230, 57, 70, 0.95)); transform: scale(1.04); }
+  0%, 100% { filter: drop-shadow(0 0 18px rgba(245, 197, 24, 0.8)) drop-shadow(0 0 25px rgba(230, 57, 70, 0.5)); transform: scale(1); }
+  50% { filter: drop-shadow(0 0 32px rgba(245, 197, 24, 1)) drop-shadow(0 0 42px rgba(230, 57, 70, 0.9)); transform: scale(1.05); }
 }
 
 .puja-title-badge {
