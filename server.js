@@ -196,51 +196,13 @@ function saveDataStore(data) {
 function loadContributors() {
   try {
     if (!fs.existsSync(CONTRIBUTORS_FILE)) {
-      // Seed initial entry matching user screenshot if empty
-      const initialSeed = [
-        {
-          id: 'slip_seed_ff_para1',
-          paraId: 1,
-          sectionType: 'family',
-          familyHeadName: 'ff',
-          donorName: 'ff',
-          targetAmount: 650,
-          collectedAmount: 52,
-          amount: 52,
-          dueBalance: 598,
-          paymentMode: 'Cash',
-          dateOfPayment: '20/10/2026',
-          date: '20/10/2026',
-          collectedBy: 'Rajib',
-          source: 'spreadsheet_seed'
-        }
-      ];
-      fs.writeFileSync(CONTRIBUTORS_FILE, JSON.stringify(initialSeed, null, 2), 'utf8');
-      return initialSeed;
+      fs.writeFileSync(CONTRIBUTORS_FILE, JSON.stringify([], null, 2), 'utf8');
+      return [];
     }
     const raw = fs.readFileSync(CONTRIBUTORS_FILE, 'utf8');
     const parsed = JSON.parse(raw);
-    if (!Array.isArray(parsed) || parsed.length === 0) {
-      const initialSeed = [
-        {
-          id: 'slip_seed_ff_para1',
-          paraId: 1,
-          sectionType: 'family',
-          familyHeadName: 'ff',
-          donorName: 'ff',
-          targetAmount: 650,
-          collectedAmount: 52,
-          amount: 52,
-          dueBalance: 598,
-          paymentMode: 'Cash',
-          dateOfPayment: '20/10/2026',
-          date: '20/10/2026',
-          collectedBy: 'Rajib',
-          source: 'spreadsheet_seed'
-        }
-      ];
-      fs.writeFileSync(CONTRIBUTORS_FILE, JSON.stringify(initialSeed, null, 2), 'utf8');
-      return initialSeed;
+    if (!Array.isArray(parsed)) {
+      return [];
     }
     return parsed;
   } catch (err) {
@@ -663,26 +625,6 @@ async function syncAllDataFromSheet(sheetId) {
     if (!exists) {
       finalContributors.unshift(m);
     }
-  }
-
-  // Ensure 'ff' test entry exists in Para 1 if sheet is blank
-  if (!hasPara1SheetEntry && !finalContributors.some(c => c.paraId === 1 && c.donorName === 'ff')) {
-    finalContributors.unshift({
-      id: 'slip_seed_ff_para1',
-      paraId: 1,
-      sectionType: 'family',
-      familyHeadName: 'ff',
-      donorName: 'ff',
-      targetAmount: 650,
-      collectedAmount: 52,
-      amount: 52,
-      dueBalance: 598,
-      paymentMode: 'Cash',
-      dateOfPayment: '20/10/2026',
-      date: '20/10/2026',
-      collectedBy: 'Rajib',
-      source: 'spreadsheet_seed'
-    });
   }
 
   saveContributors(finalContributors);
