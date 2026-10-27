@@ -290,6 +290,7 @@ function loadDataStore() {
 function saveDataStore(data) {
   try {
     fs.writeFileSync(DATA_STORE_FILE, JSON.stringify(data, null, 2), 'utf8');
+    saveCloudPersistentFile('data-store.json', data);
     return true;
   } catch (err) {
     console.error('Error saving data-store.json:', err.message);
@@ -317,6 +318,7 @@ function loadContributors() {
 function saveContributors(list) {
   try {
     fs.writeFileSync(CONTRIBUTORS_FILE, JSON.stringify(list, null, 2), 'utf8');
+    saveCloudPersistentFile('contributors.json', list);
     return true;
   } catch (err) {
     return false;
@@ -425,6 +427,18 @@ initUsersDatabase();
     if (cloudDeletions && Array.isArray(cloudDeletions)) {
       fs.writeFileSync(DELETED_ENTRIES_FILE, JSON.stringify(cloudDeletions, null, 2), 'utf8');
       console.log(`[Cloud Persistence] Restored ${cloudDeletions.length} deleted signatures from persistent-db.`);
+    }
+
+    const cloudContributors = await fetchCloudPersistentFile('contributors.json');
+    if (cloudContributors && Array.isArray(cloudContributors) && cloudContributors.length > 0) {
+      fs.writeFileSync(CONTRIBUTORS_FILE, JSON.stringify(cloudContributors, null, 2), 'utf8');
+      console.log(`[Cloud Persistence] Restored ${cloudContributors.length} collection entries from persistent-db.`);
+    }
+
+    const cloudDataStore = await fetchCloudPersistentFile('data-store.json');
+    if (cloudDataStore && cloudDataStore.expenses && Array.isArray(cloudDataStore.expenses)) {
+      fs.writeFileSync(DATA_STORE_FILE, JSON.stringify(cloudDataStore, null, 2), 'utf8');
+      console.log(`[Cloud Persistence] Restored financial expenses data-store from persistent-db.`);
     }
   } catch (err) {
     console.error('[Cloud Persistence] Notice on boot sync:', err.message);
