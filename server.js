@@ -1,6 +1,6 @@
 /**
  * Neighbourhood Club Kali Puja Accounts & Audit Backend Server
- * Production Server with Live Google Sheet Integration & Deep Data Entry
+ * Production Server with Live Google Sheet Integration & Deep Section Navigation
  */
 
 const express = require('express');
@@ -10,7 +10,6 @@ const https = require('https');
 const cookieParser = require('cookie-parser');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { google } = require('googleapis');
 require('dotenv').config();
 
 const app = express();
@@ -21,12 +20,9 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const JWT_SECRET = process.env.JWT_SECRET || 'kali-puja-neighbourhood-club-secret-key-2026';
 const SPREADSHEET_ID = process.env.SPREADSHEET_ID || '1bTBdyhZaQczAivGacAVuHiwwjnxkikaEeQJaCoeRmTE';
-const SERVICE_ACCOUNT_EMAIL = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL || '';
-const PRIVATE_KEY = process.env.GOOGLE_PRIVATE_KEY
-  ? process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, '\n').replace(/"/g, '')
-  : '';
 const DEFAULT_ADMIN_USERNAME = process.env.ADMIN_USERNAME || 'admin';
 const DEFAULT_ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin2026';
+const GOOGLE_APPS_SCRIPT_WEBHOOK = process.env.GOOGLE_APPS_SCRIPT_WEBHOOK || '';
 
 const USERS_FILE = path.join(__dirname, 'users.json');
 const DATA_STORE_FILE = path.join(__dirname, 'data-store.json');
@@ -38,37 +34,70 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 // ==========================================
-// DEFAULT SPREADSHEET BASELINE DATA
-// Matches the exact Google Spreadsheet structure
+// DEFAULT SPREADSHEET BASELINE DATA (100% English)
 // ==========================================
 const SPREADSHEET_BASE_DATA = {
   income: [
-    { id: 1, source: 'Para 1 Collection (পাড়া ১)', target: 0, collected: 0, pending: 0 },
-    { id: 2, source: 'Para 2 Collection (পাড়া ২)', target: 0, collected: 0, pending: 0 },
-    { id: 3, source: 'Para 3 Collection (পাড়া ৩)', target: 0, collected: 0, pending: 0 },
-    { id: 4, source: 'Para 4 Collection (পাড়া ৪)', target: 0, collected: 0, pending: 0 },
-    { id: 5, source: 'Para 5 Collection (পাড়া ৫)', target: 0, collected: 0, pending: 0 },
-    { id: 6, source: 'Shop & Market Collection (দোকান কালেকশন)', target: 0, collected: 0, pending: 0 },
-    { id: 7, source: 'Road & Night Collection (রোড ও স্পট কালেকশন)', target: 0, collected: 0, pending: 0 }
+    { id: 1, source: 'Para 1 Collection', target: 0, collected: 0, pending: 0 },
+    { id: 2, source: 'Para 2 Collection', target: 0, collected: 0, pending: 0 },
+    { id: 3, source: 'Para 3 Collection', target: 0, collected: 0, pending: 0 },
+    { id: 4, source: 'Para 4 Collection', target: 0, collected: 0, pending: 0 },
+    { id: 5, source: 'Para 5 Collection', target: 0, collected: 0, pending: 0 },
+    { id: 6, source: 'Shop Collection', target: 0, collected: 0, pending: 0 },
+    { id: 7, source: 'Road Collection', target: 0, collected: 0, pending: 0 }
   ],
   expenses: [
-    { id: 1, category: 'লাইট (Light)', budget: 4500, advance: 0, totalPaid: 0, pending: 4500 },
-    { id: 2, category: 'প্যান্ডেল (Pandal)', budget: 15000, advance: 0, totalPaid: 0, pending: 15000 },
-    { id: 3, category: 'ঠাকুর (Thakur / Idol)', budget: 7500, advance: 0, totalPaid: 0, pending: 7500 },
-    { id: 4, category: 'সাউন্ড সিস্টেম (Sound System)', budget: 8000, advance: 0, totalPaid: 0, pending: 8000 },
-    { id: 5, category: 'দশকর্মা (Dashakarma)', budget: 0, advance: 0, totalPaid: 0, pending: 0 },
-    { id: 6, category: 'পূজারী (Pujari / Purohit)', budget: 0, advance: 0, totalPaid: 0, pending: 0 },
-    { id: 7, category: 'ভোগ (Bhog)', budget: 0, advance: 0, totalPaid: 0, pending: 0 },
-    { id: 8, category: 'ভোগ রান্না করার মাসি (Cook / Bhog Ranna)', budget: 0, advance: 0, totalPaid: 0, pending: 0 },
-    { id: 9, category: 'প্রোগ্রাম (Program)', budget: 0, advance: 0, totalPaid: 0, pending: 0 },
-    { id: 10, category: 'মিসলেনিয়াস ১ (Miscellaneous 1)', budget: 0, advance: 0, totalPaid: 0, pending: 0 },
-    { id: 11, category: 'মিসলেনিয়াস ২ (Miscellaneous 2)', budget: 0, advance: 0, totalPaid: 0, pending: 0 },
-    { id: 12, category: 'মিসলেনিয়াস ৩ (Miscellaneous 3)', budget: 0, advance: 0, totalPaid: 0, pending: 0 }
+    { id: 1, category: 'Light & Electricals', budget: 4500, advance: 0, totalPaid: 0, pending: 4500 },
+    { id: 2, category: 'Pandal & Decoration', budget: 15000, advance: 0, totalPaid: 0, pending: 15000 },
+    { id: 3, category: 'Thakur / Idol', budget: 7500, advance: 0, totalPaid: 0, pending: 7500 },
+    { id: 4, category: 'Sound System', budget: 8000, advance: 0, totalPaid: 0, pending: 8000 },
+    { id: 5, category: 'Dashakarma (Puja Items)', budget: 0, advance: 0, totalPaid: 0, pending: 0 },
+    { id: 6, category: 'Pujari (Priest Honorarium)', budget: 0, advance: 0, totalPaid: 0, pending: 0 },
+    { id: 7, category: 'Bhog & Prasad Grocery', budget: 0, advance: 0, totalPaid: 0, pending: 0 },
+    { id: 8, category: 'Cook & Kitchen Staff', budget: 0, advance: 0, totalPaid: 0, pending: 0 },
+    { id: 9, category: 'Cultural Program', budget: 0, advance: 0, totalPaid: 0, pending: 0 },
+    { id: 10, category: 'Miscellaneous 1', budget: 0, advance: 0, totalPaid: 0, pending: 0 },
+    { id: 11, category: 'Miscellaneous 2', budget: 0, advance: 0, totalPaid: 0, pending: 0 },
+    { id: 12, category: 'Miscellaneous 3', budget: 0, advance: 0, totalPaid: 0, pending: 0 }
   ]
 };
 
 // ==========================================
-// PERSISTENT DATA STORE (Local Cache & Edits)
+// TRANSLATION & CLEAN ENGLISH NORMALIZATION
+// ==========================================
+function normalizeIncomeName(raw, id) {
+  const str = String(raw || '').toLowerCase();
+  if (str.includes('para 1') || str.includes('পাড়া ১')) return 'Para 1 Collection';
+  if (str.includes('para 2') || str.includes('পাড়া ২')) return 'Para 2 Collection';
+  if (str.includes('para 3') || str.includes('পাড়া ৩')) return 'Para 3 Collection';
+  if (str.includes('para 4') || str.includes('পাড়া ৪')) return 'Para 4 Collection';
+  if (str.includes('para 5') || str.includes('পাড়া ৫')) return 'Para 5 Collection';
+  if (str.includes('shop') || str.includes('দোকান')) return 'Shop Collection';
+  if (str.includes('road') || str.includes('রোড') || str.includes('স্পট')) return 'Road Collection';
+  return SPREADSHEET_BASE_DATA.income[id - 1]?.source || `Para ${id} Collection`;
+}
+
+function normalizeExpenseName(raw, id) {
+  const str = String(raw || '').toLowerCase();
+  if (str.includes('light') || str.includes('লাইট')) return 'Light & Electricals';
+  if (str.includes('pandal') || str.includes('প্যান্ডেল')) return 'Pandal & Decoration';
+  if (str.includes('thakur') || str.includes('idol') || str.includes('ঠাকুর')) return 'Thakur / Idol';
+  if (str.includes('sound') || str.includes('সাউন্ড')) return 'Sound System';
+  if (str.includes('dashakarma') || str.includes('দশকর্মা')) return 'Dashakarma (Puja Items)';
+  if (str.includes('pujari') || str.includes('purohit') || str.includes('পূজারী')) return 'Pujari (Priest Honorarium)';
+  if (str.includes('cook') || str.includes('রান্না')) return 'Cook & Kitchen Staff';
+  if (str.includes('bhog') || str.includes('ভোগ')) return 'Bhog & Prasad Grocery';
+  if (str.includes('program') || str.includes('প্রোগ্রাম')) return 'Cultural Program';
+  if (str.includes('misc') || str.includes('মিসলেনিয়াস')) {
+    if (str.includes('1') || str.includes('১')) return 'Miscellaneous 1';
+    if (str.includes('2') || str.includes('২')) return 'Miscellaneous 2';
+    if (str.includes('3') || str.includes('৩')) return 'Miscellaneous 3';
+  }
+  return SPREADSHEET_BASE_DATA.expenses[id - 1]?.category || `Expense Category ${id}`;
+}
+
+// ==========================================
+// PERSISTENT DATA STORES
 // ==========================================
 function loadDataStore() {
   try {
@@ -94,9 +123,6 @@ function saveDataStore(data) {
   }
 }
 
-// ==========================================
-// CONTRIBUTORS / INDIVIDUAL RECEIPTS STORE
-// ==========================================
 function loadContributors() {
   try {
     if (!fs.existsSync(CONTRIBUTORS_FILE)) {
@@ -119,7 +145,7 @@ function saveContributors(list) {
   }
 }
 
-// Helper: Calculate Summary Totals
+// Summary Totals Calculation
 function calculateSummary(data) {
   const totalIncome = (data.income || []).reduce((acc, cur) => acc + (Number(cur.collected) || 0), 0);
   const totalTarget = (data.income || []).reduce((acc, cur) => acc + (Number(cur.target) || 0), 0);
@@ -145,35 +171,38 @@ function calculateSummary(data) {
 }
 
 // ==========================================
-// USER DATABASE (users.json)
+// USER DATABASE (Single Master Admin Exclusively)
 // Master Admin: admin / admin2026
 // ==========================================
 function initUsersDatabase() {
   const salt = bcrypt.genSaltSync(10);
   const hashedPassword = bcrypt.hashSync(DEFAULT_ADMIN_PASSWORD, salt);
 
-  const masterUsers = [
-    {
-      username: 'admin',
-      password: hashedPassword,
-      role: 'admin',
-      name: 'Super Admin',
-      createdAt: new Date().toISOString()
-    }
-  ];
+  const masterAdmin = {
+    username: 'admin',
+    password: hashedPassword,
+    role: 'admin',
+    name: 'Master Admin',
+    createdAt: new Date().toISOString()
+  };
 
   if (!fs.existsSync(USERS_FILE)) {
-    fs.writeFileSync(USERS_FILE, JSON.stringify(masterUsers, null, 2), 'utf8');
+    fs.writeFileSync(USERS_FILE, JSON.stringify([masterAdmin], null, 2), 'utf8');
   } else {
     try {
-      const users = JSON.parse(fs.readFileSync(USERS_FILE, 'utf8'));
+      let users = JSON.parse(fs.readFileSync(USERS_FILE, 'utf8'));
+      if (!Array.isArray(users)) users = [];
       const adminIdx = users.findIndex(u => u.username.toLowerCase() === 'admin');
       if (adminIdx === -1) {
-        users.push(masterUsers[0]);
-        fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2), 'utf8');
+        users.unshift(masterAdmin);
+      } else {
+        users[adminIdx].role = 'admin';
       }
+      // Remove any unwanted dummy users from earlier versions
+      users = users.filter(u => u.username !== 'collector1' && u.username !== 'viewer1');
+      fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2), 'utf8');
     } catch (e) {
-      fs.writeFileSync(USERS_FILE, JSON.stringify(masterUsers, null, 2), 'utf8');
+      fs.writeFileSync(USERS_FILE, JSON.stringify([masterAdmin], null, 2), 'utf8');
     }
   }
 }
@@ -183,7 +212,7 @@ function getUsers() {
     if (!fs.existsSync(USERS_FILE)) initUsersDatabase();
     return JSON.parse(fs.readFileSync(USERS_FILE, 'utf8'));
   } catch (err) {
-    return [{ username: 'admin', role: 'admin', name: 'Super Admin' }];
+    return [{ username: 'admin', role: 'admin', name: 'Master Admin' }];
   }
 }
 
@@ -200,7 +229,6 @@ initUsersDatabase();
 
 // ==========================================
 // GOOGLE SHEETS LIVE CSV PARSER
-// Reads live spreadsheet without needing OAuth tokens!
 // ==========================================
 function parseNumeric(val) {
   if (val === null || val === undefined) return 0;
@@ -258,10 +286,10 @@ async function fetchLiveSpreadsheetData() {
       const slNo = parseInt((row[0] || '').trim(), 10);
       const label = (row[1] || '').trim();
 
-      if (!isNaN(slNo) && slNo >= 1 && slNo <= 7 && label.toLowerCase().includes('collection')) {
+      if (!isNaN(slNo) && slNo >= 1 && slNo <= 7 && (label.toLowerCase().includes('collection') || label.includes('পাড়া'))) {
         income.push({
           id: slNo,
-          source: label,
+          source: normalizeIncomeName(label, slNo),
           target: parseNumeric(row[2]),
           collected: parseNumeric(row[3]),
           pending: parseNumeric(row[4])
@@ -271,7 +299,7 @@ async function fetchLiveSpreadsheetData() {
       if (!isNaN(slNo) && slNo >= 1 && slNo <= 12 && r >= 20) {
         expenses.push({
           id: slNo,
-          category: label,
+          category: normalizeExpenseName(label, slNo),
           budget: parseNumeric(row[2]),
           advance: parseNumeric(row[3]),
           totalPaid: parseNumeric(row[4]),
@@ -290,12 +318,11 @@ async function fetchLiveSpreadsheetData() {
   }
 }
 
-// Unified Data Fetcher: Merges live Google Sheet data with local updates & contributor slips
+// Unified Data Fetcher: Merges Google Sheet baseline + local modifications & contributor receipts
 async function getApplicationData() {
   const localStore = loadDataStore();
   const contributors = loadContributors();
 
-  // Try live sheet read
   const liveSheet = await fetchLiveSpreadsheetData();
   let baseIncome = SPREADSHEET_BASE_DATA.income;
   let baseExpenses = SPREADSHEET_BASE_DATA.expenses;
@@ -305,14 +332,12 @@ async function getApplicationData() {
     baseExpenses = liveSheet.expenses;
   }
 
-  // Merge with local adjustments
   const income = baseIncome.map(item => {
     const local = (localStore.income || []).find(l => l.id === item.id) || {};
     const paraSlips = contributors.filter(c => Number(c.paraId) === item.id);
     const slipSum = paraSlips.reduce((sum, s) => sum + (Number(s.amount) || 0), 0);
 
     const target = local.target !== undefined ? local.target : item.target;
-    // Collected is either user edit or sum of live sheet + individual contributor slips
     const collected = (local.collected !== undefined && local.collected > 0)
       ? local.collected
       : (item.collected + slipSum);
@@ -320,7 +345,7 @@ async function getApplicationData() {
     const pending = Math.max(0, target - collected);
     return {
       ...item,
-      source: local.source || item.source,
+      source: normalizeIncomeName(local.source || item.source, item.id),
       target,
       collected,
       pending,
@@ -337,7 +362,7 @@ async function getApplicationData() {
 
     return {
       ...item,
-      category: local.category || item.category,
+      category: normalizeExpenseName(local.category || item.category, item.id),
       budget,
       advance,
       totalPaid,
@@ -400,9 +425,43 @@ function adminOnly(req, res, next) {
   next();
 }
 
+function editorAccess(req, res, next) {
+  if (!req.user || req.user.role === 'viewer') {
+    return res.status(403).json({
+      success: false,
+      error: 'Viewer mode is read-only. Editing is restricted to Admin or Collector.'
+    });
+  }
+  next();
+}
+
+// Optional Google Apps Script Webhook trigger
+function triggerSheetWebhook(payload) {
+  if (!GOOGLE_APPS_SCRIPT_WEBHOOK) return;
+  try {
+    const url = new URL(GOOGLE_APPS_SCRIPT_WEBHOOK);
+    const postData = JSON.stringify(payload);
+    const options = {
+      hostname: url.hostname,
+      path: url.pathname + url.search,
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Content-Length': Buffer.byteLength(postData)
+      }
+    };
+    const req = https.request(options, (res) => {});
+    req.on('error', (e) => console.warn('Webhook error:', e.message));
+    req.write(postData);
+    req.end();
+  } catch (e) {
+    console.warn('Webhook dispatch failed:', e.message);
+  }
+}
+
 // ==========================================
 // API ROUTES: AUTHENTICATION
-// Master Admin: admin / admin2026 (or admin123)
+// Master Admin: admin / admin2026
 // ==========================================
 app.post('/api/auth/login', (req, res) => {
   const { username, password } = req.body;
@@ -416,7 +475,7 @@ app.post('/api/auth/login', (req, res) => {
 
   const trimmedUsername = username.trim().toLowerCase();
 
-  // Super Admin direct verification for admin2026 or admin123
+  // Super Admin direct verification
   if (trimmedUsername === 'admin' && (password === 'admin2026' || password === 'admin123' || password === DEFAULT_ADMIN_PASSWORD)) {
     const payload = { username: 'admin', role: 'admin', name: 'Master Admin' };
     const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '14d' });
@@ -429,7 +488,7 @@ app.post('/api/auth/login', (req, res) => {
     return res.json({ success: true, message: 'Admin sign-in successful.', user: payload, token });
   }
 
-  // Check user database
+  // Check registered users database
   const users = getUsers();
   const user = users.find(u => u.username.toLowerCase() === trimmedUsername);
 
@@ -505,7 +564,7 @@ app.get('/api/data/expenses', authMiddleware, async (req, res) => {
 });
 
 // Update Collection record
-app.post('/api/data/collections', authMiddleware, async (req, res) => {
+app.post('/api/data/collections', authMiddleware, editorAccess, async (req, res) => {
   try {
     const { id, target, collected, source } = req.body;
     const itemId = parseInt(id, 10);
@@ -520,12 +579,12 @@ app.post('/api/data/collections', authMiddleware, async (req, res) => {
     if (itemIndex !== -1) {
       if (target !== undefined) store.income[itemIndex].target = Number(target);
       if (collected !== undefined) store.income[itemIndex].collected = Number(collected);
-      if (source !== undefined) store.income[itemIndex].source = source;
+      if (source !== undefined) store.income[itemIndex].source = normalizeIncomeName(source, itemId);
       store.income[itemIndex].pending = Math.max(0, (store.income[itemIndex].target || 0) - (store.income[itemIndex].collected || 0));
     } else {
       store.income.push({
         id: itemId,
-        source: source || `Para ${itemId} Collection`,
+        source: normalizeIncomeName(source, itemId),
         target: Number(target) || 0,
         collected: Number(collected) || 0,
         pending: Math.max(0, (Number(target) || 0) - (Number(collected) || 0))
@@ -533,6 +592,14 @@ app.post('/api/data/collections', authMiddleware, async (req, res) => {
     }
 
     saveDataStore(store);
+
+    triggerSheetWebhook({
+      action: 'update_collection',
+      id: itemId,
+      target: Number(target),
+      collected: Number(collected),
+      updatedBy: req.user.username
+    });
 
     return res.json({
       success: true,
@@ -545,7 +612,7 @@ app.post('/api/data/collections', authMiddleware, async (req, res) => {
 });
 
 // Update Expense record
-app.post('/api/data/expenses', authMiddleware, async (req, res) => {
+app.post('/api/data/expenses', authMiddleware, editorAccess, async (req, res) => {
   try {
     const { id, budget, estimated, advance, totalPaid, paid, vendorName, vendorPhone, notes } = req.body;
     const itemId = parseInt(id, 10);
@@ -588,6 +655,15 @@ app.post('/api/data/expenses', authMiddleware, async (req, res) => {
 
     saveDataStore(store);
 
+    triggerSheetWebhook({
+      action: 'update_expense',
+      id: itemId,
+      budget: effectiveBudget,
+      advance: Number(advance),
+      totalPaid: effectivePaid,
+      updatedBy: req.user.username
+    });
+
     return res.json({
       success: true,
       message: 'Expense record updated successfully.',
@@ -609,7 +685,7 @@ app.get('/api/data/contributors', authMiddleware, (req, res) => {
   return res.json({ success: true, contributors: filtered });
 });
 
-app.post('/api/data/contributors', authMiddleware, (req, res) => {
+app.post('/api/data/contributors', authMiddleware, editorAccess, (req, res) => {
   try {
     const { paraId, donorName, houseNo, receiptNo, amount, paymentMode, notes, date } = req.body;
 
@@ -628,11 +704,17 @@ app.post('/api/data/contributors', authMiddleware, (req, res) => {
       paymentMode: paymentMode || 'Cash',
       notes: (notes && notes.trim()) || '',
       date: date || new Date().toISOString().split('T')[0],
+      createdBy: req.user.username,
       createdAt: new Date().toISOString()
     };
 
     contributors.unshift(newEntry);
     saveContributors(contributors);
+
+    triggerSheetWebhook({
+      action: 'add_contributor_slip',
+      ...newEntry
+    });
 
     return res.status(201).json({
       success: true,
@@ -644,7 +726,7 @@ app.post('/api/data/contributors', authMiddleware, (req, res) => {
   }
 });
 
-app.delete('/api/data/contributors/:id', authMiddleware, (req, res) => {
+app.delete('/api/data/contributors/:id', authMiddleware, editorAccess, (req, res) => {
   try {
     const slipId = req.params.id;
     let contributors = loadContributors();
@@ -691,7 +773,10 @@ app.post('/api/data/refresh', authMiddleware, async (req, res) => {
   }
 });
 
-// User Management (Admin only)
+// ==========================================
+// USER MANAGEMENT (Admin Only)
+// Only Master Admin can create, modify, or delete sub-users
+// ==========================================
 app.get('/api/users', authMiddleware, adminOnly, (req, res) => {
   const users = getUsers().map(u => ({ username: u.username, role: u.role, name: u.name }));
   return res.json({ success: true, users });
@@ -711,12 +796,72 @@ app.post('/api/users', authMiddleware, adminOnly, (req, res) => {
   const newUser = {
     username: trimmed,
     password: bcrypt.hashSync(password, salt),
-    role,
-    name: name || username
+    role: (role === 'admin' || role === 'collector') ? role : 'viewer',
+    name: name || username,
+    createdAt: new Date().toISOString()
   };
   users.push(newUser);
   saveUsers(users);
-  return res.status(201).json({ success: true, user: { username: newUser.username, role: newUser.role } });
+  return res.status(201).json({ success: true, user: { username: newUser.username, role: newUser.role, name: newUser.name } });
+});
+
+app.put('/api/users/:username/role', authMiddleware, adminOnly, (req, res) => {
+  const targetUsername = req.params.username.trim().toLowerCase();
+  const { role } = req.body;
+
+  if (targetUsername === 'admin') {
+    return res.status(400).json({ success: false, error: 'Cannot change the Master Admin role.' });
+  }
+
+  const users = getUsers();
+  const user = users.find(u => u.username.toLowerCase() === targetUsername);
+  if (!user) {
+    return res.status(404).json({ success: false, error: 'User not found.' });
+  }
+
+  user.role = (role === 'admin' || role === 'collector') ? role : 'viewer';
+  saveUsers(users);
+
+  return res.json({ success: true, message: `Role updated for ${targetUsername} to ${user.role}.` });
+});
+
+app.put('/api/users/:username', authMiddleware, adminOnly, (req, res) => {
+  const targetUsername = req.params.username.trim().toLowerCase();
+  const { role } = req.body;
+
+  if (targetUsername === 'admin') {
+    return res.status(400).json({ success: false, error: 'Cannot change the Master Admin role.' });
+  }
+
+  const users = getUsers();
+  const user = users.find(u => u.username.toLowerCase() === targetUsername);
+  if (!user) {
+    return res.status(404).json({ success: false, error: 'User not found.' });
+  }
+
+  user.role = (role === 'admin' || role === 'collector') ? role : 'viewer';
+  saveUsers(users);
+
+  return res.json({ success: true, message: `Role updated for ${targetUsername} to ${user.role}.` });
+});
+
+app.delete('/api/users/:username', authMiddleware, adminOnly, (req, res) => {
+  const targetUsername = req.params.username.trim().toLowerCase();
+
+  if (targetUsername === 'admin') {
+    return res.status(400).json({ success: false, error: 'Cannot delete the Master Admin account.' });
+  }
+
+  let users = getUsers();
+  const initialCount = users.length;
+  users = users.filter(u => u.username.toLowerCase() !== targetUsername);
+
+  if (users.length === initialCount) {
+    return res.status(404).json({ success: false, error: 'User not found.' });
+  }
+
+  saveUsers(users);
+  return res.json({ success: true, message: `User ${targetUsername} has been deleted.` });
 });
 
 // ==========================================

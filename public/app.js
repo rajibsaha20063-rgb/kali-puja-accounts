@@ -20,8 +20,8 @@ function showToast(message, type = 'success') {
   toast.className = `toast toast-${type}`;
   toast.innerHTML = `<span>${type === 'success' ? '✅' : '⚠️'}</span><span>${message}</span>`;
   container.appendChild(toast);
-  setTimeout(() => {
-    toast.remove();
+  setTimeout( => {
+    toast.remove;
   }, 4000);
 }
 
@@ -35,33 +35,33 @@ function switchTab(tabId) {
   });
 
   if (tabId === 'tab-users' && currentUser?.role === 'admin') {
-    fetchUsersList();
+    fetchUsersList;
   }
 }
 
 // Fetch Current Authenticated User
-async function checkAuth() {
+async function checkAuth {
   try {
     const res = await fetch('/api/auth/me');
     if (!res.ok) {
       window.location.href = '/login.html';
       return;
     }
-    const data = await res.json();
+    const data = await res.json;
     currentUser = data.user;
-    updateUserUI();
+    updateUserUI;
   } catch (err) {
     window.location.href = '/login.html';
   }
 }
 
 // Update UI elements based on user role
-function updateUserUI() {
+function updateUserUI {
   if (!currentUser) return;
 
   document.getElementById('userNameText').textContent = currentUser.name || currentUser.username;
   const roleBadge = document.getElementById('userRoleBadge');
-  roleBadge.textContent = currentUser.role.toUpperCase();
+  roleBadge.textContent = currentUser.role.toUpperCase;
   roleBadge.className = `badge-role badge-role-${currentUser.role}`;
 
   // Hide users tab if not admin
@@ -83,10 +83,10 @@ function updateUserUI() {
 }
 
 // Check System Mode (Live Google Sheets vs Demo)
-async function fetchSystemStatus() {
+async function fetchSystemStatus {
   try {
     const res = await fetch('/api/system/status');
-    const data = await res.json();
+    const data = await res.json;
     const badge = document.getElementById('syncBadge');
     if (data.isDemoMode) {
       badge.textContent = '⚡ DEMO MODE (Local Data)';
@@ -103,59 +103,59 @@ async function fetchSystemStatus() {
 }
 
 // Fetch All Financial Data (Summary, Collections, Expenses)
-async function fetchFinancialData() {
+async function fetchFinancialData {
   const refreshBtn = document.getElementById('refreshBtn');
   if (refreshBtn) {
     refreshBtn.disabled = true;
-    refreshBtn.textContent = '🔄 লোড হচ্ছে...';
+    refreshBtn.textContent = '🔄  ...';
   }
 
   try {
     await Promise.all([
-      fetchSummary(),
-      fetchCollections(),
-      fetchExpenses(),
-      fetchSystemStatus()
+      fetchSummary,
+      fetchCollections,
+      fetchExpenses,
+      fetchSystemStatus
     ]);
-    showToast('সর্বশেষ তথ্য সফলভাবে লোড হয়েছে');
+    showToast('    ');
   } catch (err) {
-    showToast('তথ্য লোড করতে সমস্যা হয়েছে: ' + err.message, 'error');
+    showToast('    : ' + err.message, 'error');
   } finally {
     if (refreshBtn) {
       refreshBtn.disabled = false;
-      refreshBtn.textContent = '🔄 রিফ্রেশ (Refresh)';
+      refreshBtn.textContent = '🔄 Refresh (Refresh)';
     }
   }
 }
 
 // Fetch Summary (B6, D6, F6)
-async function fetchSummary() {
+async function fetchSummary {
   const res = await fetch('/api/data/summary');
-  const data = await res.json();
+  const data = await res.json;
   if (data.success) {
     currentSummary = data.summary;
-    renderSummary();
+    renderSummary;
   }
 }
 
-function renderSummary() {
+function renderSummary {
   if (!currentSummary) return;
 
   document.getElementById('kpiTotalIncome').textContent = formatINR(currentSummary.totalIncome);
   document.getElementById('kpiIncomeSub').textContent = 
-    `টার্গেট: ${formatINR(currentSummary.totalTarget)} | বাকি: ${formatINR(currentSummary.pendingIncome)}`;
+    `Target: ${formatINR(currentSummary.totalTarget)} | Pending: ${formatINR(currentSummary.pendingIncome)}`;
 
   document.getElementById('kpiTotalExpenses').textContent = formatINR(currentSummary.totalExpenses);
   document.getElementById('kpiExpenseSub').textContent = 
-    `বাজেট: ${formatINR(currentSummary.totalBudget)} | বাকি পাওনা: ${formatINR(currentSummary.pendingExpenses)}`;
+    `Budget: ${formatINR(currentSummary.totalBudget)} | Pending : ${formatINR(currentSummary.pendingExpenses)}`;
 
   document.getElementById('kpiNetBalance').textContent = formatINR(currentSummary.netBalance);
 }
 
 // Fetch Collections (Rows 11-17)
-async function fetchCollections() {
+async function fetchCollections {
   const res = await fetch('/api/data/collections');
-  const data = await res.json();
+  const data = await res.json;
   if (data.success) {
     currentCollections = data.collections;
     renderCollections(data.totals);
@@ -168,7 +168,7 @@ function renderCollections(totals) {
   const canEdit = currentUser?.role === 'admin' || currentUser?.role === 'collector';
 
   if (!currentCollections.length) {
-    tbody.innerHTML = '<tr><td colspan="6" class="text-center py-4">কোনো কালেকশন তথ্য পাওয়া যায়নি।</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="6" class="text-center py-4">    ।</td></tr>';
     return;
   }
 
@@ -182,7 +182,7 @@ function renderCollections(totals) {
       ${canEdit ? `
         <td class="text-center">
           <button class="btn btn-secondary btn-sm" onclick="openEditCollectionModal(${item.id})">
-            ✏️ এডিট
+            ✏️ Edit
           </button>
         </td>
       ` : ''}
@@ -192,7 +192,7 @@ function renderCollections(totals) {
   if (totals) {
     tfoot.innerHTML = `
       <tr>
-        <td colspan="2" class="text-right font-bold">মোট সর্বমোট (Total Collections):</td>
+        <td colspan="2" class="text-right font-bold">  (Total Collections):</td>
         <td class="text-right">${formatINR(totals.target)}</td>
         <td class="text-right font-bold" style="color: #34d399;">${formatINR(totals.collected)}</td>
         <td class="text-right font-bold" style="color: ${totals.pending > 0 ? '#f87171' : 'inherit'};">${formatINR(totals.pending)}</td>
@@ -203,9 +203,9 @@ function renderCollections(totals) {
 }
 
 // Fetch Expenses (Rows 23-34)
-async function fetchExpenses() {
+async function fetchExpenses {
   const res = await fetch('/api/data/expenses');
-  const data = await res.json();
+  const data = await res.json;
   if (data.success) {
     currentExpenses = data.expenses;
     renderExpenses(data.totals);
@@ -218,7 +218,7 @@ function renderExpenses(totals) {
   const canEdit = currentUser?.role === 'admin';
 
   if (!currentExpenses.length) {
-    tbody.innerHTML = '<tr><td colspan="7" class="text-center py-4">কোনো খরচের তথ্য পাওয়া যায়নি।</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="7" class="text-center py-4">    ।</td></tr>';
     return;
   }
 
@@ -233,7 +233,7 @@ function renderExpenses(totals) {
       ${canEdit ? `
         <td class="text-center">
           <button class="btn btn-secondary btn-sm" onclick="openEditExpenseModal(${item.id})">
-            ✏️ এডিট
+            ✏️ Edit
           </button>
         </td>
       ` : ''}
@@ -243,7 +243,7 @@ function renderExpenses(totals) {
   if (totals) {
     tfoot.innerHTML = `
       <tr>
-        <td colspan="2" class="text-right font-bold">মোট সর্বমোট খরচ (Total Expenses):</td>
+        <td colspan="2" class="text-right font-bold">   (Total Expenses):</td>
         <td class="text-right">${formatINR(totals.estimated)}</td>
         <td class="text-right">${formatINR(totals.advance)}</td>
         <td class="text-right font-bold" style="color: #f87171;">${formatINR(totals.paid)}</td>
@@ -268,14 +268,14 @@ function openEditCollectionModal(id) {
 }
 
 async function submitCollectionUpdate(e) {
-  e.preventDefault();
+  e.preventDefault;
   const id = document.getElementById('editCollectionId').value;
   const target = document.getElementById('editCollectionTarget').value;
   const collected = document.getElementById('editCollectionCollected').value;
   const saveBtn = document.getElementById('saveCollectionBtn');
 
   saveBtn.disabled = true;
-  saveBtn.textContent = 'সংরক্ষণ হচ্ছে...';
+  saveBtn.textContent = ' ...';
 
   try {
     const res = await fetch('/api/data/collections', {
@@ -283,19 +283,19 @@ async function submitCollectionUpdate(e) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id, target, collected })
     });
-    const data = await res.json();
+    const data = await res.json;
     if (res.ok && data.success) {
-      showToast(data.message || 'কালেকশন আপডেট হয়েছে');
+      showToast(data.message || '  ');
       closeModal('collectionModal');
-      await fetchFinancialData();
+      await fetchFinancialData;
     } else {
-      showToast(data.error || 'আপডেট করতে সমস্যা হয়েছে', 'error');
+      showToast(data.error || '   ', 'error');
     }
   } catch (err) {
-    showToast('সার্ভার এরর: ' + err.message, 'error');
+    showToast(' : ' + err.message, 'error');
   } finally {
     saveBtn.disabled = false;
-    saveBtn.textContent = '💾 সেভ করুন (Save)';
+    saveBtn.textContent = '💾   (Save)';
   }
 }
 
@@ -314,7 +314,7 @@ function openEditExpenseModal(id) {
 }
 
 async function submitExpenseUpdate(e) {
-  e.preventDefault();
+  e.preventDefault;
   const id = document.getElementById('editExpenseId').value;
   const estimated = document.getElementById('editExpenseEstimated').value;
   const advance = document.getElementById('editExpenseAdvance').value;
@@ -322,7 +322,7 @@ async function submitExpenseUpdate(e) {
   const saveBtn = document.getElementById('saveExpenseBtn');
 
   saveBtn.disabled = true;
-  saveBtn.textContent = 'সংরক্ষণ হচ্ছে...';
+  saveBtn.textContent = ' ...';
 
   try {
     const res = await fetch('/api/data/expenses', {
@@ -330,41 +330,41 @@ async function submitExpenseUpdate(e) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id, estimated, advance, paid })
     });
-    const data = await res.json();
+    const data = await res.json;
     if (res.ok && data.success) {
-      showToast(data.message || 'খরচ আপডেট হয়েছে');
+      showToast(data.message || '  ');
       closeModal('expenseModal');
-      await fetchFinancialData();
+      await fetchFinancialData;
     } else {
-      showToast(data.error || 'আপডেট করতে সমস্যা হয়েছে', 'error');
+      showToast(data.error || '   ', 'error');
     }
   } catch (err) {
-    showToast('সার্ভার এরর: ' + err.message, 'error');
+    showToast(' : ' + err.message, 'error');
   } finally {
     saveBtn.disabled = false;
-    saveBtn.textContent = '💾 সেভ করুন (Save)';
+    saveBtn.textContent = '💾   (Save)';
   }
 }
 
 // User Management (Admin Only)
-async function fetchUsersList() {
+async function fetchUsersList {
   if (currentUser?.role !== 'admin') return;
 
   try {
     const res = await fetch('/api/admin/users');
-    const data = await res.json();
+    const data = await res.json;
     if (data.success) {
       renderUsersTable(data.users);
     }
   } catch (err) {
-    showToast('ইউজার তালিকা লোড করা যায়নি', 'error');
+    showToast('    ', 'error');
   }
 }
 
 function renderUsersTable(users) {
   const tbody = document.getElementById('usersTableBody');
   if (!users || !users.length) {
-    tbody.innerHTML = '<tr><td colspan="5" class="text-center py-4">কোনো ইউজার নেই।</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="5" class="text-center py-4">  ।</td></tr>';
     return;
   }
 
@@ -379,33 +379,33 @@ function renderUsersTable(users) {
           <option value="viewer" ${u.role === 'viewer' ? 'selected' : ''}>Viewer</option>
         </select>
       </td>
-      <td class="text-dim text-sm">${u.createdAt ? new Date(u.createdAt).toLocaleDateString() : 'N/A'}</td>
+      <td class="text-dim text-sm">${u.createdAt ? new Date(u.createdAt).toLocaleDateString : 'N/A'}</td>
       <td class="text-center">
         ${u.username !== 'admin' && u.username !== currentUser?.username ? `
           <button class="btn btn-danger btn-sm" onclick="deleteUser('${u.username}')">
-            🗑️ মুছে ফেলুন
+            🗑️  
           </button>
-        ` : '<span class="text-dim text-xs">সুরক্ষিত</span>'}
+        ` : '<span class="text-dim text-xs">Protected</span>'}
       </td>
     </tr>
   `).join('');
 }
 
-function openCreateUserModal() {
-  document.getElementById('createUserForm').reset();
+function openCreateUserModal {
+  document.getElementById('createUserForm').reset;
   document.getElementById('createUserModal').style.display = 'flex';
 }
 
 async function submitCreateUser(e) {
-  e.preventDefault();
-  const username = document.getElementById('newUsername').value.trim();
-  const name = document.getElementById('newName').value.trim();
+  e.preventDefault;
+  const username = document.getElementById('newUsername').value.trim;
+  const name = document.getElementById('newName').value.trim;
   const password = document.getElementById('newPassword').value;
   const role = document.getElementById('newRole').value;
   const saveBtn = document.getElementById('saveUserBtn');
 
   saveBtn.disabled = true;
-  saveBtn.textContent = 'তৈরি হচ্ছে...';
+  saveBtn.textContent = ' ...';
 
   try {
     const res = await fetch('/api/admin/users', {
@@ -413,19 +413,19 @@ async function submitCreateUser(e) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, name, password, role })
     });
-    const data = await res.json();
+    const data = await res.json;
     if (res.ok && data.success) {
-      showToast(`ইউজার "${username}" তৈরি হয়েছে!`);
+      showToast(` "${username}"  !`);
       closeModal('createUserModal');
-      fetchUsersList();
+      fetchUsersList;
     } else {
-      showToast(data.error || 'ইউজার তৈরি করা যায়নি', 'error');
+      showToast(data.error || '   ', 'error');
     }
   } catch (err) {
-    showToast('সার্ভার এরর: ' + err.message, 'error');
+    showToast(' : ' + err.message, 'error');
   } finally {
     saveBtn.disabled = false;
-    saveBtn.textContent = 'তৈরি করুন (Create)';
+    saveBtn.textContent = '  (Create)';
   }
 }
 
@@ -436,34 +436,34 @@ async function updateUserRole(username, role) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ role })
     });
-    const data = await res.json();
+    const data = await res.json;
     if (res.ok && data.success) {
-      showToast(`"${username}" এর ভূমিকা "${role}" করা হয়েছে।`);
+      showToast(`"${username}"   "${role}"  ।`);
     } else {
-      showToast(data.error || 'ভূমিকা পরিবর্তন করা যায়নি', 'error');
-      fetchUsersList();
+      showToast(data.error || '   ', 'error');
+      fetchUsersList;
     }
   } catch (err) {
-    showToast('সার্ভার এরর: ' + err.message, 'error');
+    showToast(' : ' + err.message, 'error');
   }
 }
 
 async function deleteUser(username) {
-  if (!confirm(`আপনি কি নিশ্চিত যে "${username}" ইউজারটি মুছে ফেলতে চান?`)) return;
+  if (!confirm(`    "${username}"    ?`)) return;
 
   try {
     const res = await fetch(`/api/admin/users/${encodeURIComponent(username)}`, {
       method: 'DELETE'
     });
-    const data = await res.json();
+    const data = await res.json;
     if (res.ok && data.success) {
-      showToast(`ইউজার "${username}" মুছে ফেলা হয়েছে।`);
-      fetchUsersList();
+      showToast(` "${username}"   ।`);
+      fetchUsersList;
     } else {
-      showToast(data.error || 'মুছে ফেলা যায়নি', 'error');
+      showToast(data.error || '  ', 'error');
     }
   } catch (err) {
-    showToast('সার্ভার এরর: ' + err.message, 'error');
+    showToast(' : ' + err.message, 'error');
   }
 }
 
@@ -473,7 +473,7 @@ function closeModal(id) {
 }
 
 // Logout
-async function logout() {
+async function logout {
   try {
     await fetch('/api/auth/logout', { method: 'POST' });
   } finally {
@@ -482,7 +482,7 @@ async function logout() {
 }
 
 // Initialize on page load
-window.addEventListener('DOMContentLoaded', async () => {
-  await checkAuth();
-  await fetchFinancialData();
+window.addEventListener('DOMContentLoaded', async  => {
+  await checkAuth;
+  await fetchFinancialData;
 });

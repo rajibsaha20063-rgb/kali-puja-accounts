@@ -1,0 +1,25 @@
+{
+  "income": [
+    { "id": 1, "source": "Para 1 Collection", "target": 25000, "collected": 22000, "pending": 3000 },
+    { "id": 2, "source": "Para 2 Collection", "target": 30000, "collected": 28500, "pending": 1500 },
+    { "id": 3, "source": "Para 3 Collection", "target": 20000, "collected": 17000, "pending": 3000 },
+    { "id": 4, "source": "Para 4 Collection", "target": 22000, "collected": 21000, "pending": 1000 },
+    { "id": 5, "source": "Para 5 Collection", "target": 18000, "collected": 15500, "pending": 2500 },
+    { "id": 6, "source": "Shop Collection", "target": 35000, "collected": 31000, "pending": 4000 },
+    { "id": 7, "source": "Road Collection", "target": 15000, "collected": 14200, "pending": 800 }
+  ],
+  "expenses": [
+    { "id": 1, "category": "Light & Electricals", "budget": 4500, "advance": 2000, "totalPaid": 4500, "pending": 0 },
+    { "id": 2, "category": "Pandal & Decoration", "budget": 15000, "advance": 8000, "totalPaid": 15000, "pending": 0 },
+    { "id": 3, "category": "Thakur / Idol", "budget": 7500, "advance": 4000, "totalPaid": 7500, "pending": 0 },
+    { "id": 4, "category": "Sound System", "budget": 8000, "advance": 3000, "totalPaid": 8000, "pending": 0 },
+    { "id": 5, "category": "Dashakarma (Puja Items)", "budget": 3500, "advance": 1000, "totalPaid": 3500, "pending": 0 },
+    { "id": 6, "category": "Pujari (Priest Honorarium)", "budget": 5000, "advance": 0, "totalPaid": 5000, "pending": 0 },
+    { "id": 7, "category": "Bhog & Prasad Grocery", "budget": 12000, "advance": 5000, "totalPaid": 12000, "pending": 0 },
+    { "id": 8, "category": "Cook & Kitchen Staff", "budget": 4000, "advance": 1000, "totalPaid": 4000, "pending": 0 },
+    { "id": 9, "category": "Cultural Program", "budget": 10000, "advance": 4000, "totalPaid": 10000, "pending": 0 },
+    { "id": 10, "category": "Miscellaneous 1", "budget": 2000, "advance": 500, "totalPaid": 2000, "pending": 0 },
+    { "id": 11, "category": "Miscellaneous 2", "budget": 1500, "advance": 0, "totalPaid": 1500, "pending": 0 },
+    { "id": 12, "category": "Miscellaneous 3", "budget": 1000, "advance": 0, "totalPaid": 1000, "pending": 0 }
+  ]
+}

@@ -299,11 +299,9 @@
     let usersList = [];
     let pendingActionCallback = null;
 
-    // Default Fallback Users
+    // Default Fallback Users (Sole Master Admin)
     const DEFAULT_USERS = [
-      { id: 'admin', username: 'admin', role: 'admin' },
-      { id: 'collector1', username: 'collector1', role: 'collector' },
-      { id: 'viewer1', username: 'viewer1', role: 'viewer' }
+      { id: 'admin', username: 'admin', role: 'admin' }
     ];
 
     // Toast Notification helper

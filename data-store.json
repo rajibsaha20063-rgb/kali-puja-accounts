@@ -2,49 +2,49 @@
   "income": [
     {
       "id": 1,
-      "source": "Para 1 Collection (পাড়া ১)",
+      "source": "Para 1 Collection",
       "target": 0,
       "collected": 0,
       "pending": 0
     },
     {
       "id": 2,
-      "source": "Para 2 Collection (পাড়া ২)",
+      "source": "Para 2 Collection",
       "target": 0,
       "collected": 0,
       "pending": 0
     },
     {
       "id": 3,
-      "source": "Para 3 Collection (পাড়া ৩)",
+      "source": "Para 3 Collection",
       "target": 0,
       "collected": 0,
       "pending": 0
     },
     {
       "id": 4,
-      "source": "Para 4 Collection (পাড়া ৪)",
+      "source": "Para 4 Collection",
       "target": 0,
       "collected": 0,
       "pending": 0
     },
     {
       "id": 5,
-      "source": "Para 5 Collection (পাড়া ৫)",
+      "source": "Para 5 Collection",
       "target": 0,
       "collected": 0,
       "pending": 0
     },
     {
       "id": 6,
-      "source": "Shop & Market Collection (দোকান কালেকশন)",
+      "source": "Shop Collection",
       "target": 0,
       "collected": 0,
       "pending": 0
     },
     {
       "id": 7,
-      "source": "Road & Night Collection (রোড ও স্পট কালেকশন)",
+      "source": "Road Collection",
       "target": 0,
       "collected": 0,
       "pending": 0
@@ -53,7 +53,7 @@
   "expenses": [
     {
       "id": 1,
-      "category": "লাইট (Light)",
+      "category": "Light & Electricals",
       "budget": 4500,
       "advance": 0,
       "totalPaid": 0,
@@ -61,7 +61,7 @@
     },
     {
       "id": 2,
-      "category": "প্যান্ডেল (Pandal)",
+      "category": "Pandal & Decoration",
       "budget": 15000,
       "advance": 0,
       "totalPaid": 0,
@@ -69,7 +69,7 @@
     },
     {
       "id": 3,
-      "category": "ঠাকুর (Thakur / Idol)",
+      "category": "Thakur / Idol",
       "budget": 7500,
       "advance": 0,
       "totalPaid": 0,
@@ -77,7 +77,7 @@
     },
     {
       "id": 4,
-      "category": "সাউন্ড সিস্টেম (Sound System)",
+      "category": "Sound System",
       "budget": 8000,
       "advance": 0,
       "totalPaid": 0,
@@ -85,7 +85,7 @@
     },
     {
       "id": 5,
-      "category": "দশকর্মা (Dashakarma)",
+      "category": "Dashakarma (Puja Items)",
       "budget": 0,
       "advance": 0,
       "totalPaid": 0,
@@ -93,7 +93,7 @@
     },
     {
       "id": 6,
-      "category": "পূজারী (Pujari / Purohit)",
+      "category": "Pujari (Priest Honorarium)",
       "budget": 0,
       "advance": 0,
       "totalPaid": 0,
@@ -101,7 +101,7 @@
     },
     {
       "id": 7,
-      "category": "ভোগ (Bhog)",
+      "category": "Bhog & Prasad Grocery",
       "budget": 0,
       "advance": 0,
       "totalPaid": 0,
@@ -109,7 +109,7 @@
     },
     {
       "id": 8,
-      "category": "ভোগ রান্না করার মাসি (Cook / Bhog Ranna)",
+      "category": "Cook & Kitchen Staff",
       "budget": 0,
       "advance": 0,
       "totalPaid": 0,
@@ -117,7 +117,7 @@
     },
     {
       "id": 9,
-      "category": "প্রোগ্রাম (Program)",
+      "category": "Cultural Program",
       "budget": 0,
       "advance": 0,
       "totalPaid": 0,
@@ -125,7 +125,7 @@
     },
     {
       "id": 10,
-      "category": "মিসলেনিয়াস ১ (Miscellaneous 1)",
+      "category": "Miscellaneous 1",
       "budget": 0,
       "advance": 0,
       "totalPaid": 0,
@@ -133,7 +133,7 @@
     },
     {
       "id": 11,
-      "category": "মিসলেনিয়াস ২ (Miscellaneous 2)",
+      "category": "Miscellaneous 2",
       "budget": 0,
       "advance": 0,
       "totalPaid": 0,
@@ -141,7 +141,7 @@
     },
     {
       "id": 12,
-      "category": "মিসলেনিয়াস ৩ (Miscellaneous 3)",
+      "category": "Miscellaneous 3",
       "budget": 0,
       "advance": 0,
       "totalPaid": 0,
