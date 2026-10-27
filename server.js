@@ -687,38 +687,110 @@ app.get('/api/data/contributors', authMiddleware, (req, res) => {
 
 app.post('/api/data/contributors', authMiddleware, editorAccess, (req, res) => {
   try {
-    const { paraId, donorName, houseNo, receiptNo, amount, paymentMode, notes, date } = req.body;
+    const {
+      paraId,
+      // Para 1-5 fields (Image 1: Family Collection)
+      familyHeadName, targetAmount, collectedAmount, paymentMode, dateOfPayment, collectedBy,
+      // Shop Collection fields (Image 2: Shop / Business Collection)
+      shopName, marketLocation, agreedTarget, amountPaid, shopDate,
+      // Road Collection fields (Image 3: Road & Night Spot Collection)
+      eventSpotType, totalCollection, leadVolunteer, handedOverTo, roadDate,
+      // Generic fallbacks
+      donorName, amount, receiptNo, houseNo, notes, date
+    } = req.body;
 
-    if (!paraId || !donorName || !amount) {
-      return res.status(400).json({ success: false, error: 'Para ID, Donor Name, and Amount are required.' });
+    const pId = Number(paraId);
+    if (!pId) {
+      return res.status(400).json({ success: false, error: 'Section ID is required.' });
     }
 
     const contributors = loadContributors();
-    const newEntry = {
+    let newEntry = {
       id: 'slip_' + Date.now() + '_' + Math.floor(Math.random() * 1000),
-      paraId: Number(paraId),
-      donorName: donorName.trim(),
-      houseNo: (houseNo && houseNo.trim()) || '',
-      receiptNo: (receiptNo && receiptNo.trim()) || '',
-      amount: Number(amount),
-      paymentMode: paymentMode || 'Cash',
-      notes: (notes && notes.trim()) || '',
-      date: date || new Date().toISOString().split('T')[0],
-      createdBy: req.user.username,
-      createdAt: new Date().toISOString()
+      paraId: pId,
+      createdAt: new Date().toISOString(),
+      createdBy: req.user.username
     };
+
+    if (pId >= 1 && pId <= 5) {
+      // 1. Para 1 to Para 5 (Family Collections - Image 1)
+      const headName = (familyHeadName || donorName || '').trim();
+      if (!headName) {
+        return res.status(400).json({ success: false, error: 'Family Head Name is required.' });
+      }
+
+      const collAmt = Number(collectedAmount !== undefined ? collectedAmount : amount) || 0;
+      const tgtAmt = Number(targetAmount) || 0;
+      const due = Math.max(0, tgtAmt - collAmt);
+
+      newEntry = {
+        ...newEntry,
+        sectionType: 'family',
+        familyHeadName: headName,
+        donorName: headName,
+        targetAmount: tgtAmt,
+        collectedAmount: collAmt,
+        amount: collAmt,
+        dueBalance: due,
+        paymentMode: paymentMode || 'Cash',
+        dateOfPayment: dateOfPayment || date || new Date().toISOString().split('T')[0],
+        date: dateOfPayment || date || new Date().toISOString().split('T')[0],
+        collectedBy: (collectedBy && collectedBy.trim()) || req.user.name || req.user.username
+      };
+    } else if (pId === 6) {
+      // 2. Shop Collection (Commercial / Market Collections - Image 2)
+      const sName = (shopName || donorName || '').trim();
+      if (!sName) {
+        return res.status(400).json({ success: false, error: 'Shop / Business Name is required.' });
+      }
+
+      const paid = Number(amountPaid !== undefined ? amountPaid : amount) || 0;
+      const tgt = Number(agreedTarget !== undefined ? agreedTarget : targetAmount) || 0;
+      const due = Math.max(0, tgt - paid);
+
+      newEntry = {
+        ...newEntry,
+        sectionType: 'shop',
+        shopName: sName,
+        donorName: sName,
+        marketLocation: (marketLocation && marketLocation.trim()) || '',
+        agreedTarget: tgt,
+        targetAmount: tgt,
+        amountPaid: paid,
+        amount: paid,
+        dueBalance: due,
+        paymentMode: paymentMode || 'Cash',
+        date: shopDate || date || new Date().toISOString().split('T')[0]
+      };
+    } else if (pId === 7) {
+      // 3. Road Collection (Spot Collections - Image 3)
+      const spot = (eventSpotType || notes || 'Main Road Spot').trim();
+      const colAmt = Number(totalCollection !== undefined ? totalCollection : amount) || 0;
+
+      newEntry = {
+        ...newEntry,
+        sectionType: 'road',
+        date: roadDate || date || new Date().toISOString().split('T')[0],
+        eventSpotType: spot,
+        donorName: spot,
+        totalCollection: colAmt,
+        amount: colAmt,
+        leadVolunteer: (leadVolunteer && leadVolunteer.trim()) || req.user.name || req.user.username,
+        handedOverTo: (handedOverTo && handedOverTo.trim()) || 'Treasurer'
+      };
+    }
 
     contributors.unshift(newEntry);
     saveContributors(contributors);
 
     triggerSheetWebhook({
-      action: 'add_contributor_slip',
+      action: 'add_collection_entry',
       ...newEntry
     });
 
     return res.status(201).json({
       success: true,
-      message: `Contributor entry for ${newEntry.donorName} added successfully.`,
+      message: `Entry registered for ${newEntry.donorName} successfully.`,
       entry: newEntry
     });
   } catch (err) {

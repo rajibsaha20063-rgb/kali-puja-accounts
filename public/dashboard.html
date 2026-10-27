@@ -125,16 +125,16 @@
       font-family: 'JetBrains Mono', monospace;
     }
 
-    /* Contributor Entry Card */
+    /* Entry Form Card */
     .entry-form-card {
       background: var(--bg-card);
       border: 1px solid var(--border);
       border-radius: 12px;
-      padding: 20px;
+      padding: 22px;
       margin-bottom: 24px;
     }
     .entry-form-card h3 {
-      font-size: 14.5px;
+      font-size: 15px;
       font-weight: 700;
       color: #ffffff;
       margin-bottom: 16px;
@@ -144,9 +144,9 @@
     }
     .form-grid-responsive {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(185px, 1fr));
       gap: 14px;
-      margin-bottom: 14px;
+      margin-bottom: 16px;
     }
     .form-group-custom label {
       display: block;
@@ -205,7 +205,7 @@
       color: #fff;
     }
 
-    /* Modal Overlay */
+    /* Modals */
     .modal-overlay {
       position: fixed;
       inset: 0;
@@ -266,7 +266,6 @@
       gap: 12px;
     }
 
-    /* Read-only viewer notice */
     .viewer-notice {
       background: rgba(52, 152, 219, 0.15);
       border: 1px solid rgba(52, 152, 219, 0.4);
@@ -343,7 +342,7 @@
           <span>Kali Puja 2026 Financial Audit Ledger</span>
         </h1>
         <p class="page-subtitle">
-          Synchronized with Master Google Sheet & Deep Section Records
+          Synchronized with Master Google Sheet & Granular Section Workspaces
         </p>
       </div>
 
@@ -426,7 +425,7 @@
     </div>
 
     <!-- ========================================================
-         SECTION SELECTOR BAR: SOLVES GRANULAR ACCESS FOR PARA 1-5, SHOP, ROAD, EXPENSES
+         SECTION SELECTOR BAR: DIRECT ACCESS FOR PARA 1-5, SHOP, ROAD, EXPENSES
          ======================================================== -->
     <div class="section-selector-bar">
       <button type="button" class="section-nav-btn active" id="nav-btn-all" onclick="selectWorkspace('all')">
@@ -437,43 +436,43 @@
       <button type="button" class="section-nav-btn" id="nav-btn-para-1" onclick="selectWorkspace(1)">
         <i class="fa-solid fa-location-dot text-green"></i>
         <span>Para 1</span>
-        <span class="pill-badge" id="badge-count-1">0 slips</span>
+        <span class="pill-badge" id="badge-count-1">0 entries</span>
       </button>
 
       <button type="button" class="section-nav-btn" id="nav-btn-para-2" onclick="selectWorkspace(2)">
         <i class="fa-solid fa-location-dot text-green"></i>
         <span>Para 2</span>
-        <span class="pill-badge" id="badge-count-2">0 slips</span>
+        <span class="pill-badge" id="badge-count-2">0 entries</span>
       </button>
 
       <button type="button" class="section-nav-btn" id="nav-btn-para-3" onclick="selectWorkspace(3)">
         <i class="fa-solid fa-location-dot text-green"></i>
         <span>Para 3</span>
-        <span class="pill-badge" id="badge-count-3">0 slips</span>
+        <span class="pill-badge" id="badge-count-3">0 entries</span>
       </button>
 
       <button type="button" class="section-nav-btn" id="nav-btn-para-4" onclick="selectWorkspace(4)">
         <i class="fa-solid fa-location-dot text-green"></i>
         <span>Para 4</span>
-        <span class="pill-badge" id="badge-count-4">0 slips</span>
+        <span class="pill-badge" id="badge-count-4">0 entries</span>
       </button>
 
       <button type="button" class="section-nav-btn" id="nav-btn-para-5" onclick="selectWorkspace(5)">
         <i class="fa-solid fa-location-dot text-green"></i>
         <span>Para 5</span>
-        <span class="pill-badge" id="badge-count-5">0 slips</span>
+        <span class="pill-badge" id="badge-count-5">0 entries</span>
       </button>
 
       <button type="button" class="section-nav-btn" id="nav-btn-para-6" onclick="selectWorkspace(6)">
         <i class="fa-solid fa-shop text-gold"></i>
         <span>Shop Collection</span>
-        <span class="pill-badge" id="badge-count-6">0 slips</span>
+        <span class="pill-badge" id="badge-count-6">0 shops</span>
       </button>
 
       <button type="button" class="section-nav-btn" id="nav-btn-para-7" onclick="selectWorkspace(7)">
         <i class="fa-solid fa-car text-blue"></i>
         <span>Road Collection</span>
-        <span class="pill-badge" id="badge-count-7">0 slips</span>
+        <span class="pill-badge" id="badge-count-7">0 spots</span>
       </button>
 
       <button type="button" class="section-nav-btn" id="nav-btn-expenses" onclick="selectWorkspace('expenses')">
@@ -493,10 +492,10 @@
           <div>
             <h2 class="section-title">
               <i class="fa-solid fa-coins text-gold"></i>
-              <span>Part 1: Collections Overview (7 Primary Sources)</span>
+              <span>Part 1: Collections Overview (7 Primary Heads)</span>
             </h2>
             <span class="text-muted" style="font-size: 0.85rem;">
-              Matching Rows 11-17 of Master Google Sheet. Click any row or button to drill down deeply.
+              Matching Rows 11-17 of Master Google Sheet. Click any row button to drill down.
             </span>
           </div>
           <div>
@@ -513,7 +512,7 @@
                 <th style="text-align: right;">Target / Demand (₹)</th>
                 <th style="text-align: right;">Total Collected (₹)</th>
                 <th style="text-align: right;">Pending Due (₹)</th>
-                <th style="text-align: center; width: 110px;">Slips</th>
+                <th style="text-align: center; width: 110px;">Entries</th>
                 <th style="text-align: center; width: 230px;">Action</th>
               </tr>
             </thead>
@@ -526,7 +525,7 @@
                 <td style="text-align: right; font-weight: 700;" id="all-foot-target">₹ 0.00</td>
                 <td style="text-align: right; color: #4ade80; font-weight: 700;" id="all-foot-collected">₹ 0.00</td>
                 <td style="text-align: right; color: #f87171; font-weight: 700;" id="all-foot-due">₹ 0.00</td>
-                <td colspan="2" style="text-align: center; font-weight: 700;" id="all-foot-slips">0 Slips</td>
+                <td colspan="2" style="text-align: center; font-weight: 700;" id="all-foot-slips">0 Entries</td>
               </tr>
             </tfoot>
           </table>
@@ -585,8 +584,8 @@
     </div>
 
     <!-- ========================================================
-         VIEW 2: DEDICATED SECTION WORKSPACE (Para 1 to 5, Shop, Road)
-         Allows deep editing, slip addition, and viewing of individual contributors
+         VIEW 2: DYNAMIC SECTION WORKSPACE (Para 1 to 5, Shop, Road)
+         Matches Images 1, 2, and 3 accurately
          ======================================================== -->
     <div id="view-para-workspace" style="display: none;">
       
@@ -594,18 +593,18 @@
       <div class="workspace-banner">
         <div class="workspace-title-box">
           <h2 id="workspace-para-title">
-            <i class="fa-solid fa-location-dot text-gold"></i>
+            <i class="fa-solid fa-location-dot text-gold" id="workspace-icon"></i>
             <span id="workspace-title-text">Para 1 Collection</span>
           </h2>
-          <p id="workspace-subtitle-text">Manage target, manual collection overrides, and individual contributor receipts.</p>
+          <p id="workspace-subtitle-text">Manage section entries and view live ledger.</p>
         </div>
 
         <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
           <button class="btn btn-secondary btn-sm" id="btn-edit-para-meta" onclick="openActiveParaModal()">
             <i class="fa-solid fa-pen-to-square text-gold"></i> Edit Target / Demand
           </button>
-          <button class="btn btn-primary btn-sm" id="btn-focus-slip" onclick="document.getElementById('single-donor-name').focus()">
-            <i class="fa-solid fa-plus"></i> Add Contributor Slip
+          <button class="btn btn-primary btn-sm" id="btn-focus-slip" onclick="focusMainInput()">
+            <i class="fa-solid fa-plus"></i> <span id="btn-focus-slip-label">Register Collection</span>
           </button>
         </div>
       </div>
@@ -613,107 +612,54 @@
       <!-- Mini KPI stats for this section -->
       <div class="mini-stat-grid">
         <div class="mini-stat-card">
-          <div class="mini-stat-label">Target / Demand</div>
+          <div class="mini-stat-label" id="mini-label-target">Target / Demanded</div>
           <div class="mini-stat-val text-gold" id="mini-target-val">₹ 0.00</div>
         </div>
         <div class="mini-stat-card">
-          <div class="mini-stat-label">Total Collected</div>
+          <div class="mini-stat-label" id="mini-label-collected">Total Collected</div>
           <div class="mini-stat-val text-green" id="mini-collected-val">₹ 0.00</div>
         </div>
         <div class="mini-stat-card">
-          <div class="mini-stat-label">Pending Due</div>
+          <div class="mini-stat-label" id="mini-label-due">Due Balance</div>
           <div class="mini-stat-val text-red" id="mini-due-val">₹ 0.00</div>
         </div>
         <div class="mini-stat-card">
-          <div class="mini-stat-label">Individual Slips</div>
-          <div class="mini-stat-val text-blue" id="mini-slips-val">0 Slips</div>
+          <div class="mini-stat-label" id="mini-label-count">Total Entries</div>
+          <div class="mini-stat-val text-blue" id="mini-slips-val">0 Entries</div>
         </div>
       </div>
 
-      <!-- Single Section Contributor Entry Form -->
+      <!-- Dynamic Section Entry Form Box -->
       <div class="entry-form-card" id="para-entry-form-box">
-        <h3>
-          <i class="fa-solid fa-file-circle-plus text-gold"></i>
-          <span>Record New Contributor Receipt for <span id="entry-para-label">Para 1</span></span>
-        </h3>
-
-        <form id="single-para-slip-form">
-          <div class="form-grid-responsive">
-            <div class="form-group-custom">
-              <label for="single-donor-name">Donor / Family / Shop Name *</label>
-              <input type="text" id="single-donor-name" required placeholder="e.g. Ramesh Sen / Saha Enterprise">
-            </div>
-
-            <div class="form-group-custom">
-              <label for="single-amount">Donation Amount (₹) *</label>
-              <input type="number" id="single-amount" required min="1" step="10" placeholder="e.g. 500">
-            </div>
-
-            <div class="form-group-custom">
-              <label for="single-receipt-no">Receipt / Coupon No</label>
-              <input type="text" id="single-receipt-no" placeholder="e.g. RCP-101">
-            </div>
-
-            <div class="form-group-custom">
-              <label for="single-house-no">House / Flat / Phone No</label>
-              <input type="text" id="single-house-no" placeholder="e.g. 14/A Para Lane">
-            </div>
-
-            <div class="form-group-custom">
-              <label for="single-payment-mode">Payment Mode</label>
-              <select id="single-payment-mode">
-                <option value="Cash">Cash</option>
-                <option value="UPI / Online">UPI / Online / GPay</option>
-                <option value="Cheque">Cheque</option>
-              </select>
-            </div>
-          </div>
-
-          <div style="display: flex; justify-content: flex-end;">
-            <button type="submit" class="btn btn-primary" id="btn-save-single-slip" style="padding: 10px 24px; font-weight: 700;">
-              <i class="fa-solid fa-check"></i> Save Slip & Update Section Total
-            </button>
-          </div>
-        </form>
+        <div id="dynamic-form-container">
+          <!-- Dynamically injected based on Para 1-5, Shop, or Road -->
+        </div>
       </div>
 
-      <!-- Contributor Receipts Table for this Section -->
+      <!-- Dynamic Table for this Section -->
       <section class="content-section">
         <div class="section-header">
           <div>
             <h2 class="section-title">
-              <i class="fa-solid fa-receipt text-green"></i>
-              <span>Contributor Receipts Log (<span id="para-slips-count-label">0</span>)</span>
+              <i class="fa-solid fa-list-check text-green"></i>
+              <span id="section-log-table-title">Collection Log</span>
             </h2>
-            <span class="text-muted" style="font-size: 0.85rem;">
-              Every slip added here is stored permanently and instantly updates this section's total collected amount.
+            <span class="text-muted" style="font-size: 0.85rem;" id="section-log-table-desc">
+              Every entry recorded here is saved permanently and updates this section's ledger total.
             </span>
           </div>
         </div>
 
         <div class="table-responsive">
-          <table class="custom-table" id="para-slips-table">
-            <thead>
-              <tr>
-                <th style="width: 50px; text-align: center;">#</th>
-                <th>Donor Name</th>
-                <th>Receipt No</th>
-                <th>House / Phone No</th>
-                <th>Mode</th>
-                <th>Date</th>
-                <th style="text-align: right;">Amount (₹)</th>
-                <th style="text-align: center; width: 90px;">Action</th>
-              </tr>
+          <table class="custom-table" id="section-dynamic-table">
+            <thead id="section-dynamic-thead">
+              <!-- Dynamically populated headers -->
             </thead>
-            <tbody id="para-slips-tbody">
-              <!-- Dynamically populated -->
+            <tbody id="section-dynamic-tbody">
+              <!-- Dynamically populated rows -->
             </tbody>
-            <tfoot>
-              <tr>
-                <td colspan="6" style="text-align: right; font-weight: 700;">SECTION TOTAL FROM SLIPS:</td>
-                <td style="text-align: right; color: #4ade80; font-weight: 700; font-family: 'JetBrains Mono', monospace;" id="para-slips-total-sum">₹ 0.00</td>
-                <td></td>
-              </tr>
+            <tfoot id="section-dynamic-tfoot">
+              <!-- Dynamically populated footer totals -->
             </tfoot>
           </table>
         </div>
@@ -820,10 +766,10 @@
           </div>
 
           <div class="form-group-custom">
-            <label for="edit-coll-collected">Total Collected Amount (₹) (Override or Base)</label>
+            <label for="edit-coll-collected">Total Collected Amount (₹) (Baseline Override)</label>
             <input type="number" id="edit-coll-collected" min="0" step="50" required>
             <small style="color: #94a3b8; font-size: 11.5px; margin-top: 4px; display: block;">
-              Note: Individual contributor slips entered in this section will automatically be added to this total.
+              Note: Individual contributor entries entered in this section automatically add to this total.
             </small>
           </div>
         </div>
@@ -930,11 +876,10 @@
       }, 4000);
     }
 
-    // Workspace Switching (All Overview vs Specific Para 1-5, Shop, Road, Expenses)
+    // Workspace Switching (All Overview vs Para 1-5, Shop, Road, Expenses)
     function selectWorkspace(ws) {
       activeWorkspace = ws;
 
-      // Update Tab Buttons
       const buttons = document.querySelectorAll('.section-nav-btn');
       buttons.forEach(btn => btn.classList.remove('active'));
 
@@ -956,61 +901,533 @@
         document.getElementById('view-all-overview').style.display = 'none';
         document.getElementById('view-expenses-workspace').style.display = 'none';
         document.getElementById('view-para-workspace').style.display = 'block';
-        renderParaWorkspace(num);
+        renderDynamicSectionWorkspace(num);
       }
     }
 
-    // Render Dedicated Para Workspace
-    function renderParaWorkspace(paraId) {
-      const para = collectionsList.find(c => c.id === paraId);
-      if (!para) return;
+    function focusMainInput() {
+      if (activeWorkspace >= 1 && activeWorkspace <= 5) {
+        const el = document.getElementById('f-head-name');
+        if (el) el.focus();
+      } else if (activeWorkspace === 6) {
+        const el = document.getElementById('s-name');
+        if (el) el.focus();
+      } else if (activeWorkspace === 7) {
+        const el = document.getElementById('r-type');
+        if (el) el.focus();
+      }
+    }
 
-      document.getElementById('workspace-title-text').textContent = para.source;
-      document.getElementById('entry-para-label').textContent = para.source;
+    function calcFamilyDue() {
+      const tgt = Number(document.getElementById('f-target')?.value) || 0;
+      const coll = Number(document.getElementById('f-collected')?.value) || 0;
+      const dueInput = document.getElementById('f-due');
+      if (dueInput) dueInput.value = Math.max(0, tgt - coll);
+    }
 
-      const target = Number(para.target) || 0;
-      const collected = Number(para.collected) || 0;
+    function calcShopDue() {
+      const tgt = Number(document.getElementById('s-target')?.value) || 0;
+      const paid = Number(document.getElementById('s-paid')?.value) || 0;
+      const dueInput = document.getElementById('s-due');
+      if (dueInput) dueInput.value = Math.max(0, tgt - paid);
+    }
+
+    // Render Dynamic Section Workspace according to uploaded images
+    function renderDynamicSectionWorkspace(sectionId) {
+      const col = collectionsList.find(c => c.id === sectionId);
+      if (!col) return;
+
+      const todayStr = new Date().toISOString().split('T')[0];
+      const sectionSlips = contributorsList.filter(c => Number(c.paraId) === sectionId);
+
+      // Section Target, Collected, Due
+      const target = Number(col.target) || 0;
+      const collected = Number(col.collected) || 0;
       const due = Math.max(0, target - collected);
-      const paraSlips = contributorsList.filter(c => Number(c.paraId) === paraId);
 
+      document.getElementById('workspace-title-text').textContent = col.source;
       document.getElementById('mini-target-val').textContent = formatRupee(target);
       document.getElementById('mini-collected-val').textContent = formatRupee(collected);
       document.getElementById('mini-due-val').textContent = formatRupee(due);
-      document.getElementById('mini-slips-val').textContent = `${paraSlips.length} Slips`;
-      document.getElementById('para-slips-count-label').textContent = `${paraSlips.length} Receipts`;
+      document.getElementById('mini-slips-val').textContent = `${sectionSlips.length} Entries`;
 
-      // Slips Table
-      const tbody = document.getElementById('para-slips-tbody');
+      const formBox = document.getElementById('dynamic-form-container');
+      const thead = document.getElementById('section-dynamic-thead');
+      const tbody = document.getElementById('section-dynamic-tbody');
+      const tfoot = document.getElementById('section-dynamic-tfoot');
       tbody.innerHTML = '';
 
-      let slipSum = 0;
-      if (paraSlips.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: #888; padding: 28px;">No individual slips recorded yet for ${para.source}. Use the entry form above to record receipts.</td></tr>`;
-      } else {
-        paraSlips.forEach((slip, idx) => {
-          slipSum += Number(slip.amount) || 0;
-          const tr = document.createElement('tr');
-          tr.innerHTML = `
-            <td style="text-align: center; color: var(--gold);">${idx + 1}</td>
-            <td><strong>${slip.donorName}</strong></td>
-            <td><code>${slip.receiptNo || '-'}</code></td>
-            <td>${slip.houseNo || '-'}</td>
-            <td><span style="font-size: 11px; background: rgba(255,255,255,0.08); padding: 2px 6px; border-radius: 4px;">${slip.paymentMode || 'Cash'}</span></td>
-            <td><small class="text-muted">${slip.date || '-'}</small></td>
-            <td style="text-align: right; font-family: 'JetBrains Mono', monospace; color: #4ade80; font-weight: 700;">${formatRupee(slip.amount)}</td>
-            <td style="text-align: center;">
-              ${currentUser && currentUser.role === 'viewer' ? '-' : `
-              <button class="btn-action-sm" style="background: rgba(230, 57, 70, 0.2); color: #ff6b6b;" onclick="deleteContributorSlip('${slip.id}')" title="Delete slip">
-                <i class="fa-solid fa-trash"></i>
-              </button>
-              `}
-            </td>
-          `;
-          tbody.appendChild(tr);
-        });
-      }
+      // ========================================================
+      // 1. PARA 1 TO PARA 5 (Family Collections - Image 1)
+      // ========================================================
+      if (sectionId >= 1 && sectionId <= 5) {
+        document.getElementById('workspace-icon').className = 'fa-solid fa-location-dot text-green';
+        document.getElementById('workspace-subtitle-text').textContent = `Manage family donations, demanded targets, and individual collections for ${col.source}.`;
+        document.getElementById('btn-focus-slip-label').textContent = `Register ${col.source}`;
+        document.getElementById('mini-label-target').textContent = 'Target / Demanded';
+        document.getElementById('mini-label-collected').textContent = 'Total Collected';
+        document.getElementById('mini-label-due').textContent = 'Due Balance';
+        document.getElementById('mini-label-count').textContent = 'Family Entries';
+        document.getElementById('section-log-table-title').textContent = `${col.source} Collection Log`;
+        document.getElementById('section-log-table-desc').textContent = `Family collections registered under ${col.source}.`;
 
-      document.getElementById('para-slips-total-sum').textContent = formatRupee(slipSum);
+        // Render Form for Image 1
+        formBox.innerHTML = `
+          <h3>
+            <i class="fa-solid fa-users text-gold"></i>
+            <span>Register ${col.source}</span>
+          </h3>
+          <form id="form-para-family">
+            <div class="form-grid-responsive">
+              <div class="form-group-custom">
+                <label for="f-head-name">Family Head Name (পরিবারের কর্তার নাম) *</label>
+                <input type="text" id="f-head-name" required placeholder="e.g. Ramesh Sen / Tapas Saha">
+              </div>
+              <div class="form-group-custom">
+                <label for="f-target">Target / Demanded (₹)</label>
+                <input type="number" id="f-target" min="0" step="50" placeholder="e.g. 1000" oninput="calcFamilyDue()">
+              </div>
+              <div class="form-group-custom">
+                <label for="f-collected">Collected Amount (₹) *</label>
+                <input type="number" id="f-collected" required min="1" step="50" placeholder="e.g. 500" oninput="calcFamilyDue()">
+              </div>
+              <div class="form-group-custom">
+                <label for="f-due">Due Balance (₹)</label>
+                <input type="number" id="f-due" readonly placeholder="0" style="background: #090918; opacity: 0.85; color: #f87171;">
+              </div>
+              <div class="form-group-custom">
+                <label for="f-mode">Payment Mode (Cash/UPI)</label>
+                <select id="f-mode">
+                  <option value="Cash">Cash</option>
+                  <option value="UPI">UPI / GPay / Online</option>
+                  <option value="Cheque">Cheque</option>
+                </select>
+              </div>
+              <div class="form-group-custom">
+                <label for="f-date">Date of Payment</label>
+                <input type="date" id="f-date" value="${todayStr}">
+              </div>
+              <div class="form-group-custom">
+                <label for="f-collector">Collected By</label>
+                <input type="text" id="f-collector" placeholder="Volunteer / Collector name" value="${currentUser ? (currentUser.name || currentUser.username) : ''}">
+              </div>
+            </div>
+            <div style="display: flex; justify-content: flex-end;">
+              <button type="submit" class="btn btn-primary" style="padding: 10px 24px; font-weight: 700;">
+                <i class="fa-solid fa-check"></i> Register ${col.source} Entry
+              </button>
+            </div>
+          </form>
+        `;
+
+        // Render Table Headers for Image 1
+        thead.innerHTML = `
+          <tr>
+            <th style="width: 50px; text-align: center;">#</th>
+            <th>Family Head Name</th>
+            <th style="text-align: right;">Target / Demanded (₹)</th>
+            <th style="text-align: right;">Collected Amount (₹)</th>
+            <th style="text-align: right;">Due Balance (₹)</th>
+            <th style="text-align: center;">Payment Mode (Cash/UPI)</th>
+            <th style="text-align: center;">Date of Payment</th>
+            <th>Collected By</th>
+            <th style="text-align: center; width: 75px;">Action</th>
+          </tr>
+        `;
+
+        // Populate Rows
+        let sumTarget = 0;
+        let sumCollected = 0;
+        let sumDue = 0;
+
+        if (sectionSlips.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="9" style="text-align: center; color: #888; padding: 28px;">No family collections registered yet for ${col.source}. Use the registration form above to add an entry.</td></tr>`;
+        } else {
+          sectionSlips.forEach((slip, idx) => {
+            const tgt = Number(slip.targetAmount) || 0;
+            const collAmt = Number(slip.collectedAmount || slip.amount) || 0;
+            const dueAmt = slip.dueBalance !== undefined ? Number(slip.dueBalance) : Math.max(0, tgt - collAmt);
+
+            sumTarget += tgt;
+            sumCollected += collAmt;
+            sumDue += dueAmt;
+
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+              <td style="text-align: center; color: var(--gold);">${idx + 1}</td>
+              <td><strong>${slip.familyHeadName || slip.donorName || '-'}</strong></td>
+              <td style="text-align: right; font-family: 'JetBrains Mono', monospace;">${formatRupee(tgt)}</td>
+              <td style="text-align: right; font-family: 'JetBrains Mono', monospace; color: #4ade80; font-weight: 700;">${formatRupee(collAmt)}</td>
+              <td style="text-align: right; font-family: 'JetBrains Mono', monospace; color: #f87171;">${formatRupee(dueAmt)}</td>
+              <td style="text-align: center;"><span style="font-size: 11px; background: rgba(255,255,255,0.08); padding: 2px 7px; border-radius: 4px;">${slip.paymentMode || 'Cash'}</span></td>
+              <td style="text-align: center;"><small class="text-muted">${slip.dateOfPayment || slip.date || '-'}</small></td>
+              <td>${slip.collectedBy || slip.createdBy || '-'}</td>
+              <td style="text-align: center;">
+                ${currentUser && currentUser.role === 'viewer' ? '-' : `
+                <button class="btn-action-sm" style="background: rgba(230, 57, 70, 0.2); color: #ff6b6b;" onclick="deleteContributorSlip('${slip.id}')" title="Delete entry">
+                  <i class="fa-solid fa-trash"></i>
+                </button>
+                `}
+              </td>
+            `;
+            tbody.appendChild(tr);
+          });
+        }
+
+        tfoot.innerHTML = `
+          <tr>
+            <td colspan="2" style="text-align: right; font-weight: 700;">SECTION TOTALS:</td>
+            <td style="text-align: right; font-family: 'JetBrains Mono', monospace; font-weight: 700;">${formatRupee(sumTarget)}</td>
+            <td style="text-align: right; color: #4ade80; font-weight: 700; font-family: 'JetBrains Mono', monospace;">${formatRupee(sumCollected)}</td>
+            <td style="text-align: right; color: #f87171; font-weight: 700; font-family: 'JetBrains Mono', monospace;">${formatRupee(sumDue)}</td>
+            <td colspan="4"></td>
+          </tr>
+        `;
+
+        // Attach Form Listener
+        const formEl = document.getElementById('form-para-family');
+        if (formEl) {
+          formEl.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const familyHeadName = document.getElementById('f-head-name').value;
+            const targetAmount = document.getElementById('f-target').value;
+            const collectedAmount = document.getElementById('f-collected').value;
+            const paymentMode = document.getElementById('f-mode').value;
+            const dateOfPayment = document.getElementById('f-date').value;
+            const collectedBy = document.getElementById('f-collector').value;
+
+            try {
+              const res = await fetch('/api/data/contributors', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  paraId: sectionId,
+                  familyHeadName,
+                  targetAmount,
+                  collectedAmount,
+                  paymentMode,
+                  dateOfPayment,
+                  collectedBy
+                })
+              });
+              const data = await res.json();
+              if (res.ok) {
+                showToast('Success', `Family entry for ${familyHeadName} registered!`, 'success');
+                await loadAllData();
+              } else {
+                showToast('Error', data.error || 'Failed to save entry.', 'error');
+              }
+            } catch (err) {
+              showToast('Error', 'Network error registering entry.', 'error');
+            }
+          });
+        }
+
+      // ========================================================
+      // 2. SHOP COLLECTION (Image 2)
+      // ========================================================
+      } else if (sectionId === 6) {
+        document.getElementById('workspace-icon').className = 'fa-solid fa-shop text-gold';
+        document.getElementById('workspace-subtitle-text').textContent = 'Manage market collections, agreed targets, business contributions, and pending balances.';
+        document.getElementById('btn-focus-slip-label').textContent = 'Register Shop Collection';
+        document.getElementById('mini-label-target').textContent = 'Agreed / Target';
+        document.getElementById('mini-label-collected').textContent = 'Total Amount Paid';
+        document.getElementById('mini-label-due').textContent = 'Due Balance';
+        document.getElementById('mini-label-count').textContent = 'Shop Entries';
+        document.getElementById('section-log-table-title').textContent = 'Shop Collection Log';
+        document.getElementById('section-log-table-desc').textContent = 'Commercial shop and market business collection entries.';
+
+        // Render Form for Image 2
+        formBox.innerHTML = `
+          <h3>
+            <i class="fa-solid fa-store text-gold"></i>
+            <span>Register Shop Collection</span>
+          </h3>
+          <form id="form-shop-collection">
+            <div class="form-grid-responsive">
+              <div class="form-group-custom">
+                <label for="s-name">Shop / Business Name (দোকান / প্রতিষ্ঠানের নাম) *</label>
+                <input type="text" id="s-name" required placeholder="e.g. Maa Tara Hardware / Paul Grocery">
+              </div>
+              <div class="form-group-custom">
+                <label for="s-location">Market / Location (বাজার / এলাকা)</label>
+                <input type="text" id="s-location" placeholder="e.g. Station Road Market / Main Bazar">
+              </div>
+              <div class="form-group-custom">
+                <label for="s-target">Agreed / Target (₹)</label>
+                <input type="number" id="s-target" min="0" step="50" placeholder="e.g. 2000" oninput="calcShopDue()">
+              </div>
+              <div class="form-group-custom">
+                <label for="s-paid">Amount Paid (₹) *</label>
+                <input type="number" id="s-paid" required min="1" step="50" placeholder="e.g. 1000" oninput="calcShopDue()">
+              </div>
+              <div class="form-group-custom">
+                <label for="s-due">Due Balance (₹)</label>
+                <input type="number" id="s-due" readonly placeholder="0" style="background: #090918; opacity: 0.85; color: #f87171;">
+              </div>
+              <div class="form-group-custom">
+                <label for="s-mode">Payment Mode (Cash/UPI)</label>
+                <select id="s-mode">
+                  <option value="Cash">Cash</option>
+                  <option value="UPI">UPI / GPay / Online</option>
+                  <option value="Cheque">Cheque</option>
+                </select>
+              </div>
+              <div class="form-group-custom">
+                <label for="s-date">Date (তারিখ)</label>
+                <input type="date" id="s-date" value="${todayStr}">
+              </div>
+            </div>
+            <div style="display: flex; justify-content: flex-end;">
+              <button type="submit" class="btn btn-primary" style="padding: 10px 24px; font-weight: 700;">
+                <i class="fa-solid fa-check"></i> Register Shop Entry
+              </button>
+            </div>
+          </form>
+        `;
+
+        // Render Table Headers for Image 2
+        thead.innerHTML = `
+          <tr>
+            <th style="width: 50px; text-align: center;">#</th>
+            <th>Shop / Business Name</th>
+            <th>Market / Location</th>
+            <th style="text-align: right;">Agreed / Target (₹)</th>
+            <th style="text-align: right;">Amount Paid (₹)</th>
+            <th style="text-align: right;">Due Balance (₹)</th>
+            <th style="text-align: center;">Payment Mode (Cash/UPI)</th>
+            <th style="text-align: center;">Date</th>
+            <th style="text-align: center; width: 75px;">Action</th>
+          </tr>
+        `;
+
+        // Populate Rows
+        let sumTarget = 0;
+        let sumPaid = 0;
+        let sumDue = 0;
+
+        if (sectionSlips.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="9" style="text-align: center; color: #888; padding: 28px;">No shop collections registered yet. Use the registration form above to add a shop entry.</td></tr>`;
+        } else {
+          sectionSlips.forEach((slip, idx) => {
+            const tgt = Number(slip.agreedTarget || slip.targetAmount) || 0;
+            const paid = Number(slip.amountPaid || slip.amount) || 0;
+            const dueAmt = slip.dueBalance !== undefined ? Number(slip.dueBalance) : Math.max(0, tgt - paid);
+
+            sumTarget += tgt;
+            sumPaid += paid;
+            sumDue += dueAmt;
+
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+              <td style="text-align: center; color: var(--gold);">${idx + 1}</td>
+              <td><strong>${slip.shopName || slip.donorName || '-'}</strong></td>
+              <td>${slip.marketLocation || slip.houseNo || '-'}</td>
+              <td style="text-align: right; font-family: 'JetBrains Mono', monospace;">${formatRupee(tgt)}</td>
+              <td style="text-align: right; font-family: 'JetBrains Mono', monospace; color: #4ade80; font-weight: 700;">${formatRupee(paid)}</td>
+              <td style="text-align: right; font-family: 'JetBrains Mono', monospace; color: #f87171;">${formatRupee(dueAmt)}</td>
+              <td style="text-align: center;"><span style="font-size: 11px; background: rgba(255,255,255,0.08); padding: 2px 7px; border-radius: 4px;">${slip.paymentMode || 'Cash'}</span></td>
+              <td style="text-align: center;"><small class="text-muted">${slip.date || '-'}</small></td>
+              <td style="text-align: center;">
+                ${currentUser && currentUser.role === 'viewer' ? '-' : `
+                <button class="btn-action-sm" style="background: rgba(230, 57, 70, 0.2); color: #ff6b6b;" onclick="deleteContributorSlip('${slip.id}')" title="Delete entry">
+                  <i class="fa-solid fa-trash"></i>
+                </button>
+                `}
+              </td>
+            `;
+            tbody.appendChild(tr);
+          });
+        }
+
+        tfoot.innerHTML = `
+          <tr>
+            <td colspan="3" style="text-align: right; font-weight: 700;">SHOP TOTALS:</td>
+            <td style="text-align: right; font-family: 'JetBrains Mono', monospace; font-weight: 700;">${formatRupee(sumTarget)}</td>
+            <td style="text-align: right; color: #4ade80; font-weight: 700; font-family: 'JetBrains Mono', monospace;">${formatRupee(sumPaid)}</td>
+            <td style="text-align: right; color: #f87171; font-weight: 700; font-family: 'JetBrains Mono', monospace;">${formatRupee(sumDue)}</td>
+            <td colspan="3"></td>
+          </tr>
+        `;
+
+        // Attach Form Listener
+        const formEl = document.getElementById('form-shop-collection');
+        if (formEl) {
+          formEl.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const shopName = document.getElementById('s-name').value;
+            const marketLocation = document.getElementById('s-location').value;
+            const agreedTarget = document.getElementById('s-target').value;
+            const amountPaid = document.getElementById('s-paid').value;
+            const paymentMode = document.getElementById('s-mode').value;
+            const shopDate = document.getElementById('s-date').value;
+
+            try {
+              const res = await fetch('/api/data/contributors', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  paraId: 6,
+                  shopName,
+                  marketLocation,
+                  agreedTarget,
+                  amountPaid,
+                  paymentMode,
+                  shopDate
+                })
+              });
+              const data = await res.json();
+              if (res.ok) {
+                showToast('Success', `Shop collection for ${shopName} registered!`, 'success');
+                await loadAllData();
+              } else {
+                showToast('Error', data.error || 'Failed to save entry.', 'error');
+              }
+            } catch (err) {
+              showToast('Error', 'Network error registering entry.', 'error');
+            }
+          });
+        }
+
+      // ========================================================
+      // 3. ROAD COLLECTION (Image 3)
+      // ========================================================
+      } else if (sectionId === 7) {
+        document.getElementById('workspace-icon').className = 'fa-solid fa-car text-blue';
+        document.getElementById('workspace-subtitle-text').textContent = 'Manage road collection drives, checkpoints, night spots, lead volunteer teams, and cash handovers.';
+        document.getElementById('btn-focus-slip-label').textContent = 'Register Road Collection';
+        document.getElementById('mini-label-target').textContent = 'Target Estimated';
+        document.getElementById('mini-label-collected').textContent = 'Total Road Collection';
+        document.getElementById('mini-label-due').textContent = 'Status';
+        document.getElementById('mini-label-count').textContent = 'Spot Entries';
+        document.getElementById('section-log-table-title').textContent = 'Road Collection Log';
+        document.getElementById('section-log-table-desc').textContent = 'Spot and road collection entries matching lead volunteer logs.';
+
+        // Render Form for Image 3
+        formBox.innerHTML = `
+          <h3>
+            <i class="fa-solid fa-road text-blue"></i>
+            <span>Register Road Collection</span>
+          </h3>
+          <form id="form-road-collection">
+            <div class="form-grid-responsive">
+              <div class="form-group-custom">
+                <label for="r-date">Date (তারিখ) *</label>
+                <input type="date" id="r-date" required value="${todayStr}">
+              </div>
+              <div class="form-group-custom">
+                <label for="r-type">Event / Spot Type (ধরন) *</label>
+                <input type="text" id="r-type" required placeholder="e.g. Main Road Crossing / Puja Gate / Night Stall">
+              </div>
+              <div class="form-group-custom">
+                <label for="r-amount">Total Collection (₹) (কালেকশন) *</label>
+                <input type="number" id="r-amount" required min="1" step="10" placeholder="e.g. 4500">
+              </div>
+              <div class="form-group-custom">
+                <label for="r-team">Lead Volunteer / Team</label>
+                <input type="text" id="r-team" placeholder="e.g. Rahul & Subho / Team B">
+              </div>
+              <div class="form-group-custom">
+                <label for="r-receiver">Cash Handed Over To (জমা গ্রহণকারী)</label>
+                <input type="text" id="r-receiver" placeholder="e.g. Cashier / Treasurer / Club President">
+              </div>
+            </div>
+            <div style="display: flex; justify-content: flex-end;">
+              <button type="submit" class="btn btn-primary" style="padding: 10px 24px; font-weight: 700;">
+                <i class="fa-solid fa-check"></i> Register Road Entry
+              </button>
+            </div>
+          </form>
+        `;
+
+        // Render Table Headers for Image 3
+        thead.innerHTML = `
+          <tr>
+            <th style="width: 50px; text-align: center;">#</th>
+            <th style="text-align: center;">Date (তারিখ)</th>
+            <th>Event / Spot Type (ধরন)</th>
+            <th style="text-align: right;">Total Collection (₹) (কালেকশন)</th>
+            <th>Lead Volunteer / Team</th>
+            <th>Cash Handed Over To (জমা গ্রহণকারী)</th>
+            <th style="text-align: center; width: 75px;">Action</th>
+          </tr>
+        `;
+
+        // Populate Rows
+        let sumCol = 0;
+
+        if (sectionSlips.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: #888; padding: 28px;">No road collections registered yet. Use the registration form above to add an entry.</td></tr>`;
+        } else {
+          sectionSlips.forEach((slip, idx) => {
+            const amt = Number(slip.totalCollection || slip.amount) || 0;
+            sumCol += amt;
+
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+              <td style="text-align: center; color: var(--gold);">${idx + 1}</td>
+              <td style="text-align: center;"><small class="text-muted">${slip.date || '-'}</small></td>
+              <td><strong>${slip.eventSpotType || slip.donorName || '-'}</strong></td>
+              <td style="text-align: right; font-family: 'JetBrains Mono', monospace; color: #4ade80; font-weight: 700;">${formatRupee(amt)}</td>
+              <td>${slip.leadVolunteer || '-' }</td>
+              <td>${slip.handedOverTo || '-' }</td>
+              <td style="text-align: center;">
+                ${currentUser && currentUser.role === 'viewer' ? '-' : `
+                <button class="btn-action-sm" style="background: rgba(230, 57, 70, 0.2); color: #ff6b6b;" onclick="deleteContributorSlip('${slip.id}')" title="Delete entry">
+                  <i class="fa-solid fa-trash"></i>
+                </button>
+                `}
+              </td>
+            `;
+            tbody.appendChild(tr);
+          });
+        }
+
+        tfoot.innerHTML = `
+          <tr>
+            <td colspan="3" style="text-align: right; font-weight: 700;">TOTAL ROAD COLLECTION:</td>
+            <td style="text-align: right; color: #4ade80; font-weight: 700; font-family: 'JetBrains Mono', monospace;">${formatRupee(sumCol)}</td>
+            <td colspan="3"></td>
+          </tr>
+        `;
+
+        // Attach Form Listener
+        const formEl = document.getElementById('form-road-collection');
+        if (formEl) {
+          formEl.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const roadDate = document.getElementById('r-date').value;
+            const eventSpotType = document.getElementById('r-type').value;
+            const totalCollection = document.getElementById('r-amount').value;
+            const leadVolunteer = document.getElementById('r-team').value;
+            const handedOverTo = document.getElementById('r-receiver').value;
+
+            try {
+              const res = await fetch('/api/data/contributors', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  paraId: 7,
+                  roadDate,
+                  eventSpotType,
+                  totalCollection,
+                  leadVolunteer,
+                  handedOverTo
+                })
+              });
+              const data = await res.json();
+              if (res.ok) {
+                showToast('Success', `Road collection for ${eventSpotType} registered!`, 'success');
+                await loadAllData();
+              } else {
+                showToast('Error', data.error || 'Failed to save entry.', 'error');
+              }
+            } catch (err) {
+              showToast('Error', 'Network error registering entry.', 'error');
+            }
+          });
+        }
+      }
     }
 
     // Render Dedicated Expenses Workspace
@@ -1085,14 +1502,18 @@
         collectionsList.forEach(col => {
           const count = contributorsList.filter(c => Number(c.paraId) === col.id).length;
           const badge = document.getElementById(`badge-count-${col.id}`);
-          if (badge) badge.textContent = `${count} slips`;
+          if (badge) {
+            if (col.id === 6) badge.textContent = `${count} shops`;
+            else if (col.id === 7) badge.textContent = `${count} spots`;
+            else badge.textContent = `${count} entries`;
+          }
         });
 
         renderTopSummary(sumRes?.summary);
         renderAllOverviewTables();
 
         if (typeof activeWorkspace === 'number') {
-          renderParaWorkspace(activeWorkspace);
+          renderDynamicSectionWorkspace(activeWorkspace);
         } else if (activeWorkspace === 'expenses') {
           renderExpensesWorkspace();
         }
@@ -1165,12 +1586,12 @@
           <td style="text-align: right; font-family: 'JetBrains Mono', monospace; color: #f87171;">${formatRupee(due)}</td>
           <td style="text-align: center;">
             <span style="background: rgba(245, 197, 24, 0.15); color: var(--gold); padding: 2px 8px; border-radius: 999px; font-size: 11.5px; font-weight: 700;">
-              ${slipCount} Slips
+              ${slipCount} Entries
             </span>
           </td>
           <td style="text-align: center;">
             <button class="btn-action-sm btn-action-deep" onclick="selectWorkspace(${row.id})">
-              <i class="fa-solid fa-arrow-right"></i> Open ${row.source.split(' ')[0]}
+              <i class="fa-solid fa-arrow-right"></i> Open Workspace
             </button>
             ${currentUser && currentUser.role === 'viewer' ? '' : `
             <button class="btn-action-sm btn-action-edit" onclick="openCollectionModal(${row.id})">
@@ -1185,7 +1606,7 @@
       document.getElementById('all-foot-target').textContent = formatRupee(grandTarget);
       document.getElementById('all-foot-collected').textContent = formatRupee(grandCollected);
       document.getElementById('all-foot-due').textContent = formatRupee(grandDue);
-      document.getElementById('all-foot-slips').textContent = `${totalSlips} Slips`;
+      document.getElementById('all-foot-slips').textContent = `${totalSlips} Entries`;
 
       // Expenses Overview
       const tbodyExp = document.getElementById('all-expenses-tbody');
@@ -1232,48 +1653,13 @@
       document.getElementById('all-exp-foot-due').textContent = formatRupee(expDue);
     }
 
-    // Single Para Slip Form Submission
-    document.getElementById('single-para-slip-form').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      if (typeof activeWorkspace !== 'number') return;
-
-      const paraId = activeWorkspace;
-      const donorName = document.getElementById('single-donor-name').value;
-      const amount = document.getElementById('single-amount').value;
-      const receiptNo = document.getElementById('single-receipt-no').value;
-      const houseNo = document.getElementById('single-house-no').value;
-      const paymentMode = document.getElementById('single-payment-mode').value;
-
-      try {
-        const res = await fetch('/api/data/contributors', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ paraId, donorName, amount, receiptNo, houseNo, paymentMode })
-        });
-        const data = await res.json();
-
-        if (res.ok) {
-          showToast('Success', `Slip for ${donorName} (₹ ${amount}) recorded!`, 'success');
-          document.getElementById('single-donor-name').value = '';
-          document.getElementById('single-amount').value = '';
-          document.getElementById('single-receipt-no').value = '';
-          document.getElementById('single-house-no').value = '';
-          await loadAllData();
-        } else {
-          showToast('Error', data.error || 'Failed to save slip.', 'error');
-        }
-      } catch (err) {
-        showToast('Error', 'Network error saving slip.', 'error');
-      }
-    });
-
-    // Delete Slip
+    // Delete Slip / Entry
     async function deleteContributorSlip(id) {
-      if (!confirm('Are you sure you want to delete this contributor receipt?')) return;
+      if (!confirm('Are you sure you want to delete this collection entry?')) return;
       try {
         const res = await fetch(`/api/data/contributors/${id}`, { method: 'DELETE' });
         if (res.ok) {
-          showToast('Deleted', 'Receipt removed.', 'info');
+          showToast('Deleted', 'Entry removed.', 'info');
           await loadAllData();
         }
       } catch (e) {}
