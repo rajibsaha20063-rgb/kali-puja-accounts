@@ -78,18 +78,17 @@ html {
   scroll-behavior: smooth;
 }
 
+html {
+  background-color: #06040d;
+}
+
 body {
   font-family: 'Outfit', 'Noto Sans Bengali', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  background-color: var(--bg-dark);
+  background-color: transparent !important;
   color: var(--text-primary);
   min-height: 100vh;
   line-height: 1.6;
   overflow-x: hidden;
-  background-image: 
-    radial-gradient(circle at 15% 20%, rgba(245, 197, 24, 0.05) 0%, transparent 40%),
-    radial-gradient(circle at 85% 75%, rgba(255, 107, 53, 0.05) 0%, transparent 40%),
-    radial-gradient(circle at 50% 50%, rgba(58, 28, 113, 0.08) 0%, transparent 60%);
-  background-attachment: fixed;
 }
 
 /* Custom Scrollbar */
@@ -1580,6 +1579,7 @@ select.form-control option {
   z-index: -2;
   pointer-events: none;
   overflow: hidden;
+  background: #06040d;
 }
 
 .puja-bg-slide {
@@ -1589,21 +1589,38 @@ select.form-control option {
   background-position: center center;
   background-repeat: no-repeat;
   opacity: 0;
-  transition: opacity 1.8s ease-in-out, transform 20s linear;
+  filter: brightness(0.68) contrast(1.22) saturate(1.28);
+  transition: opacity 1.6s ease-in-out, transform 20s linear;
   transform: scale(1.02);
 }
 
 .puja-bg-slide.active {
-  opacity: 0.16;
-  transform: scale(1.06);
+  opacity: 0.65;
+  transform: scale(1.08);
 }
 
 .puja-bg-overlay {
   position: fixed;
   inset: 0;
-  background: radial-gradient(circle at 50% 15%, rgba(22, 16, 46, 0.72) 0%, rgba(8, 8, 22, 0.94) 80%);
+  background: radial-gradient(circle at 50% 25%, rgba(12, 8, 28, 0.35) 0%, rgba(7, 5, 18, 0.72) 65%, rgba(3, 2, 8, 0.88) 100%);
   z-index: -1;
   pointer-events: none;
+}
+
+/* Translucent Frosted Glass Cards to let the deep, dark Puja theme shine through */
+.content-section, .stat-card, .admin-card {
+  background: rgba(18, 16, 36, 0.84) !important;
+  backdrop-filter: blur(14px) !important;
+  -webkit-backdrop-filter: blur(14px) !important;
+  border: 1px solid rgba(245, 197, 24, 0.22) !important;
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.65), 0 0 18px rgba(245, 197, 24, 0.05) !important;
+}
+
+.navbar {
+  background: rgba(12, 10, 24, 0.88) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  border-bottom: 1px solid rgba(245, 197, 24, 0.25) !important;
 }
 
 .puja-festive-badge {

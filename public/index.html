@@ -23,18 +23,22 @@
       justify-content: center;
       min-height: 100vh;
       padding: 24px;
-      background: radial-gradient(circle at 50% 15%, #1f1438 0%, #0a0a1a 80%);
+      background: transparent !important;
+      position: relative;
     }
     .auth-card {
       width: 100%;
       max-width: 440px;
-      background: #14142b;
-      border: 1px solid #333355;
+      background: rgba(18, 16, 36, 0.88);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(245, 197, 24, 0.35);
       border-radius: 18px;
       padding: 42px 36px;
-      box-shadow: 0 16px 50px rgba(0, 0, 0, 0.7), 0 0 25px rgba(245, 197, 24, 0.1);
+      box-shadow: 0 16px 50px rgba(0, 0, 0, 0.75), 0 0 35px rgba(245, 197, 24, 0.15);
       position: relative;
       overflow: hidden;
+      z-index: 2;
     }
     .auth-card::before {
       content: '';
@@ -150,6 +154,18 @@
   </style>
 </head>
 <body class="auth-page">
+
+  <!-- Dynamic 20-min Rotating Festive Puja Background Slideshow -->
+  <div class="puja-bg-container" id="puja-bg">
+    <div class="puja-bg-slide active" style="background-image: url('https://images.unsplash.com/photo-1577083552431-6e5fd01aa342?auto=format&fit=crop&w=2000&q=80');"></div>
+    <div class="puja-bg-slide" style="background-image: url('https://images.unsplash.com/photo-1605371924599-2d0365da1ae0?auto=format&fit=crop&w=2000&q=80');"></div>
+    <div class="puja-bg-slide" style="background-image: url('https://images.unsplash.com/photo-1543807535-eceef0bc6599?auto=format&fit=crop&w=2000&q=80');"></div>
+    <div class="puja-bg-slide" style="background-image: url('https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=2000&q=80');"></div>
+    <div class="puja-bg-slide" style="background-image: url('https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&w=2000&q=80');"></div>
+    <div class="puja-bg-slide" style="background-image: url('https://images.unsplash.com/photo-1513151233558-d860c5398176?auto=format&fit=crop&w=2000&q=80');"></div>
+  </div>
+  <div class="puja-bg-overlay"></div>
+
   <div class="auth-card">
     <div class="brand-header">
       <div class="diya-icon">🪔</div>
@@ -254,6 +270,16 @@
         loginBtn.innerHTML = '<i class="fa-solid fa-right-to-bracket"></i> Sign In to Accounts';
       }
     });
+    // 20-min Rotating Festive Puja Background
+    const authPujaSlides = document.querySelectorAll('.puja-bg-slide');
+    if (authPujaSlides.length > 0) {
+      let currentAuthSlide = Math.floor(Math.random() * authPujaSlides.length);
+      authPujaSlides.forEach((s, idx) => s.classList.toggle('active', idx === currentAuthSlide));
+      setInterval(() => {
+        currentAuthSlide = (currentAuthSlide + 1) % authPujaSlides.length;
+        authPujaSlides.forEach((s, idx) => s.classList.toggle('active', idx === currentAuthSlide));
+      }, 20 * 60 * 1000);
+    }
   </script>
 </body>
 </html>
