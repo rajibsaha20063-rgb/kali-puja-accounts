@@ -5,12 +5,5 @@
     "role": "admin",
     "name": "Master Admin",
     "createdAt": "2026-10-27T18:00:23.239Z"
-  },
-  {
-    "username": "rajib_test_user",
-    "password": "$2a$10$to0K5Anw4d2XqEpRYoo9F.DyLOYTQcESTGmjA3pSE/lBAlhyAKiNK",
-    "role": "collector",
-    "name": "rajib_test_user",
-    "createdAt": "2026-10-27T18:05:34.116Z"
   }
 ]
