@@ -1566,3 +1566,75 @@ select.form-control option {
   border-radius: 4px;
   font-family: 'JetBrains Mono', monospace;
 }
+
+/* ==========================================================================
+   Puja Dynamic Background Slideshow & Theme Styles
+   Cycles every 20 minutes across high-resolution festive banners
+   ========================================================================== */
+.puja-bg-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -2;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.puja-bg-slide {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  opacity: 0;
+  transition: opacity 1.8s ease-in-out, transform 20s linear;
+  transform: scale(1.02);
+}
+
+.puja-bg-slide.active {
+  opacity: 0.16;
+  transform: scale(1.06);
+}
+
+.puja-bg-overlay {
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle at 50% 15%, rgba(22, 16, 46, 0.72) 0%, rgba(8, 8, 22, 0.94) 80%);
+  z-index: -1;
+  pointer-events: none;
+}
+
+.puja-festive-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(245, 197, 24, 0.12);
+  border: 1px solid rgba(245, 197, 24, 0.35);
+  border-radius: 999px;
+  padding: 4px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #f5c518;
+}
+
+.btn-theme-switch {
+  background: rgba(245, 197, 24, 0.2);
+  border: 1px solid rgba(245, 197, 24, 0.4);
+  color: #fff;
+  border-radius: 999px;
+  padding: 2px 8px;
+  font-size: 11px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.2s ease;
+}
+
+.btn-theme-switch:hover {
+  background: #f5c518;
+  color: #000;
+}
+

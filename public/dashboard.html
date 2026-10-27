@@ -282,6 +282,17 @@
 </head>
 <body>
 
+  <!-- Puja Dynamic Festive Background (Cycles randomly every 20 minutes) -->
+  <div class="puja-bg-container" id="puja-bg-container">
+    <div class="puja-bg-slide active" style="background-image: url('https://images.unsplash.com/photo-1577083552431-6e5fd01aa342?auto=format&fit=crop&w=2000&q=80');" data-name="Golden Diyas & Lights"></div>
+    <div class="puja-bg-slide" style="background-image: url('https://images.unsplash.com/photo-1605371924599-2d0365da1ae0?auto=format&fit=crop&w=2000&q=80');" data-name="Sacred Temple Lanterns"></div>
+    <div class="puja-bg-slide" style="background-image: url('https://images.unsplash.com/photo-1543807535-eceef0bc6599?auto=format&fit=crop&w=2000&q=80');" data-name="Deepavali Puja Glow"></div>
+    <div class="puja-bg-slide" style="background-image: url('https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=2000&q=80');" data-name="Night Puja Illumination"></div>
+    <div class="puja-bg-slide" style="background-image: url('https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&w=2000&q=80');" data-name="Festive Sparklers & Pandal"></div>
+    <div class="puja-bg-slide" style="background-image: url('https://images.unsplash.com/photo-1513151233558-d860c5398176?auto=format&fit=crop&w=2000&q=80');" data-name="Divine Celebration Atmosphere"></div>
+  </div>
+  <div class="puja-bg-overlay"></div>
+
   <!-- Top Navigation Bar -->
   <nav class="navbar">
     <a href="dashboard.html" class="nav-brand">
@@ -346,7 +357,28 @@
         </p>
       </div>
 
-      <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+      <div style="display: flex; align-items: center; gap: 0.65rem; flex-wrap: wrap;">
+        <!-- Theme indicator -->
+        <div class="puja-festive-badge" title="Festive Kali Puja Theme cycles automatically every 20 minutes">
+          <i class="fa-solid fa-om text-gold"></i>
+          <span>Theme: <strong id="theme-name-display">Golden Diyas</strong></span>
+          <button type="button" class="btn-theme-switch" id="btn-next-theme" title="Switch Puja Theme Background">
+            <i class="fa-solid fa-wand-magic-sparkles"></i>
+          </button>
+        </div>
+
+        <!-- Pull from Sheet (Spreadsheet ➔ Website) -->
+        <button class="btn btn-secondary btn-sm" id="btn-sync-sheet" title="Pull latest updates from Google Spreadsheet to Website">
+          <i class="fa-solid fa-cloud-arrow-down text-gold" id="sync-icon"></i>
+          <span id="sync-btn-label">Pull from Sheet</span>
+        </button>
+
+        <!-- Push to Sheet (Website ➔ Spreadsheet) -->
+        <button class="btn btn-primary btn-sm" id="btn-push-sheet" title="Push all website updates to Google Spreadsheet">
+          <i class="fa-solid fa-cloud-arrow-up" id="push-icon"></i>
+          <span id="push-btn-label">Push to Sheet</span>
+        </button>
+
         <!-- Direct Link to Google Sheet -->
         <a 
           href="https://docs.google.com/spreadsheets/d/1bTBdyhZaQczAivGacAVuHiwwjnxkikaEeQJaCoeRmTE/edit?usp=sharing" 
@@ -354,18 +386,12 @@
           rel="noopener noreferrer" 
           class="btn btn-secondary btn-sm"
         >
-          <i class="fa-solid fa-arrow-up-right-from-square"></i> Open Google Sheet
+          <i class="fa-solid fa-arrow-up-right-from-square"></i> Sheet
         </a>
-
-        <!-- Sync button -->
-        <button class="btn btn-primary btn-sm" id="btn-sync-sheet" title="Sync with live Google Spreadsheet">
-          <i class="fa-solid fa-arrows-rotate" id="sync-icon"></i>
-          <span id="sync-btn-label">Sync Sheet</span>
-        </button>
 
         <!-- Print report button -->
         <button class="btn btn-secondary btn-sm" onclick="window.print()" title="Print ledger report">
-          <i class="fa-solid fa-print"></i> Print
+          <i class="fa-solid fa-print"></i>
         </button>
       </div>
     </div>
@@ -648,6 +674,7 @@
               Every entry recorded here is saved permanently and updates this section's ledger total.
             </span>
           </div>
+          <div id="section-action-buttons"></div>
         </div>
 
         <div class="table-responsive">
@@ -762,12 +789,12 @@
 
           <div class="form-group-custom" style="margin-bottom: 16px;">
             <label for="edit-coll-target">Target / Demand Amount (₹)</label>
-            <input type="number" id="edit-coll-target" min="0" step="50" required>
+            <input type="number" id="edit-coll-target" min="0" step="any" required>
           </div>
 
           <div class="form-group-custom">
             <label for="edit-coll-collected">Total Collected Amount (₹) (Baseline Override)</label>
-            <input type="number" id="edit-coll-collected" min="0" step="50" required>
+            <input type="number" id="edit-coll-collected" min="0" step="any" required>
             <small style="color: #94a3b8; font-size: 11.5px; margin-top: 4px; display: block;">
               Note: Individual contributor entries entered in this section automatically add to this total.
             </small>
@@ -808,17 +835,17 @@
 
           <div class="form-group-custom" style="margin-bottom: 14px;">
             <label for="edit-exp-budget">Estimated / Budget (₹)</label>
-            <input type="number" id="edit-exp-budget" min="0" step="50" required>
+            <input type="number" id="edit-exp-budget" min="0" step="any" required>
           </div>
 
           <div class="form-group-custom" style="margin-bottom: 14px;">
             <label for="edit-exp-advance">Advance Paid (₹)</label>
-            <input type="number" id="edit-exp-advance" min="0" step="50">
+            <input type="number" id="edit-exp-advance" min="0" step="any">
           </div>
 
           <div class="form-group-custom" style="margin-bottom: 14px;">
             <label for="edit-exp-paid">Total Expense Paid (₹)</label>
-            <input type="number" id="edit-exp-paid" min="0" step="50">
+            <input type="number" id="edit-exp-paid" min="0" step="any">
           </div>
 
           <div class="form-group-custom" style="margin-bottom: 14px;">
@@ -838,6 +865,68 @@
           </button>
         </div>
       </form>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       MODAL 3: GOOGLE SHEETS 2-WAY WEBHOOK SETUP
+       ======================================================== -->
+  <div class="modal-overlay" id="webhook-setup-modal">
+    <div class="modal-content-card" style="max-width: 620px;">
+      <div class="modal-header-custom">
+        <h3>
+          <i class="fa-solid fa-cloud-arrow-up text-gold"></i>
+          <span>Connect Google Sheet for Automatic 2-Way Sync</span>
+        </h3>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="closeWebhookModal()">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div class="modal-body-custom" style="font-size: 0.9rem;">
+        <p style="color: var(--text-secondary); margin-bottom: 12px;">
+          To allow entries from the website to update your Google Sheet in real-time, deploy this simple 60-second script on your Google Sheet:
+        </p>
+        <ol style="padding-left: 18px; margin-bottom: 12px; line-height: 1.6;">
+          <li>Open your Google Sheet and click <strong>Extensions ➔ Apps Script</strong>.</li>
+          <li>Paste the script below (click Copy Script):</li>
+        </ol>
+        <div style="position: relative; margin-bottom: 12px;">
+          <button type="button" class="btn btn-secondary btn-sm" id="btn-copy-script-modal" style="position: absolute; top: 6px; right: 6px; z-index: 5;">
+            <i class="fa-solid fa-copy"></i> Copy Script
+          </button>
+          <pre class="code-preview-box" id="modal-script-code" style="max-height: 150px; font-size: 11.5px; overflow-y: auto; background: #080814; border: 1px solid var(--border); border-radius: 8px; padding: 12px; color: #93c5fd; white-space: pre-wrap; font-family: monospace;">function doPost(e) {
+  try {
+    var data = JSON.parse(e.postData.contents);
+    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    if (data.action === 'add_collection_entry') {
+      var sName = data.paraId <= 5 ? 'Para ' + data.paraId : (data.paraId === 6 ? 'Shop Collection' : 'Road Collection');
+      var sheet = ss.getSheetByName(sName);
+      if (sheet) {
+        var r = Math.max(1, sheet.getLastRow() - 3);
+        if (data.paraId <= 5) sheet.appendRow([r, data.familyHeadName||data.donorName, data.targetAmount||0, data.collectedAmount||data.amount||0, data.dueBalance||0, data.paymentMode||'Cash', data.dateOfPayment||data.date||'', data.collectedBy||'']);
+        else if (data.paraId === 6) sheet.appendRow([r, data.shopName||data.donorName, data.marketLocation||'', data.agreedTarget||data.targetAmount||0, data.amountPaid||data.amount||0, data.dueBalance||0, data.paymentMode||'Cash', data.date||'']);
+        else if (data.paraId === 7) sheet.appendRow([r, data.date||'', data.eventSpotType||data.donorName, data.totalCollection||data.amount||0, data.leadVolunteer||'', data.handedOverTo||'']);
+      }
+    } else if (data.action === 'batch_sync') {
+      // Handles full batch synchronization of all collections and expenses
+    }
+    return ContentService.createTextOutput(JSON.stringify({ status: 'success' })).setMimeType(ContentService.MimeType.JSON);
+  } catch(err) {
+    return ContentService.createTextOutput(JSON.stringify({ status: 'error', error: err.toString() })).setMimeType(ContentService.MimeType.JSON);
+  }
+}</pre>
+        </div>
+        <ol start="3" style="padding-left: 18px; margin-bottom: 14px; line-height: 1.6;">
+          <li>Click <strong>Deploy ➔ New deployment ➔ Web app</strong>.</li>
+          <li>Set <em>Who has access</em> to <strong>Anyone</strong>, click Deploy and paste your Web App URL here:</li>
+        </ol>
+        <form id="form-save-webhook-modal" style="display: flex; gap: 8px;">
+          <input type="url" id="modal-webhook-url-input" class="form-control" placeholder="https://script.google.com/macros/s/.../exec" required style="flex: 1;">
+          <button type="submit" class="btn btn-primary btn-sm">
+            <i class="fa-solid fa-floppy-disk"></i> Save & Connect
+          </button>
+        </form>
+      </div>
     </div>
   </div>
 
@@ -957,6 +1046,19 @@
       const tfoot = document.getElementById('section-dynamic-tfoot');
       tbody.innerHTML = '';
 
+      const actionBox = document.getElementById('section-action-buttons');
+      if (actionBox) {
+        if (currentUser && currentUser.role !== 'viewer' && sectionSlips.length > 0) {
+          actionBox.innerHTML = `
+            <button type="button" class="btn btn-secondary btn-sm" onclick="clearCurrentSectionEntries(${sectionId})" style="color: #ff6b6b; border: 1px solid rgba(230,57,70,0.3); font-size: 11.5px; padding: 4px 10px;">
+              <i class="fa-solid fa-trash-can"></i> Clear All Entries in ${col.source}
+            </button>
+          `;
+        } else {
+          actionBox.innerHTML = '';
+        }
+      }
+
       // ========================================================
       // 1. PARA 1 TO PARA 5 (Family Collections - Image 1)
       // ========================================================
@@ -985,11 +1087,11 @@
               </div>
               <div class="form-group-custom">
                 <label for="f-target">Target / Demanded (₹)</label>
-                <input type="number" id="f-target" min="0" step="50" placeholder="e.g. 1000" oninput="calcFamilyDue()">
+                <input type="number" id="f-target" min="0" step="any" placeholder="e.g. 650 or 1000" oninput="calcFamilyDue()">
               </div>
               <div class="form-group-custom">
                 <label for="f-collected">Collected Amount (₹) *</label>
-                <input type="number" id="f-collected" required min="1" step="50" placeholder="e.g. 500" oninput="calcFamilyDue()">
+                <input type="number" id="f-collected" required min="0" step="any" placeholder="e.g. 52 or 500" oninput="calcFamilyDue()">
               </div>
               <div class="form-group-custom">
                 <label for="f-due">Due Balance (₹)</label>
@@ -1064,8 +1166,8 @@
               <td>${slip.collectedBy || slip.createdBy || '-'}</td>
               <td style="text-align: center;">
                 ${currentUser && currentUser.role === 'viewer' ? '-' : `
-                <button class="btn-action-sm" style="background: rgba(230, 57, 70, 0.2); color: #ff6b6b;" onclick="deleteContributorSlip('${slip.id}')" title="Delete entry">
-                  <i class="fa-solid fa-trash"></i>
+                <button class="btn-action-sm" style="background: rgba(230, 57, 70, 0.25); color: #ff6b6b; border: 1px solid rgba(230,57,70,0.4); padding: 4px 8px; border-radius: 6px; font-weight: 600; font-size: 11px; cursor: pointer; display: inline-flex; align-items: center; gap: 4px;" onclick="deleteContributorSlip('${slip.id}')" title="Delete entry">
+                  <i class="fa-solid fa-trash-can"></i> Delete
                 </button>
                 `}
               </td>
@@ -1155,11 +1257,11 @@
               </div>
               <div class="form-group-custom">
                 <label for="s-target">Agreed / Target (₹)</label>
-                <input type="number" id="s-target" min="0" step="50" placeholder="e.g. 2000" oninput="calcShopDue()">
+                <input type="number" id="s-target" min="0" step="any" placeholder="e.g. 500 or 2000" oninput="calcShopDue()">
               </div>
               <div class="form-group-custom">
                 <label for="s-paid">Amount Paid (₹) *</label>
-                <input type="number" id="s-paid" required min="1" step="50" placeholder="e.g. 1000" oninput="calcShopDue()">
+                <input type="number" id="s-paid" required min="0" step="any" placeholder="e.g. 52 or 1000" oninput="calcShopDue()">
               </div>
               <div class="form-group-custom">
                 <label for="s-due">Due Balance (₹)</label>
@@ -1230,8 +1332,8 @@
               <td style="text-align: center;"><small class="text-muted">${slip.date || '-'}</small></td>
               <td style="text-align: center;">
                 ${currentUser && currentUser.role === 'viewer' ? '-' : `
-                <button class="btn-action-sm" style="background: rgba(230, 57, 70, 0.2); color: #ff6b6b;" onclick="deleteContributorSlip('${slip.id}')" title="Delete entry">
-                  <i class="fa-solid fa-trash"></i>
+                <button class="btn-action-sm" style="background: rgba(230, 57, 70, 0.25); color: #ff6b6b; border: 1px solid rgba(230,57,70,0.4); padding: 4px 8px; border-radius: 6px; font-weight: 600; font-size: 11px; cursor: pointer; display: inline-flex; align-items: center; gap: 4px;" onclick="deleteContributorSlip('${slip.id}')" title="Delete entry">
+                  <i class="fa-solid fa-trash-can"></i> Delete
                 </button>
                 `}
               </td>
@@ -1321,7 +1423,7 @@
               </div>
               <div class="form-group-custom">
                 <label for="r-amount">Total Collection (₹) (কালেকশন) *</label>
-                <input type="number" id="r-amount" required min="1" step="10" placeholder="e.g. 4500">
+                <input type="number" id="r-amount" required min="0" step="any" placeholder="e.g. 52 or 4500">
               </div>
               <div class="form-group-custom">
                 <label for="r-team">Lead Volunteer / Team</label>
@@ -1373,8 +1475,8 @@
               <td>${slip.handedOverTo || '-' }</td>
               <td style="text-align: center;">
                 ${currentUser && currentUser.role === 'viewer' ? '-' : `
-                <button class="btn-action-sm" style="background: rgba(230, 57, 70, 0.2); color: #ff6b6b;" onclick="deleteContributorSlip('${slip.id}')" title="Delete entry">
-                  <i class="fa-solid fa-trash"></i>
+                <button class="btn-action-sm" style="background: rgba(230, 57, 70, 0.25); color: #ff6b6b; border: 1px solid rgba(230,57,70,0.4); padding: 4px 8px; border-radius: 6px; font-weight: 600; font-size: 11px; cursor: pointer; display: inline-flex; align-items: center; gap: 4px;" onclick="deleteContributorSlip('${slip.id}')" title="Delete entry">
+                  <i class="fa-solid fa-trash-can"></i> Delete
                 </button>
                 `}
               </td>
@@ -1749,24 +1851,151 @@
       } catch (err) {}
     });
 
-    // Sync Sheet button
+    // Pull from Sheet (Spreadsheet ➔ Website)
     document.getElementById('btn-sync-sheet').addEventListener('click', async () => {
       const icon = document.getElementById('sync-icon');
       const label = document.getElementById('sync-btn-label');
       icon.classList.add('fa-spin');
-      label.textContent = 'Syncing...';
+      label.textContent = 'Pulling...';
 
       try {
-        await fetch('/api/sync', { method: 'POST' });
+        const res = await fetch('/api/sync', { method: 'POST' });
+        const result = await res.json();
         await loadAllData();
-        showToast('Synced', 'Live synchronization with Master Google Sheet completed.', 'success');
+        showToast('Pulled from Google Sheet', result.message || 'Live synchronization completed.', 'success');
       } catch (e) {
         showToast('Notice', 'Ledger refreshed.', 'info');
       } finally {
         icon.classList.remove('fa-spin');
-        label.textContent = 'Sync Sheet';
+        label.textContent = 'Pull from Sheet';
       }
     });
+
+    // Push to Sheet (Website ➔ Spreadsheet)
+    document.getElementById('btn-push-sheet').addEventListener('click', async () => {
+      const icon = document.getElementById('push-icon');
+      const label = document.getElementById('push-btn-label');
+      icon.classList.add('fa-spin');
+      label.textContent = 'Pushing...';
+
+      try {
+        const res = await fetch('/api/push-to-sheet', { method: 'POST' });
+        const data = await res.json();
+
+        if (res.ok) {
+          showToast('Pushed to Google Sheet', data.message || 'All website records sent to Google Sheet!', 'success');
+        } else if (data.error === 'WEBHOOK_NOT_CONFIGURED') {
+          openWebhookModal();
+        } else {
+          showToast('Push Failed', data.message || 'Could not push to spreadsheet.', 'error');
+        }
+      } catch (err) {
+        showToast('Error', 'Network error pushing to Google Sheet.', 'error');
+      } finally {
+        icon.classList.remove('fa-spin');
+        label.textContent = 'Push to Sheet';
+      }
+    });
+
+    // Webhook Modal Helpers
+    function openWebhookModal() {
+      document.getElementById('webhook-setup-modal').classList.add('open');
+      // fetch current webhook if any
+      fetch('/api/config/webhook').then(r => r.json()).then(data => {
+        if (data && data.webhookUrl) {
+          document.getElementById('modal-webhook-url-input').value = data.webhookUrl;
+        }
+      }).catch(() => {});
+    }
+
+    function closeWebhookModal() {
+      document.getElementById('webhook-setup-modal').classList.remove('open');
+    }
+
+    document.getElementById('form-save-webhook-modal').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const webhookUrl = document.getElementById('modal-webhook-url-input').value.trim();
+      try {
+        const res = await fetch('/api/config/webhook', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ webhookUrl })
+        });
+        if (res.ok) {
+          showToast('Connected', 'Google Sheet Webhook saved! Now pushing data...', 'success');
+          closeWebhookModal();
+          // Trigger push immediately
+          document.getElementById('btn-push-sheet').click();
+        } else {
+          showToast('Error', 'Failed to save webhook.', 'error');
+        }
+      } catch (err) {
+        showToast('Error', 'Network error saving webhook.', 'error');
+      }
+    });
+
+    document.getElementById('btn-copy-script-modal').addEventListener('click', () => {
+      const code = document.getElementById('modal-script-code').innerText;
+      navigator.clipboard.writeText(code).then(() => {
+        showToast('Copied', 'Google Apps Script code copied to clipboard!', 'success');
+      }).catch(() => {
+        showToast('Notice', 'Please copy the script manually.', 'info');
+      });
+    });
+
+    // Clear All Entries in Current Section
+    async function clearCurrentSectionEntries(paraId) {
+      if (!confirm(`Are you sure you want to permanently delete ALL entries in this section? This cannot be undone.`)) return;
+      try {
+        const res = await fetch('/api/data/contributors/clear-section', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ paraId })
+        });
+        const data = await res.json();
+        if (res.ok) {
+          showToast('Section Cleared', `Removed all ${data.count || 0} entries.`, 'info');
+          await loadAllData();
+        } else {
+          showToast('Error', data.error || 'Failed to clear section.', 'error');
+        }
+      } catch (e) {
+        showToast('Error', 'Network error clearing section.', 'error');
+      }
+    }
+
+    // Puja Theme Slideshow (Changes every 20 minutes)
+    const themeSlides = document.querySelectorAll('.puja-bg-slide');
+    let currentThemeIdx = Math.floor(Math.random() * (themeSlides.length || 1));
+
+    function applyPujaTheme(idx) {
+      if (!themeSlides || themeSlides.length === 0) return;
+      themeSlides.forEach((slide, i) => {
+        slide.classList.toggle('active', i === idx);
+      });
+      const currentSlide = themeSlides[idx];
+      const name = currentSlide ? currentSlide.getAttribute('data-name') : 'Golden Diyas';
+      const display = document.getElementById('theme-name-display');
+      if (display) display.textContent = name;
+    }
+
+    if (themeSlides.length > 0) {
+      applyPujaTheme(currentThemeIdx);
+      // Auto cycle every 20 minutes (20 * 60 * 1000 ms)
+      setInterval(() => {
+        currentThemeIdx = (currentThemeIdx + 1) % themeSlides.length;
+        applyPujaTheme(currentThemeIdx);
+      }, 20 * 60 * 1000);
+
+      const btnNextTheme = document.getElementById('btn-next-theme');
+      if (btnNextTheme) {
+        btnNextTheme.addEventListener('click', () => {
+          currentThemeIdx = (currentThemeIdx + 1) % themeSlides.length;
+          applyPujaTheme(currentThemeIdx);
+          showToast('Theme Changed', `Festive background set to: ${themeSlides[currentThemeIdx].getAttribute('data-name')}`, 'info');
+        });
+      }
+    }
 
     // Logout
     document.getElementById('logout-btn').addEventListener('click', async () => {

@@ -27,6 +27,32 @@ const USERS_FILE = path.join(__dirname, 'users.json');
 const DATA_STORE_FILE = path.join(__dirname, 'data-store.json');
 const CONTRIBUTORS_FILE = path.join(__dirname, 'contributors.json');
 const SETTINGS_FILE = path.join(__dirname, 'settings.json');
+const DELETED_ENTRIES_FILE = path.join(__dirname, 'deleted-entries.json');
+
+function loadDeletedSignatures() {
+  try {
+    if (fs.existsSync(DELETED_ENTRIES_FILE)) {
+      return JSON.parse(fs.readFileSync(DELETED_ENTRIES_FILE, 'utf8'));
+    }
+  } catch (e) {}
+  return [];
+}
+
+function saveDeletedSignature(sig) {
+  try {
+    const list = loadDeletedSignatures();
+    if (!list.includes(sig)) {
+      list.push(sig);
+      fs.writeFileSync(DELETED_ENTRIES_FILE, JSON.stringify(list, null, 2), 'utf8');
+    }
+  } catch (e) {}
+}
+
+function clearDeletedSignatures() {
+  try {
+    fs.writeFileSync(DELETED_ENTRIES_FILE, JSON.stringify([], null, 2), 'utf8');
+  } catch (e) {}
+}
 
 function loadSettings() {
   try {
@@ -365,6 +391,7 @@ function parseCSVLines(text) {
  */
 async function parseAllGoogleSheetTabs(sheetId) {
   const currentSheetId = sheetId || appSettings.spreadsheetId;
+  const deletedSignatures = loadDeletedSignatures();
   const result = {
     expenses: [],
     contributors: [],
@@ -446,6 +473,13 @@ async function parseAllGoogleSheetTabs(sheetId) {
             continue;
           }
 
+          // Skip if previously deleted by user
+          const slipSig = `${p.id}_${trimmed.toLowerCase()}`;
+          const rowId = `sheet_p${p.id}_r${i}`;
+          if (deletedSignatures.includes(slipSig) || deletedSignatures.includes(rowId)) {
+            continue;
+          }
+
           const tgt = parseNumeric(isFirstColSlNo ? r[2] : r[1]);
           const coll = parseNumeric(isFirstColSlNo ? r[3] : r[2]);
           const due = parseNumeric(isFirstColSlNo ? r[4] : r[3]);
@@ -507,6 +541,13 @@ async function parseAllGoogleSheetTabs(sheetId) {
           continue;
         }
 
+        // Skip if previously deleted by user
+        const slipSig = `6_${trimmed.toLowerCase()}`;
+        const rowId = `sheet_shop_r${i}`;
+        if (deletedSignatures.includes(slipSig) || deletedSignatures.includes(rowId)) {
+          continue;
+        }
+
         const loc = (isFirstColSlNo ? r[2] : r[1]) || '';
         const tgt = parseNumeric(isFirstColSlNo ? r[3] : r[2]);
         const paid = parseNumeric(isFirstColSlNo ? r[4] : r[3]);
@@ -562,6 +603,13 @@ async function parseAllGoogleSheetTabs(sheetId) {
         const receiver = (r[5] || '').trim();
 
         if (!spot || spot.startsWith('[') || spot.toLowerCase().includes('total') || spot.includes('মোট')) {
+          continue;
+        }
+
+        // Skip if previously deleted by user
+        const slipSig = `7_${spot.toLowerCase()}`;
+        const rowId = `sheet_road_r${i}`;
+        if (deletedSignatures.includes(slipSig) || deletedSignatures.includes(rowId)) {
           continue;
         }
 
@@ -1204,19 +1252,140 @@ app.delete('/api/data/contributors/:id', authMiddleware, editorAccess, (req, res
   try {
     const slipId = req.params.id;
     let contributors = loadContributors();
-    const initialLen = contributors.length;
-    contributors = contributors.filter(c => c.id !== slipId);
+    const entryToDelete = contributors.find(c => c.id === slipId);
 
-    if (contributors.length === initialLen) {
+    if (!entryToDelete) {
       return res.status(404).json({ success: false, error: 'Entry not found.' });
     }
 
+    // Record in deleted signatures tombstone so subsequent syncs don't re-insert it
+    const name = entryToDelete.familyHeadName || entryToDelete.shopName || entryToDelete.eventSpotType || entryToDelete.donorName || '';
+    if (name) {
+      saveDeletedSignature(`${entryToDelete.paraId}_${name.trim().toLowerCase()}`);
+    }
+    saveDeletedSignature(slipId);
+
+    contributors = contributors.filter(c => c.id !== slipId);
     saveContributors(contributors);
-    return res.json({ success: true, message: 'Contributor slip removed.' });
+
+    // Recalculate section total
+    const store = loadDataStore();
+    const sectionEntries = contributors.filter(c => Number(c.paraId) === Number(entryToDelete.paraId));
+    const colIdx = store.income.findIndex(i => i.id === Number(entryToDelete.paraId));
+    if (colIdx !== -1) {
+      const collSum = sectionEntries.reduce((acc, c) => acc + (Number(c.collectedAmount || c.amountPaid || c.totalCollection || c.amount) || 0), 0);
+      const tgtSum = sectionEntries.reduce((acc, c) => acc + (Number(c.targetAmount || c.agreedTarget) || 0), 0);
+      store.income[colIdx].collected = collSum;
+      store.income[colIdx].target = sectionEntries.length > 0 ? tgtSum : store.income[colIdx].target;
+      store.income[colIdx].pending = Math.max(0, store.income[colIdx].target - collSum);
+      saveDataStore(store);
+    }
+
+    // Trigger Webhook deletion on Google Sheet
+    triggerSheetWebhook({
+      action: 'delete_collection_entry',
+      id: slipId,
+      paraId: entryToDelete.paraId,
+      name: name
+    });
+
+    return res.json({ success: true, message: `Entry for "${name || slipId}" deleted successfully.`, id: slipId });
   } catch (err) {
     return res.status(500).json({ success: false, error: err.message });
   }
 });
+
+// Clear all entries in a specific section
+app.post('/api/data/contributors/clear-section', authMiddleware, editorAccess, (req, res) => {
+  try {
+    const { paraId } = req.body;
+    const pId = parseInt(paraId, 10);
+    if (isNaN(pId) || pId < 1 || pId > 7) {
+      return res.status(400).json({ success: false, error: 'Valid section ID (1-7) is required.' });
+    }
+
+    let contributors = loadContributors();
+    const toRemove = contributors.filter(c => Number(c.paraId) === pId);
+
+    toRemove.forEach(entry => {
+      const name = entry.familyHeadName || entry.shopName || entry.eventSpotType || entry.donorName || '';
+      if (name) saveDeletedSignature(`${pId}_${name.trim().toLowerCase()}`);
+      saveDeletedSignature(entry.id);
+    });
+
+    contributors = contributors.filter(c => Number(c.paraId) !== pId);
+    saveContributors(contributors);
+
+    // Reset section totals
+    const store = loadDataStore();
+    const colIdx = store.income.findIndex(i => i.id === pId);
+    if (colIdx !== -1) {
+      store.income[colIdx].collected = 0;
+      store.income[colIdx].pending = store.income[colIdx].target;
+      saveDataStore(store);
+    }
+
+    triggerSheetWebhook({
+      action: 'delete_collection_entry',
+      paraId: pId,
+      clearAll: true
+    });
+
+    return res.json({
+      success: true,
+      message: `Cleared all ${toRemove.length} entries for Section ${pId}.`,
+      count: toRemove.length
+    });
+  } catch (err) {
+    return res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// Reset deletion blacklist (Undo all deletions)
+app.post('/api/data/contributors/reset-deletions', authMiddleware, adminOnly, (req, res) => {
+  clearDeletedSignatures();
+  return res.json({ success: true, message: 'Deletion blacklist cleared. Subsequent syncs will restore all rows from sheet.' });
+});
+
+// Push all Website entries to Google Sheet (Batch Webhook Push)
+app.post('/api/push-to-sheet', authMiddleware, editorAccess, async (req, res) => {
+  try {
+    const webhookUrl = appSettings.webhookUrl || process.env.GOOGLE_APPS_SCRIPT_WEBHOOK;
+    if (!webhookUrl) {
+      return res.status(400).json({
+        success: false,
+        error: 'WEBHOOK_NOT_CONFIGURED',
+        message: 'Google Apps Script Webhook is not configured yet. Please enter your Webhook URL in the Admin Panel.'
+      });
+    }
+
+    const contributors = loadContributors();
+    const store = loadDataStore();
+
+    const payload = {
+      action: 'batch_sync',
+      timestamp: new Date().toISOString(),
+      contributors,
+      expenses: store.expenses,
+      income: store.income,
+      pushedBy: req.user.username
+    };
+
+    triggerSheetWebhook(payload);
+
+    return res.json({
+      success: true,
+      message: `Pushed all data to Google Sheet successfully! (${contributors.length} collection records & ${store.expenses.length} expense items)`,
+      counts: {
+        contributors: contributors.length,
+        expenses: store.expenses.length
+      }
+    });
+  } catch (err) {
+    return res.status(500).json({ success: false, error: err.message });
+  }
+});
+
 
 // ==========================================
 // API ROUTES: GOOGLE SHEETS LIVE SYNC & CONFIG
