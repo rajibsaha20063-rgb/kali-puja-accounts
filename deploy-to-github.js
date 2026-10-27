@@ -57,7 +57,7 @@ function githubRequest(endpoint, method = 'GET', data = null) {
 }
 
 // Collect all project files
-const IGNORED_PATHS = ['.git', 'node_modules', '.env', 'demo-data.json', 'users.json', '.DS_Store'];
+const IGNORED_PATHS = ['.git', 'node_modules', '.env', 'demo-data.json', '.DS_Store'];
 
 function getFiles(dir, baseDir = dir) {
   let results = [];
