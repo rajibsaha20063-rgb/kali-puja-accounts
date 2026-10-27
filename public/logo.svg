@@ -1,0 +1,111 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" width="100%" height="100%">
+  <defs>
+    <!-- Background Glow Gradient -->
+    <radialGradient id="auraGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ff6b35" stop-opacity="0.85" />
+      <stop offset="45%" stop-color="#d90429" stop-opacity="0.6" />
+      <stop offset="80%" stop-color="#2b0938" stop-opacity="0.8" />
+      <stop offset="100%" stop-color="#0a0518" stop-opacity="1" />
+    </radialGradient>
+
+    <!-- Metallic Gold Gradient -->
+    <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fff176" />
+      <stop offset="30%" stop-color="#ffd700" />
+      <stop offset="70%" stop-color="#f59e0b" />
+      <stop offset="100%" stop-color="#b45309" />
+    </linearGradient>
+
+    <!-- Divine Crimson Gradient -->
+    <linearGradient id="rubyGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ff4d6d" />
+      <stop offset="50%" stop-color="#d90429" />
+      <stop offset="100%" stop-color="#590d22" />
+    </linearGradient>
+
+    <!-- Diya Flame Gradient -->
+    <linearGradient id="flameGrad" x1="0%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" stop-color="#e63946" />
+      <stop offset="40%" stop-color="#ff7b00" />
+      <stop offset="75%" stop-color="#ffb703" />
+      <stop offset="100%" stop-color="#ffffff" />
+    </linearGradient>
+
+    <!-- Outer Ring Shadow Filter -->
+    <filter id="glowFilter" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- Outer Protective Halo / Circular Shield -->
+  <circle cx="80" cy="80" r="76" fill="url(#auraGlow)" stroke="url(#goldGradient)" stroke-width="3" filter="url(#glowFilter)" />
+  <circle cx="80" cy="80" r="71" fill="none" stroke="#f5c518" stroke-width="1" stroke-dasharray="2,3" opacity="0.8" />
+
+  <!-- Radiating Sacred Rays (12 Petals / Rays) -->
+  <g opacity="0.4" stroke="url(#goldGradient)" stroke-width="1.5">
+    <line x1="80" y1="10" x2="80" y2="20" />
+    <line x1="80" y1="150" x2="80" y2="140" />
+    <line x1="10" y1="80" x2="20" y2="80" />
+    <line x1="150" y1="80" x2="140" y2="80" />
+    <line x1="30" y1="30" x2="38" y2="38" />
+    <line x1="130" y1="130" x2="122" y2="122" />
+    <line x1="30" y1="130" x2="38" y2="122" />
+    <line x1="130" y1="30" x2="122" y2="38" />
+  </g>
+
+  <!-- Divine Third Eye (Trinayan) & Crimson Bindi at the Upper Center -->
+  <g transform="translate(80, 48)">
+    <!-- Eye Outer Contour -->
+    <path d="M -16,0 Q 0,-12 16,0 Q 0,12 -16,0 Z" fill="#ffffff" stroke="url(#goldGradient)" stroke-width="1.5" />
+    <!-- Pupil / Iris -->
+    <circle cx="0" cy="0" r="5" fill="url(#rubyGradient)" />
+    <circle cx="0" cy="0" r="2.2" fill="#000000" />
+    <circle cx="1.5" cy="-1.5" r="1" fill="#ffffff" />
+    <!-- Sacred Red & Chandan Tilak Lines above Eye -->
+    <path d="M 0,-13 L 0,-24" stroke="url(#rubyGradient)" stroke-width="2.5" stroke-linecap="round" />
+    <circle cx="0" cy="-28" r="2.5" fill="url(#goldGradient)" />
+    <!-- Crescent Moon (Chandra) -->
+    <path d="M -8,-20 A 7,7 0 0,0 8,-20 A 9,9 0 0,1 -8,-20" fill="url(#goldGradient)" opacity="0.9" />
+  </g>
+
+  <!-- Sacred Golden Trishul (Trident) - Maa Kali's Weapon of Power -->
+  <g transform="translate(80, 84)">
+    <!-- Central Spear Spike -->
+    <path d="M 0,-28 L 5,-14 L 3,18 L -3,18 L -5,-14 Z" fill="url(#goldGradient)" stroke="#b45309" stroke-width="0.8" />
+    <path d="M 0,-33 L 4,-26 L -4,-26 Z" fill="#ffffff" />
+    <!-- Left Curved Blade -->
+    <path d="M -4,-8 C -14,-10 -22,-20 -20,-30 C -18,-24 -12,-16 -4,-4" fill="url(#goldGradient)" stroke="#b45309" stroke-width="0.8" />
+    <path d="M -20,-30 L -18,-23 L -24,-24 Z" fill="#ffb703" />
+    <!-- Right Curved Blade -->
+    <path d="M 4,-8 C 14,-10 22,-20 20,-30 C 18,-24 12,-16 4,-4" fill="url(#goldGradient)" stroke="#b45309" stroke-width="0.8" />
+    <path d="M 20,-30 L 18,-23 L 24,-24 Z" fill="#ffb703" />
+    <!-- Central Trishul Ruby Gem -->
+    <circle cx="0" cy="-6" r="4" fill="url(#rubyGradient)" stroke="url(#goldGradient)" stroke-width="1" />
+    <!-- Staff Base Shaft -->
+    <rect x="-2" y="18" width="4" height="22" rx="1.5" fill="url(#goldGradient)" />
+  </g>
+
+  <!-- Sacred Clay Diya / Pradeep (Lamp of Kali Puja) at the Base -->
+  <g transform="translate(80, 126)">
+    <!-- Burning Diya Flame -->
+    <path d="M 0,-18 C -7,-9 -6,-2 0,0 C 6,-2 7,-9 0,-18 Z" fill="url(#flameGrad)" filter="url(#glowFilter)" />
+    <!-- Inner Flame Core -->
+    <path d="M 0,-13 C -3,-7 -2,-2 0,0 C 2,-2 3,-7 0,-13 Z" fill="#ffffff" opacity="0.9" />
+    <!-- Diya Bowl (Earthen Matir Pradeep) -->
+    <path d="M -22,0 Q 0,-3 22,0 C 18,12 -18,12 -22,0 Z" fill="url(#rubyGradient)" stroke="url(#goldGradient)" stroke-width="1.8" />
+    <!-- Base Plate -->
+    <ellipse cx="0" cy="11" rx="14" ry="2.5" fill="url(#goldGradient)" />
+    <!-- Decorative Garland Petals around Diya -->
+    <circle cx="-16" cy="1" r="2.5" fill="#ffd700" />
+    <circle cx="-8" cy="3" r="2.5" fill="#ff4d6d" />
+    <circle cx="0" cy="4" r="2.5" fill="#ffd700" />
+    <circle cx="8" cy="3" r="2.5" fill="#ff4d6d" />
+    <circle cx="16" cy="1" r="2.5" fill="#ffd700" />
+  </g>
+
+  <!-- Curved Banner Ribbons / Text Border Elements -->
+  <g font-family="'Outfit', sans-serif" font-weight="800" font-size="7" fill="url(#goldGradient)" letter-spacing="1.5">
+    <text text-anchor="middle" x="80" y="152">NEIGHBOURHOOD CLUB</text>
+  </g>
+</svg>
