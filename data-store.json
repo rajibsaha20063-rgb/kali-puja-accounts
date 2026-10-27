@@ -1,0 +1,151 @@
+{
+  "income": [
+    {
+      "id": 1,
+      "source": "Para 1 Collection (পাড়া ১)",
+      "target": 0,
+      "collected": 0,
+      "pending": 0
+    },
+    {
+      "id": 2,
+      "source": "Para 2 Collection (পাড়া ২)",
+      "target": 0,
+      "collected": 0,
+      "pending": 0
+    },
+    {
+      "id": 3,
+      "source": "Para 3 Collection (পাড়া ৩)",
+      "target": 0,
+      "collected": 0,
+      "pending": 0
+    },
+    {
+      "id": 4,
+      "source": "Para 4 Collection (পাড়া ৪)",
+      "target": 0,
+      "collected": 0,
+      "pending": 0
+    },
+    {
+      "id": 5,
+      "source": "Para 5 Collection (পাড়া ৫)",
+      "target": 0,
+      "collected": 0,
+      "pending": 0
+    },
+    {
+      "id": 6,
+      "source": "Shop & Market Collection (দোকান কালেকশন)",
+      "target": 0,
+      "collected": 0,
+      "pending": 0
+    },
+    {
+      "id": 7,
+      "source": "Road & Night Collection (রোড ও স্পট কালেকশন)",
+      "target": 0,
+      "collected": 0,
+      "pending": 0
+    }
+  ],
+  "expenses": [
+    {
+      "id": 1,
+      "category": "লাইট (Light)",
+      "budget": 4500,
+      "advance": 0,
+      "totalPaid": 0,
+      "pending": 4500
+    },
+    {
+      "id": 2,
+      "category": "প্যান্ডেল (Pandal)",
+      "budget": 15000,
+      "advance": 0,
+      "totalPaid": 0,
+      "pending": 15000
+    },
+    {
+      "id": 3,
+      "category": "ঠাকুর (Thakur / Idol)",
+      "budget": 7500,
+      "advance": 0,
+      "totalPaid": 0,
+      "pending": 7500
+    },
+    {
+      "id": 4,
+      "category": "সাউন্ড সিস্টেম (Sound System)",
+      "budget": 8000,
+      "advance": 0,
+      "totalPaid": 0,
+      "pending": 8000
+    },
+    {
+      "id": 5,
+      "category": "দশকর্মা (Dashakarma)",
+      "budget": 0,
+      "advance": 0,
+      "totalPaid": 0,
+      "pending": 0
+    },
+    {
+      "id": 6,
+      "category": "পূজারী (Pujari / Purohit)",
+      "budget": 0,
+      "advance": 0,
+      "totalPaid": 0,
+      "pending": 0
+    },
+    {
+      "id": 7,
+      "category": "ভোগ (Bhog)",
+      "budget": 0,
+      "advance": 0,
+      "totalPaid": 0,
+      "pending": 0
+    },
+    {
+      "id": 8,
+      "category": "ভোগ রান্না করার মাসি (Cook / Bhog Ranna)",
+      "budget": 0,
+      "advance": 0,
+      "totalPaid": 0,
+      "pending": 0
+    },
+    {
+      "id": 9,
+      "category": "প্রোগ্রাম (Program)",
+      "budget": 0,
+      "advance": 0,
+      "totalPaid": 0,
+      "pending": 0
+    },
+    {
+      "id": 10,
+      "category": "মিসলেনিয়াস ১ (Miscellaneous 1)",
+      "budget": 0,
+      "advance": 0,
+      "totalPaid": 0,
+      "pending": 0
+    },
+    {
+      "id": 11,
+      "category": "মিসলেনিয়াস ২ (Miscellaneous 2)",
+      "budget": 0,
+      "advance": 0,
+      "totalPaid": 0,
+      "pending": 0
+    },
+    {
+      "id": 12,
+      "category": "মিসলেনিয়াস ৩ (Miscellaneous 3)",
+      "budget": 0,
+      "advance": 0,
+      "totalPaid": 0,
+      "pending": 0
+    }
+  ]
+}

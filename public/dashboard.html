@@ -3,99 +3,195 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard | NEIGHBOURHOOD CLUB 🔥 Kali Puja 2026 Accounts & Audit</title>
+  <title>Dashboard | NEIGHBOURHOOD CLUB 🔥 Kali Puja Accounts & Audit</title>
   
   <!-- Google Fonts: Outfit & JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   
   <!-- Font Awesome Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
   
   <!-- Main Stylesheet -->
   <link rel="stylesheet" href="styles.css">
 
   <style>
-    .sync-badge {
+    :root {
+      --gold: #f5c518;
+      --orange: #ff6b35;
+      --green: #2ecc71;
+      --red: #e63946;
+      --blue: #3498db;
+      --bg-dark: #0a0a1a;
+      --bg-card: #14142b;
+      --border: #333355;
+    }
+
+    /* Section Tabs */
+    .nav-tabs-wrapper {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 12px;
+      overflow-x: auto;
+    }
+    .tab-btn {
+      padding: 10px 18px;
+      background: #0d0d22;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: #a0a0c0;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+    .tab-btn:hover {
+      background: #1c1c3a;
+      color: #ffffff;
+      border-color: #555588;
+    }
+    .tab-btn.active {
+      background: linear-gradient(135deg, rgba(245, 197, 24, 0.15) 0%, rgba(255, 107, 53, 0.15) 100%);
+      color: var(--gold);
+      border-color: var(--gold);
+      box-shadow: 0 0 14px rgba(245, 197, 24, 0.2);
+    }
+
+    /* Deep Entry Box */
+    .deep-entry-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+    .form-grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    .form-group-custom label {
+      display: block;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: #c0c0d8;
+      margin-bottom: 6px;
+    }
+    .form-group-custom input,
+    .form-group-custom select {
+      width: 100%;
+      padding: 10px 14px;
+      background: #090918;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: #ffffff;
+      font-size: 14px;
+      font-family: inherit;
+    }
+    .form-group-custom input:focus,
+    .form-group-custom select:focus {
+      outline: none;
+      border-color: var(--gold);
+      box-shadow: 0 0 8px rgba(245, 197, 24, 0.3);
+    }
+    .btn-action-sm {
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      background: rgba(20, 20, 45, 0.6);
-      padding: 0.3rem 0.75rem;
-      border-radius: var(--radius-md);
-      border: 1px solid var(--border);
-    }
-    .sync-pulse {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background-color: var(--green);
-      box-shadow: 0 0 8px var(--green);
-      animation: pulseGreen 2s infinite ease-in-out;
-    }
-    @keyframes pulseGreen {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.4; transform: scale(0.85); }
-    }
-    .edit-tooltip {
-      font-size: 0.75rem;
-      color: var(--gold);
-      background: rgba(245, 197, 24, 0.1);
-      border: 1px solid rgba(245, 197, 24, 0.25);
-      border-radius: var(--radius-sm);
-      padding: 2px 6px;
-      margin-left: 6px;
-      font-weight: 500;
-    }
-    .editable-inline-input {
-      background: #0d0d22;
-      border: 1.5px solid var(--gold);
-      color: #fff;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.95rem;
-      font-weight: 600;
-      padding: 4px 8px;
-      border-radius: 4px;
-      width: 110px;
-      text-align: right;
-    }
-    .editable-inline-input:focus {
-      outline: none;
-      box-shadow: 0 0 10px rgba(245, 197, 24, 0.4);
-    }
-    .action-btn-inline {
+      gap: 5px;
       border: none;
-      background: none;
-      cursor: pointer;
-      padding: 4px 6px;
-      border-radius: 4px;
-      transition: var(--transition);
-      font-size: 0.85rem;
+      transition: all 0.2s;
     }
-    .action-btn-inline.save { color: var(--green); }
-    .action-btn-inline.save:hover { background: rgba(46, 204, 113, 0.2); }
-    .action-btn-inline.cancel { color: var(--red); }
-    .action-btn-inline.cancel:hover { background: rgba(230, 57, 70, 0.2); }
+    .btn-action-edit {
+      background: rgba(245, 197, 24, 0.15);
+      color: var(--gold);
+      border: 1px solid rgba(245, 197, 24, 0.4);
+    }
+    .btn-action-edit:hover {
+      background: var(--gold);
+      color: #000;
+    }
+    .btn-action-deep {
+      background: rgba(52, 152, 219, 0.15);
+      color: #60a5fa;
+      border: 1px solid rgba(52, 152, 219, 0.4);
+    }
+    .btn-action-deep:hover {
+      background: #3498db;
+      color: #fff;
+    }
 
-    .quick-stat-bar {
+    /* Modals */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(4px);
       display: flex;
       align-items: center;
-      gap: 15px;
-      margin-top: 8px;
+      justify-content: center;
+      z-index: 1000;
+      padding: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
     }
-    .quick-stat-item {
+    .modal-overlay.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .modal-content-card {
+      background: #14142b;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      width: 100%;
+      max-width: 520px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), 0 0 20px rgba(245, 197, 24, 0.15);
+      overflow: hidden;
+      transform: translateY(20px);
+      transition: transform 0.25s ease;
+    }
+    .modal-overlay.open .modal-content-card {
+      transform: translateY(0);
+    }
+    .modal-header-custom {
+      padding: 18px 24px;
+      background: #0d0d22;
+      border-bottom: 1px solid var(--border);
       display: flex;
       align-items: center;
-      gap: 6px;
-      font-size: 0.82rem;
-      color: var(--text-secondary);
+      justify-content: space-between;
     }
-    .quick-stat-item strong {
-      color: var(--text-primary);
-      font-family: 'JetBrains Mono', monospace;
+    .modal-header-custom h3 {
+      font-size: 16px;
+      font-weight: 700;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .modal-body-custom {
+      padding: 24px;
+    }
+    .modal-footer-custom {
+      padding: 16px 24px;
+      background: #0d0d22;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
     }
   </style>
 </head>
@@ -107,7 +203,7 @@
       <span class="nav-logo-icon">🔥</span>
       <div class="nav-brand-text">
         <span class="nav-brand-title">NEIGHBOURHOOD CLUB</span>
-        <span class="nav-brand-sub">Kali Puja 2026 | Accounts & Audit</span>
+        <span class="nav-brand-sub">Kali Puja 2026 | Financial Accounts & Audit</span>
       </div>
     </a>
 
@@ -118,19 +214,8 @@
         </a>
       </li>
       <li class="nav-item">
-        <a href="#collections-section">
-          <i class="fa-solid fa-hand-holding-dollar"></i> Collections (Income)
-        </a>
-      </li>
-      <li class="nav-item">
-        <a href="#expenses-section">
-          <i class="fa-solid fa-receipt"></i> Puja Expenses
-        </a>
-      </li>
-      <!-- Admin Nav Item (visible only for admin) -->
-      <li class="nav-item" id="nav-admin-link" style="display: none;">
-        <a href="admin.html">
-          <i class="fa-solid fa-shield-halved text-gold"></i> Admin Panel
+        <a href="https://docs.google.com/spreadsheets/d/1bTBdyhZaQczAivGacAVuHiwwjnxkikaEeQJaCoeRmTE/edit?usp=sharing" target="_blank" rel="noopener noreferrer">
+          <i class="fa-solid fa-table-cells text-green"></i> Google Spreadsheet
         </a>
       </li>
     </ul>
@@ -139,8 +224,8 @@
       <div class="user-profile">
         <div class="user-avatar" id="user-avatar-initial">A</div>
         <div class="user-details">
-          <span class="username-display" id="user-display-name">User</span>
-          <span class="role-badge" id="user-role-badge">VIEWER</span>
+          <span class="username-display" id="user-display-name">Master Admin</span>
+          <span class="role-badge admin">ADMIN</span>
         </div>
       </div>
 
@@ -158,49 +243,54 @@
     <div class="page-header">
       <div class="page-title-box">
         <h1 class="page-title">
-          <span>Kali Puja 2026 Audit & Accounts Summary</span>
+          <span>Kali Puja 2026 Financial Audit Ledger</span>
         </h1>
         <p class="page-subtitle">
-          Real-time Income, Expenditure, and Net Cash in Hand Ledger
+          Synced live with Master Google Sheet & Deep Contributor Entry System
         </p>
       </div>
 
       <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
-        <!-- Auto-refresh status -->
-        <div class="sync-badge" id="sync-status-badge">
-          <span class="sync-pulse"></span>
-          <span id="sync-time-text">Auto-refresh: 30s</span>
-        </div>
+        <!-- Direct Link to Google Sheet -->
+        <a 
+          href="https://docs.google.com/spreadsheets/d/1bTBdyhZaQczAivGacAVuHiwwjnxkikaEeQJaCoeRmTE/edit?usp=sharing" 
+          target="_blank" 
+          rel="noopener noreferrer" 
+          class="btn btn-secondary btn-sm"
+        >
+          <i class="fa-solid fa-arrow-up-right-from-square"></i> Open Google Sheet
+        </a>
 
-        <!-- Manual refresh button -->
-        <button class="btn btn-secondary btn-sm" id="btn-manual-refresh" title="Refresh data now">
-          <i class="fa-solid fa-arrows-rotate" id="refresh-icon"></i> Refresh
+        <!-- Sync button -->
+        <button class="btn btn-primary btn-sm" id="btn-sync-sheet" title="Sync with live Google Spreadsheet">
+          <i class="fa-solid fa-arrows-rotate" id="sync-icon"></i>
+          <span id="sync-btn-label">Sync Sheet</span>
         </button>
 
         <!-- Print report button -->
-        <button class="btn btn-primary btn-sm" onclick="window.print()" title="Print ledger report or save as PDF">
-          <i class="fa-solid fa-print"></i> Print Audit Report
+        <button class="btn btn-secondary btn-sm" onclick="window.print()" title="Print ledger report">
+          <i class="fa-solid fa-print"></i> Print
         </button>
       </div>
     </div>
 
-    <!-- 1. Summary Cards (3 cards row) -->
+    <!-- 1. Top Financial Overview Cards (Row 6 of Google Sheet) -->
     <div class="summary-grid">
       <!-- Income Card -->
       <div class="stat-card income">
         <div class="stat-header">
           <div class="stat-title-wrap">
-            <span class="stat-label-en">Total Income / Collection</span>
-            <span class="stat-label-bn">💰 Total Collections from all Sources</span>
+            <span class="stat-label-en">TOTAL INCOME / COLLECTION</span>
+            <span class="stat-label-bn">মোট চাঁদা ও অনুদান কালেকশন</span>
           </div>
           <div class="stat-icon">
             <i class="fa-solid fa-hand-holding-dollar"></i>
           </div>
         </div>
-        <div class="stat-value" id="total-income-display">₹ 0</div>
+        <div class="stat-value text-green" id="total-income-display">₹ 0.00</div>
         <div class="stat-footer">
-          <span id="income-target-display">Total Target: ₹ 0</span>
-          <span id="income-percentage" class="text-green fw-bold">0% Achieved</span>
+          <span id="income-target-display">Target / Demand: ₹ 0.00</span>
+          <span id="income-percentage" class="text-green fw-bold">0% Collected</span>
         </div>
       </div>
 
@@ -208,17 +298,17 @@
       <div class="stat-card expense">
         <div class="stat-header">
           <div class="stat-title-wrap">
-            <span class="stat-label-en">Total Expenses / Kharcha</span>
-            <span class="stat-label-bn">💸 Total Budget Spent & Paid</span>
+            <span class="stat-label-en">TOTAL EXPENSES / KHARCHA</span>
+            <span class="stat-label-bn">মোট পূজা খরচ ও ব্যয়</span>
           </div>
           <div class="stat-icon">
             <i class="fa-solid fa-money-bill-wave"></i>
           </div>
         </div>
-        <div class="stat-value" id="total-expense-display">₹ 0</div>
+        <div class="stat-value text-red" id="total-expense-display">₹ 0.00</div>
         <div class="stat-footer">
-          <span id="expense-budget-display">Total Budget: ₹ 0</span>
-          <span id="expense-pending-display" class="text-red fw-bold">Pending Due: ₹ 0</span>
+          <span id="expense-budget-display">Budget Estimated: ₹ 35,000.00</span>
+          <span id="expense-pending-display" class="text-red fw-bold">Pending: ₹ 35,000.00</span>
         </div>
       </div>
 
@@ -226,44 +316,55 @@
       <div class="stat-card balance">
         <div class="stat-header">
           <div class="stat-title-wrap">
-            <span class="stat-label-en">Net Balance / Cash in Hand</span>
-            <span class="stat-label-bn">🏦 Net Cash Available</span>
+            <span class="stat-label-en">NET BALANCE / CASH IN HAND</span>
+            <span class="stat-label-bn">নেট ব্যালেন্স / হাতে নগদ তহবিল</span>
           </div>
           <div class="stat-icon">
             <i class="fa-solid fa-vault"></i>
           </div>
         </div>
-        <div class="stat-value" id="net-balance-display">₹ 0</div>
+        <div class="stat-value" id="net-balance-display">₹ 0.00</div>
         <div class="stat-footer">
-          <span>Status: <strong id="balance-status" class="text-blue">Surplus</strong></span>
+          <span>Status: <strong id="balance-status" class="text-blue">Balanced</strong></span>
           <span id="last-updated-time">Updated: Just now</span>
         </div>
       </div>
     </div>
 
-    <!-- Quick info notification banner for permissions -->
-    <div id="permission-banner" class="alert alert-warning" style="display: none;">
-      <i class="fa-solid fa-circle-info"></i>
-      <span id="permission-text">You are signed in as Viewer: Data is view-only. Log in as Collector or Admin to make updates.</span>
+    <!-- Section Navigation Tabs -->
+    <div class="nav-tabs-wrapper">
+      <button type="button" class="tab-btn active" id="tab-btn-income" onclick="switchSection('income')">
+        <i class="fa-solid fa-hand-holding-dollar text-green"></i>
+        <span>Part 1: Collections (পাড়া কালেকশন)</span>
+      </button>
+
+      <button type="button" class="tab-btn" id="tab-btn-expenses" onclick="switchSection('expenses')">
+        <i class="fa-solid fa-receipt text-red"></i>
+        <span>Part 2: Expenses (পূজা খরচ - ১২ টি খাত)</span>
+      </button>
+
+      <button type="button" class="tab-btn" id="tab-btn-deep-entry" onclick="switchSection('deep-entry')">
+        <i class="fa-solid fa-file-circle-plus text-gold"></i>
+        <span>Part 3: Deep Data Entry (ব্যক্তিগত অনুদান এন্ট্রি)</span>
+      </button>
     </div>
 
-    <!-- 2. Income Breakdown Table -->
-    <section class="content-section" id="collections-section">
+    <!-- ========================================================
+         SECTION 1: INCOME BREAKDOWN (কালেকশন বিবরণী)
+         ======================================================== -->
+    <section class="content-section" id="section-income">
       <div class="section-header">
         <div>
           <h2 class="section-title">
-            <i class="fa-solid fa-coins"></i>
-            <span>Collection Breakdown (Income)</span>
+            <i class="fa-solid fa-coins text-gold"></i>
+            <span>Part 1: Income Breakdown (কালেকশন বিবরণী)</span>
           </h2>
           <span class="text-muted" style="font-size: 0.85rem;">
-            Collections from Paras, Market, Shops, and Spot donations
+            7 Collection Heads matching Rows 11-17 of Master Google Sheet
           </span>
         </div>
-        <div style="display: flex; align-items: center; gap: 0.5rem;">
+        <div>
           <span class="section-badge">7 Primary Sources</span>
-          <span class="edit-tooltip" id="collection-edit-hint" style="display: none;">
-            <i class="fa-solid fa-pencil"></i> Click cells to edit (Press Enter to save)
-          </span>
         </div>
       </div>
 
@@ -271,47 +372,47 @@
         <table class="custom-table" id="income-table">
           <thead>
             <tr>
-              <th style="width: 70px; text-align: center;">Sl No</th>
-              <th>Source / Head</th>
+              <th style="width: 65px; text-align: center;">Sl No</th>
+              <th>Source / Head (উৎস)</th>
               <th style="text-align: right;">Target / Demand (₹)</th>
               <th style="text-align: right;">Total Collected (₹)</th>
               <th style="text-align: right;">Pending Due (₹)</th>
-              <th style="text-align: center; width: 150px;">Status</th>
+              <th style="text-align: center; width: 110px;">Slips</th>
+              <th style="text-align: center; width: 220px;">Actions</th>
             </tr>
           </thead>
           <tbody id="income-table-body">
-            <!-- Dynamically populated rows -->
+            <!-- Dynamically populated -->
           </tbody>
           <tfoot>
             <tr>
-              <td colspan="2" style="text-align: right; font-weight: 700;">Grand Total Income:</td>
-              <td style="text-align: right; font-weight: 700;" id="income-foot-target">₹ 0</td>
-              <td style="text-align: right; color: #4ade80; font-weight: 700;" id="income-foot-collected">₹ 0</td>
-              <td style="text-align: right; color: #f87171; font-weight: 700;" id="income-foot-due">₹ 0</td>
-              <td style="text-align: center; font-weight: 700;" id="income-foot-rate">100%</td>
+              <td colspan="2" style="text-align: right; font-weight: 700;">TOTAL COLLECTION (মোট কালেকশন):</td>
+              <td style="text-align: right; font-weight: 700;" id="income-foot-target">₹ 0.00</td>
+              <td style="text-align: right; color: #4ade80; font-weight: 700;" id="income-foot-collected">₹ 0.00</td>
+              <td style="text-align: right; color: #f87171; font-weight: 700;" id="income-foot-due">₹ 0.00</td>
+              <td colspan="2" style="text-align: center; font-weight: 700;" id="income-foot-slips">0 Slips</td>
             </tr>
           </tfoot>
         </table>
       </div>
     </section>
 
-    <!-- 3. Expense Breakdown Table -->
-    <section class="content-section" id="expenses-section">
+    <!-- ========================================================
+         SECTION 2: EXPENSE BREAKDOWN (পূজা খরচের সারসংক্ষেপ)
+         ======================================================== -->
+    <section class="content-section" id="section-expenses" style="display: none;">
       <div class="section-header">
         <div>
           <h2 class="section-title">
-            <i class="fa-solid fa-file-invoice-dollar"></i>
-            <span>Expense Breakdown & Audit Summary</span>
+            <i class="fa-solid fa-file-invoice-dollar text-red"></i>
+            <span>Part 2: Expense Breakdown by Category (পূজা খরচের সারসংক্ষেপ)</span>
           </h2>
           <span class="text-muted" style="font-size: 0.85rem;">
-            Pandal, Lighting, Idol, Sound, Bhog, and all authorized expenses
+            12 Categories matching Rows 23-34 of Master Google Sheet (Budget: ₹ 35,000.00)
           </span>
         </div>
-        <div style="display: flex; align-items: center; gap: 0.5rem;">
-          <span class="section-badge">12 Essential Categories</span>
-          <span class="edit-tooltip" id="expense-edit-hint" style="display: none;">
-            <i class="fa-solid fa-shield-halved"></i> Admin Mode: Editable Cells
-          </span>
+        <div>
+          <span class="section-badge">12 Standard Categories</span>
         </div>
       </div>
 
@@ -319,25 +420,25 @@
         <table class="custom-table" id="expense-table">
           <thead>
             <tr>
-              <th style="width: 70px; text-align: center;">Sl No</th>
-              <th>Expense Category</th>
+              <th style="width: 65px; text-align: center;">Sl No</th>
+              <th>Expense Category (খাত)</th>
               <th style="text-align: right;">Estimated / Budget (₹)</th>
               <th style="text-align: right;">Advance Paid (₹)</th>
               <th style="text-align: right;">Total Expense Paid (₹)</th>
               <th style="text-align: right;">Pending Due (₹)</th>
-              <th style="text-align: center; width: 150px;">Audit Status</th>
+              <th style="text-align: center; width: 140px;">Actions</th>
             </tr>
           </thead>
           <tbody id="expense-table-body">
-            <!-- Dynamically populated rows -->
+            <!-- Dynamically populated -->
           </tbody>
           <tfoot>
             <tr>
-              <td colspan="2" style="text-align: right; font-weight: 700;">Grand Total Expenses:</td>
-              <td style="text-align: right; font-weight: 700;" id="expense-foot-budget">₹ 0</td>
-              <td style="text-align: right; color: #60a5fa; font-weight: 700;" id="expense-foot-advance">₹ 0</td>
-              <td style="text-align: right; color: #f87171; font-weight: 700;" id="expense-foot-paid">₹ 0</td>
-              <td style="text-align: right; color: #f5c518; font-weight: 700;" id="expense-foot-due">₹ 0</td>
+              <td colspan="2" style="text-align: right; font-weight: 700;">TOTAL EXPENSES (মোট খরচ):</td>
+              <td style="text-align: right; font-weight: 700;" id="expense-foot-budget">₹ 35,000.00</td>
+              <td style="text-align: right; color: #60a5fa; font-weight: 700;" id="expense-foot-advance">₹ 0.00</td>
+              <td style="text-align: right; color: #f87171; font-weight: 700;" id="expense-foot-paid">₹ 0.00</td>
+              <td style="text-align: right; color: #f5c518; font-weight: 700;" id="expense-foot-due">₹ 35,000.00</td>
               <td style="text-align: center; font-weight: 700;">Audited</td>
             </tr>
           </tfoot>
@@ -345,260 +446,329 @@
       </div>
     </section>
 
+    <!-- ========================================================
+         SECTION 3: DEEP DATA ENTRY & INDIVIDUAL RECEIPTS
+         Solves: "unable to go to access to that Para 1, Para 2..."
+         ======================================================== -->
+    <section class="content-section" id="section-deep-entry" style="display: none;">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">
+            <i class="fa-solid fa-receipt text-gold"></i>
+            <span>Part 3: Deep Data Entry — Individual Contributor Receipts</span>
+          </h2>
+          <p class="text-muted" style="font-size: 0.85rem; margin-top: 4px;">
+            Enter donor names, houses, slips, and payments under each Para. Total collected updates automatically!
+          </p>
+        </div>
+      </div>
+
+      <div class="deep-entry-card">
+        <h3 style="font-size: 15px; font-weight: 700; color: #ffffff; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+          <i class="fa-solid fa-plus-circle text-gold"></i>
+          <span>Add New Donation / Contributor Slip</span>
+        </h3>
+
+        <form id="add-slip-form">
+          <div class="form-grid-3">
+            <div class="form-group-custom">
+              <label for="slip-para-select">Select Para / Source *</label>
+              <select id="slip-para-select" required>
+                <option value="1">Para 1 Collection (পাড়া ১)</option>
+                <option value="2">Para 2 Collection (পাড়া ২)</option>
+                <option value="3">Para 3 Collection (পাড়া ৩)</option>
+                <option value="4">Para 4 Collection (পাড়া ৪)</option>
+                <option value="5">Para 5 Collection (পাড়া ৫)</option>
+                <option value="6">Shop & Market Collection (দোকান কালেকশন)</option>
+                <option value="7">Road & Night Collection (রোড ও স্পট কালেকশন)</option>
+              </select>
+            </div>
+
+            <div class="form-group-custom">
+              <label for="slip-donor-name">Donor / Family Name *</label>
+              <input type="text" id="slip-donor-name" required placeholder="e.g. Ramesh Sen / Maa Tara Store">
+            </div>
+
+            <div class="form-group-custom">
+              <label for="slip-amount">Amount (₹) *</label>
+              <input type="number" id="slip-amount" required min="1" step="10" placeholder="e.g. 500">
+            </div>
+          </div>
+
+          <div class="form-grid-3">
+            <div class="form-group-custom">
+              <label for="slip-receipt-no">Receipt / Coupon No</label>
+              <input type="text" id="slip-receipt-no" placeholder="e.g. RCP-102">
+            </div>
+
+            <div class="form-group-custom">
+              <label for="slip-house-no">House / Flat / Phone No</label>
+              <input type="text" id="slip-house-no" placeholder="e.g. 12/B Para Lane">
+            </div>
+
+            <div class="form-group-custom">
+              <label for="slip-payment-mode">Payment Mode</label>
+              <select id="slip-payment-mode">
+                <option value="Cash">Cash (নগদ)</option>
+                <option value="UPI / GPay">UPI / GPay / Online</option>
+                <option value="Cheque">Cheque</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="display: flex; justify-content: flex-end; margin-top: 10px;">
+            <button type="submit" class="btn btn-primary" id="btn-save-slip" style="padding: 10px 24px; font-weight: 700;">
+              <i class="fa-solid fa-check"></i> Save & Add to Para Total
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Filterable Receipts List -->
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 10px;">
+        <h3 style="font-size: 15px; font-weight: 700; color: #ffffff;">
+          <i class="fa-solid fa-list-check text-green"></i> Contributor Receipts List
+        </h3>
+        
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span style="font-size: 13px; color: #a0a0c0;">Filter by Para:</span>
+          <select id="filter-para-select" onchange="renderContributorsTable()" style="padding: 6px 12px; background: #0d0d22; border: 1px solid var(--border); color: #fff; border-radius: 6px; font-size: 13px;">
+            <option value="all">All Paras (সব পাড়া)</option>
+            <option value="1">Para 1 (পাড়া ১)</option>
+            <option value="2">Para 2 (পাড়া ২)</option>
+            <option value="3">Para 3 (পাড়া ৩)</option>
+            <option value="4">Para 4 (পাড়া ৪)</option>
+            <option value="5">Para 5 (পাড়া ৫)</option>
+            <option value="6">Shop & Market</option>
+            <option value="7">Road & Night</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="table-responsive">
+        <table class="custom-table" id="slips-table">
+          <thead>
+            <tr>
+              <th style="width: 50px; text-align: center;">#</th>
+              <th>Para / Source</th>
+              <th>Donor Name</th>
+              <th>Receipt No</th>
+              <th>House / Phone</th>
+              <th>Mode</th>
+              <th style="text-align: right;">Amount (₹)</th>
+              <th style="text-align: center; width: 80px;">Action</th>
+            </tr>
+          </thead>
+          <tbody id="slips-table-body">
+            <!-- Dynamically populated -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
   </main>
+
+  <!-- ========================================================
+       MODAL 1: EDIT COLLECTION (Target & Total)
+       ======================================================== -->
+  <div class="modal-overlay" id="edit-collection-modal">
+    <div class="modal-content-card">
+      <div class="modal-header-custom">
+        <h3 id="modal-coll-title">
+          <i class="fa-solid fa-pen-to-square text-gold"></i>
+          <span>Edit Collection Record</span>
+        </h3>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="closeCollectionModal()">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <form id="form-edit-collection">
+        <div class="modal-body-custom">
+          <input type="hidden" id="edit-coll-id">
+
+          <div class="form-group-custom" style="margin-bottom: 16px;">
+            <label>Source Name</label>
+            <input type="text" id="edit-coll-name" readonly style="opacity: 0.7; background: #070714;">
+          </div>
+
+          <div class="form-group-custom" style="margin-bottom: 16px;">
+            <label for="edit-coll-target">Target / Demand Amount (₹)</label>
+            <input type="number" id="edit-coll-target" min="0" step="100" required>
+          </div>
+
+          <div class="form-group-custom">
+            <label for="edit-coll-collected">Total Collected Amount (₹)</label>
+            <input type="number" id="edit-coll-collected" min="0" step="100" required>
+          </div>
+        </div>
+        <div class="modal-footer-custom">
+          <button type="button" class="btn btn-secondary btn-sm" onclick="closeCollectionModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary btn-sm" style="font-weight: 700;">
+            <i class="fa-solid fa-check"></i> Save Changes
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       MODAL 2: EDIT EXPENSE RECORD
+       ======================================================== -->
+  <div class="modal-overlay" id="edit-expense-modal">
+    <div class="modal-content-card">
+      <div class="modal-header-custom">
+        <h3 id="modal-exp-title">
+          <i class="fa-solid fa-file-pen text-red"></i>
+          <span>Edit Expense Record</span>
+        </h3>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="closeExpenseModal()">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <form id="form-edit-expense">
+        <div class="modal-body-custom">
+          <input type="hidden" id="edit-exp-id">
+
+          <div class="form-group-custom" style="margin-bottom: 16px;">
+            <label>Category</label>
+            <input type="text" id="edit-exp-name" readonly style="opacity: 0.7; background: #070714;">
+          </div>
+
+          <div class="form-grid-3" style="grid-template-columns: 1fr 1fr; margin-bottom: 16px;">
+            <div class="form-group-custom">
+              <label for="edit-exp-budget">Estimated / Budget (₹)</label>
+              <input type="number" id="edit-exp-budget" min="0" step="100" required>
+            </div>
+
+            <div class="form-group-custom">
+              <label for="edit-exp-advance">Advance Paid (₹)</label>
+              <input type="number" id="edit-exp-advance" min="0" step="100">
+            </div>
+          </div>
+
+          <div class="form-group-custom" style="margin-bottom: 16px;">
+            <label for="edit-exp-paid">Total Expense Paid (₹)</label>
+            <input type="number" id="edit-exp-paid" min="0" step="100" required>
+          </div>
+
+          <div class="form-grid-3" style="grid-template-columns: 1fr 1fr;">
+            <div class="form-group-custom">
+              <label for="edit-exp-vendor">Vendor Name</label>
+              <input type="text" id="edit-exp-vendor" placeholder="e.g. Joy Maa Decorator">
+            </div>
+
+            <div class="form-group-custom">
+              <label for="edit-exp-phone">Vendor Phone / Bill No</label>
+              <input type="text" id="edit-exp-phone" placeholder="e.g. 9876543210">
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer-custom">
+          <button type="button" class="btn btn-secondary btn-sm" onclick="closeExpenseModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary btn-sm" style="font-weight: 700;">
+            <i class="fa-solid fa-check"></i> Save Expense
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
 
   <!-- Toast Notification Container -->
   <div class="toast-container" id="toast-container"></div>
 
-  <!-- Dashboard JavaScript Logic -->
+  <!-- JavaScript Application Logic -->
   <script>
-    // Global State
-    let currentUser = null;
-    let collectionsData = [];
-    let expensesData = [];
-    let countdownSeconds = 30;
-    let countdownTimer = null;
+    let collectionsList = [];
+    let expensesList = [];
+    let contributorsList = [];
 
-    // Default Fallback Datasets (English)
-    const DEFAULT_COLLECTIONS = [
-      { id: 1, source: "Para 1 Collection", target: 80000, collected: 72500 },
-      { id: 2, source: "Para 2 Collection", target: 95000, collected: 88000 },
-      { id: 3, source: "Para 3 Collection", target: 65000, collected: 59000 },
-      { id: 4, source: "Para 4 Collection", target: 75000, collected: 68500 },
-      { id: 5, source: "Para 5 Collection", target: 50000, collected: 44000 },
-      { id: 6, source: "Shop & Market Collection", target: 110000, collected: 105000 },
-      { id: 7, source: "Road & Spot Collection", target: 45000, collected: 39500 }
-    ];
+    function formatRupee(val) {
+      const num = Number(val) || 0;
+      return '₹ ' + num.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
 
-    const DEFAULT_EXPENSES = [
-      { id: 1, category: "Lighting & Illumination", budget: 85000, advance: 30000, totalPaid: 75000 },
-      { id: 2, category: "Pandal & Stage Decoration", budget: 110000, advance: 40000, totalPaid: 95000 },
-      { id: 3, category: "Kali Idol (Murti)", budget: 65000, advance: 25000, totalPaid: 55000 },
-      { id: 4, category: "Sound System & Audio", budget: 35000, advance: 15000, totalPaid: 30000 },
-      { id: 5, category: "Puja Items (Dashakarma)", budget: 28000, advance: 10000, totalPaid: 24000 },
-      { id: 6, category: "Priest & Purohit Honorarium", budget: 25000, advance: 8000, totalPaid: 22000 },
-      { id: 7, category: "Bhog & Prasad Preparation", budget: 52000, advance: 20000, totalPaid: 48000 },
-      { id: 8, category: "Cook & Kitchen Staff", budget: 18000, advance: 5000, totalPaid: 15500 },
-      { id: 9, category: "Cultural Program", budget: 30000, advance: 10000, totalPaid: 26000 },
-      { id: 10, category: "Miscellaneous 1", budget: 14000, advance: 5000, totalPaid: 13500 },
-      { id: 11, category: "Miscellaneous 2", budget: 15000, advance: 15000, totalPaid: 15000 },
-      { id: 12, category: "Miscellaneous 3", budget: 20000, advance: 5000, totalPaid: 12000 }
-    ];
-
-    // Toast Notification helper
-    function showToast(title, message, type = 'info') {
+    function showToast(title, msg, type = 'info') {
       const container = document.getElementById('toast-container');
       const toast = document.createElement('div');
       toast.className = `toast ${type}`;
-      
-      const icons = {
-        success: 'fa-circle-check',
-        error: 'fa-triangle-exclamation',
-        info: 'fa-circle-info',
-        warning: 'fa-circle-exclamation'
-      };
-
       toast.innerHTML = `
-        <div class="toast-icon">
-          <i class="fa-solid ${icons[type] || 'fa-bell'} fa-lg"></i>
-        </div>
         <div class="toast-content">
-          <div class="toast-title">${title}</div>
-          <div class="toast-msg">${message}</div>
+          <strong>${title}</strong>: ${msg}
         </div>
-        <button class="toast-close" onclick="this.parentElement.remove()">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
       `;
-
       container.appendChild(toast);
       setTimeout(() => {
-        toast.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
         toast.style.opacity = '0';
-        toast.style.transform = 'translateX(100%)';
         setTimeout(() => toast.remove(), 400);
-      }, 4500);
+      }, 4000);
     }
 
-    // Currency Formatter
-    function formatRupee(num) {
-      if (isNaN(num)) return '₹ 0';
-      return '₹ ' + Number(num).toLocaleString('en-IN');
+    // Tab Switching
+    function switchSection(section) {
+      document.getElementById('section-income').style.display = section === 'income' ? 'block' : 'none';
+      document.getElementById('section-expenses').style.display = section === 'expenses' ? 'block' : 'none';
+      document.getElementById('section-deep-entry').style.display = section === 'deep-entry' ? 'block' : 'none';
+
+      document.getElementById('tab-btn-income').classList.toggle('active', section === 'income');
+      document.getElementById('tab-btn-expenses').classList.toggle('active', section === 'expenses');
+      document.getElementById('tab-btn-deep-entry').classList.toggle('active', section === 'deep-entry');
     }
 
-    // Number Counter Animation
-    function animateValue(elementId, start, end, duration = 800) {
-      const obj = document.getElementById(elementId);
-      if (!obj) return;
-      if (start === end) {
-        obj.innerText = formatRupee(end);
-        return;
-      }
-      const range = end - start;
-      let startTime = null;
-
-      function step(timestamp) {
-        if (!startTime) startTime = timestamp;
-        const progress = Math.min((timestamp - startTime) / duration, 1);
-        const current = Math.floor(progress * range + start);
-        obj.innerText = formatRupee(current);
-        if (progress < 1) {
-          window.requestAnimationFrame(step);
-        } else {
-          obj.innerText = formatRupee(end);
-        }
-      }
-      window.requestAnimationFrame(step);
-    }
-
-    // Authentication & Authorization check
-    async function verifyAuth() {
+    // Fetch and Load All Data
+    async function loadAllData() {
       try {
-        const res = await fetch('/api/auth/me', {
-          headers: { 'Accept': 'application/json' }
-        });
-        
-        if (res.ok) {
-          const data = await res.json();
-          currentUser = data.user || data;
-          localStorage.setItem('kali_user', JSON.stringify(currentUser));
-        } else {
-          const stored = localStorage.getItem('kali_user');
-          if (stored) {
-            currentUser = JSON.parse(stored);
-          } else {
-            window.location.replace('/index.html');
-            return false;
-          }
-        }
+        const [collRes, expRes, sumRes, contribRes] = await Promise.all([
+          fetch('/api/data/collections').then(r => r.json()),
+          fetch('/api/data/expenses').then(r => r.json()),
+          fetch('/api/data/summary').then(r => r.json()),
+          fetch('/api/data/contributors').then(r => r.json())
+        ]);
+
+        if (collRes && collRes.collections) collectionsList = collRes.collections;
+        if (expRes && expRes.expenses) expensesList = expRes.expenses;
+        if (contribRes && contribRes.contributors) contributorsList = contribRes.contributors;
+
+        renderSummary(sumRes?.summary);
+        renderCollectionsTable();
+        renderExpensesTable();
+        renderContributorsTable();
       } catch (err) {
-        const stored = localStorage.getItem('kali_user');
-        if (stored) {
-          currentUser = JSON.parse(stored);
-        } else {
-          window.location.replace('/index.html');
-          return false;
-        }
-      }
-
-      applyUserUI();
-      return true;
-    }
-
-    function applyUserUI() {
-      if (!currentUser) return;
-      const role = (currentUser.role || 'viewer').toLowerCase();
-      const username = currentUser.username || 'User';
-
-      document.getElementById('user-display-name').textContent = username;
-      document.getElementById('user-avatar-initial').textContent = username.charAt(0).toUpperCase();
-
-      const roleBadge = document.getElementById('user-role-badge');
-      roleBadge.textContent = role.toUpperCase();
-      roleBadge.className = `role-badge ${role}`;
-
-      const adminNav = document.getElementById('nav-admin-link');
-      const collHint = document.getElementById('collection-edit-hint');
-      const expHint = document.getElementById('expense-edit-hint');
-      const banner = document.getElementById('permission-banner');
-      const bannerText = document.getElementById('permission-text');
-
-      if (role === 'admin') {
-        adminNav.style.display = 'block';
-        collHint.style.display = 'inline-flex';
-        expHint.style.display = 'inline-flex';
-        banner.style.display = 'none';
-      } else if (role === 'collector') {
-        adminNav.style.display = 'none';
-        collHint.style.display = 'inline-flex';
-        expHint.style.display = 'none';
-        banner.style.display = 'none';
-      } else {
-        adminNav.style.display = 'none';
-        collHint.style.display = 'none';
-        expHint.style.display = 'none';
-        banner.style.display = 'flex';
-        bannerText.textContent = 'You are signed in as Viewer: Read-only access to all financial audit records.';
+        console.error('Data load error:', err);
       }
     }
 
-    // Data Loaders
-    async function loadSummaryCards(customSummary = null) {
-      let summary = customSummary;
+    // Render KPI Cards
+    function renderSummary(summary) {
+      const totalIncome = summary?.totalIncome ?? collectionsList.reduce((acc, c) => acc + (Number(c.collected) || 0), 0);
+      const totalTarget = summary?.totalTarget ?? collectionsList.reduce((acc, c) => acc + (Number(c.target) || 0), 0);
+      const totalExpenses = summary?.totalExpenses ?? expensesList.reduce((acc, e) => acc + (Number(e.totalPaid) || 0), 0);
+      const totalBudget = summary?.totalBudget ?? expensesList.reduce((acc, e) => acc + (Number(e.budget) || 0), 0);
+      const netBalance = summary?.netBalance ?? (totalIncome - totalExpenses);
 
-      if (!summary) {
-        try {
-          const res = await fetch('/api/data/summary');
-          if (res.ok) {
-            const data = await res.json();
-            summary = data.summary || data;
-          }
-        } catch (e) {
-          console.warn('Could not fetch /api/data/summary:', e);
-        }
-      }
-
-      const totalIncome = summary?.totalIncome ?? collectionsData.reduce((acc, row) => acc + (Number(row.collected) || 0), 0);
-      const totalTarget = collectionsData.reduce((acc, row) => acc + (Number(row.target) || 0), 0);
-      const totalExpense = summary?.totalExpenses ?? expensesData.reduce((acc, row) => acc + (Number(row.totalPaid) || Number(row.paid) || 0), 0);
-      const totalBudget = expensesData.reduce((acc, row) => acc + (Number(row.budget) || Number(row.estimated) || 0), 0);
-      const totalExpDue = expensesData.reduce((acc, row) => acc + Math.max(0, (Number(row.budget) || Number(row.estimated) || 0) - (Number(row.totalPaid) || Number(row.paid) || 0)), 0);
-      const netBalance = summary?.netBalance ?? (totalIncome - totalExpense);
-
-      animateValue('total-income-display', 0, totalIncome);
-      animateValue('total-expense-display', 0, totalExpense);
-      animateValue('net-balance-display', 0, netBalance);
-
-      document.getElementById('income-target-display').textContent = `Total Target: ${formatRupee(totalTarget)}`;
+      document.getElementById('total-income-display').textContent = formatRupee(totalIncome);
+      document.getElementById('income-target-display').textContent = `Target / Demand: ${formatRupee(totalTarget)}`;
       const percentage = totalTarget > 0 ? Math.round((totalIncome / totalTarget) * 100) : 0;
-      document.getElementById('income-percentage').textContent = `${percentage}% Achieved`;
+      document.getElementById('income-percentage').textContent = `${percentage}% Collected`;
 
-      document.getElementById('expense-budget-display').textContent = `Total Budget: ${formatRupee(totalBudget)}`;
-      document.getElementById('expense-pending-display').textContent = `Pending Due: ${formatRupee(totalExpDue)}`;
+      document.getElementById('total-expense-display').textContent = formatRupee(totalExpenses);
+      document.getElementById('expense-budget-display').textContent = `Budget Estimated: ${formatRupee(totalBudget)}`;
+      const expPending = Math.max(0, totalBudget - totalExpenses);
+      document.getElementById('expense-pending-display').textContent = `Pending: ${formatRupee(expPending)}`;
 
+      document.getElementById('net-balance-display').textContent = formatRupee(netBalance);
       const balStatus = document.getElementById('balance-status');
       if (netBalance >= 0) {
-        balStatus.textContent = 'Surplus (Positive)';
+        balStatus.textContent = 'Surplus';
         balStatus.className = 'text-green fw-bold';
       } else {
-        balStatus.textContent = 'Deficit (Negative)';
+        balStatus.textContent = 'Deficit';
         balStatus.className = 'text-red fw-bold';
       }
 
       document.getElementById('last-updated-time').textContent = 'Updated: ' + new Date().toLocaleTimeString('en-US');
     }
 
-    async function loadCollections() {
-      try {
-        const res = await fetch('/api/data/collections');
-        if (res.ok) {
-          const data = await res.json();
-          collectionsData = Array.isArray(data) ? data : (data.collections || data.data || DEFAULT_COLLECTIONS);
-        } else {
-          collectionsData = DEFAULT_COLLECTIONS;
-        }
-      } catch (e) {
-        if (collectionsData.length === 0) collectionsData = DEFAULT_COLLECTIONS;
-      }
-      renderCollectionsTable();
-    }
-
-    async function loadExpenses() {
-      try {
-        const res = await fetch('/api/data/expenses');
-        if (res.ok) {
-          const data = await res.json();
-          expensesData = Array.isArray(data) ? data : (data.expenses || data.data || DEFAULT_EXPENSES);
-        } else {
-          expensesData = DEFAULT_EXPENSES;
-        }
-      } catch (e) {
-        if (expensesData.length === 0) expensesData = DEFAULT_EXPENSES;
-      }
-      renderExpensesTable();
-    }
-
-    // Render Collections Table
+    // Render Part 1: Collections Table
     function renderCollectionsTable() {
       const tbody = document.getElementById('income-table-body');
       tbody.innerHTML = '';
@@ -606,66 +776,52 @@
       let grandTarget = 0;
       let grandCollected = 0;
       let grandDue = 0;
+      let totalSlips = 0;
 
-      const userRole = (currentUser?.role || 'viewer').toLowerCase();
-      const canEdit = userRole === 'admin' || userRole === 'collector';
-
-      collectionsData.forEach((row, index) => {
+      collectionsList.forEach((row, idx) => {
         const target = Number(row.target) || 0;
         const collected = Number(row.collected) || 0;
         const due = Math.max(0, target - collected);
-        const percent = target > 0 ? Math.min(100, Math.round((collected / target) * 100)) : 100;
+        const slipCount = contributorsList.filter(c => Number(c.paraId) === row.id).length;
 
         grandTarget += target;
         grandCollected += collected;
         grandDue += due;
-
-        let statusPill = '';
-        if (due === 0 && collected >= target) {
-          statusPill = '<span class="status-pill paid"><i class="fa-solid fa-check"></i> Completed</span>';
-        } else if (collected > 0) {
-          statusPill = `<span class="status-pill partial">${percent}% Paid</span>`;
-        } else {
-          statusPill = '<span class="status-pill due"><i class="fa-solid fa-clock"></i> Pending</span>';
-        }
+        totalSlips += slipCount;
 
         const tr = document.createElement('tr');
-        tr.id = `income-row-${row.id || index}`;
-
-        const targetCell = canEdit
-          ? `<td class="editable-cell mono-text" style="text-align: right;" onclick="enableInlineEdit(this, 'collections', ${index}, 'target', ${target})" title="Click to edit target">${formatRupee(target)}</td>`
-          : `<td class="mono-text" style="text-align: right;">${formatRupee(target)}</td>`;
-
-        const collectedCell = canEdit
-          ? `<td class="editable-cell mono-text text-green" style="text-align: right;" onclick="enableInlineEdit(this, 'collections', ${index}, 'collected', ${collected})" title="Click to edit collected">${formatRupee(collected)}</td>`
-          : `<td class="mono-text text-green" style="text-align: right;">${formatRupee(collected)}</td>`;
-
         tr.innerHTML = `
-          <td style="text-align: center; font-weight: 700; color: var(--gold);">${index + 1}</td>
+          <td style="text-align: center; font-weight: 700; color: var(--gold);">${row.id}</td>
           <td>
             <strong>${row.source}</strong>
-            <div class="progress-bar-container">
-              <div class="progress-bar-fill" style="width: ${percent}%; background: ${percent === 100 ? 'var(--green)' : 'var(--orange)'};"></div>
-            </div>
           </td>
-          ${targetCell}
-          ${collectedCell}
-          <td class="mono-text text-red" style="text-align: right;">${formatRupee(due)}</td>
-          <td style="text-align: center;">${statusPill}</td>
+          <td style="text-align: right; font-family: 'JetBrains Mono', monospace;">${formatRupee(target)}</td>
+          <td style="text-align: right; font-family: 'JetBrains Mono', monospace; color: #4ade80; font-weight: 700;">${formatRupee(collected)}</td>
+          <td style="text-align: right; font-family: 'JetBrains Mono', monospace; color: #f87171;">${formatRupee(due)}</td>
+          <td style="text-align: center;">
+            <span style="background: rgba(245, 197, 24, 0.15); color: var(--gold); padding: 2px 8px; border-radius: 999px; font-size: 11.5px; font-weight: 700;">
+              ${slipCount} Slips
+            </span>
+          </td>
+          <td style="text-align: center;">
+            <button class="btn-action-sm btn-action-edit" onclick="openCollectionModal(${row.id})">
+              <i class="fa-solid fa-pen"></i> Edit
+            </button>
+            <button class="btn-action-sm btn-action-deep" onclick="goToDeepEntry(${row.id})">
+              <i class="fa-solid fa-plus"></i> Add Slips
+            </button>
+          </td>
         `;
-
         tbody.appendChild(tr);
       });
 
-      // Update Footers
       document.getElementById('income-foot-target').textContent = formatRupee(grandTarget);
       document.getElementById('income-foot-collected').textContent = formatRupee(grandCollected);
       document.getElementById('income-foot-due').textContent = formatRupee(grandDue);
-      const totalRate = grandTarget > 0 ? Math.round((grandCollected / grandTarget) * 100) : 0;
-      document.getElementById('income-foot-rate').textContent = `${totalRate}% Completed`;
+      document.getElementById('income-foot-slips').textContent = `${totalSlips} Slips`;
     }
 
-    // Render Expenses Table
+    // Render Part 2: Expenses Table
     function renderExpensesTable() {
       const tbody = document.getElementById('expense-table-body');
       tbody.innerHTML = '';
@@ -675,13 +831,10 @@
       let grandPaid = 0;
       let grandDue = 0;
 
-      const userRole = (currentUser?.role || 'viewer').toLowerCase();
-      const canEdit = userRole === 'admin';
-
-      expensesData.forEach((row, index) => {
-        const budget = Number(row.budget || row.estimated) || 0;
+      expensesList.forEach((row) => {
+        const budget = Number(row.budget) || 0;
         const advance = Number(row.advance) || 0;
-        const paid = Number(row.totalPaid || row.paid) || 0;
+        const paid = Number(row.totalPaid) || 0;
         const due = Math.max(0, budget - paid);
 
         grandBudget += budget;
@@ -689,245 +842,239 @@
         grandPaid += paid;
         grandDue += due;
 
-        let statusPill = '';
-        if (due === 0 && paid >= budget) {
-          statusPill = '<span class="status-pill paid"><i class="fa-solid fa-circle-check"></i> Fully Paid</span>';
-        } else if (paid > advance) {
-          statusPill = '<span class="status-pill partial"><i class="fa-solid fa-arrows-rotate"></i> In Progress</span>';
-        } else if (advance > 0) {
-          statusPill = '<span class="status-pill partial"><i class="fa-solid fa-hourglass-half"></i> Advance Paid</span>';
-        } else {
-          statusPill = '<span class="status-pill due"><i class="fa-solid fa-circle-exclamation"></i> Unpaid</span>';
-        }
-
         const tr = document.createElement('tr');
-        tr.id = `expense-row-${row.id || index}`;
-
-        const budgetCell = canEdit
-          ? `<td class="editable-cell mono-text" style="text-align: right;" onclick="enableInlineEdit(this, 'expenses', ${index}, 'budget', ${budget})" title="Click to edit budget">${formatRupee(budget)}</td>`
-          : `<td class="mono-text" style="text-align: right;">${formatRupee(budget)}</td>`;
-
-        const advanceCell = canEdit
-          ? `<td class="editable-cell mono-text text-blue" style="text-align: right;" onclick="enableInlineEdit(this, 'expenses', ${index}, 'advance', ${advance})" title="Click to edit advance">${formatRupee(advance)}</td>`
-          : `<td class="mono-text text-blue" style="text-align: right;">${formatRupee(advance)}</td>`;
-
-        const paidCell = canEdit
-          ? `<td class="editable-cell mono-text text-red" style="text-align: right;" onclick="enableInlineEdit(this, 'expenses', ${index}, 'totalPaid', ${paid})" title="Click to edit total paid">${formatRupee(paid)}</td>`
-          : `<td class="mono-text text-red" style="text-align: right;">${formatRupee(paid)}</td>`;
-
         tr.innerHTML = `
-          <td style="text-align: center; font-weight: 700; color: var(--gold);">${index + 1}</td>
-          <td><strong>${row.category}</strong></td>
-          ${budgetCell}
-          ${advanceCell}
-          ${paidCell}
-          <td class="mono-text text-orange" style="text-align: right;">${formatRupee(due)}</td>
-          <td style="text-align: center;">${statusPill}</td>
+          <td style="text-align: center; font-weight: 700; color: var(--gold);">${row.id}</td>
+          <td>
+            <strong>${row.category}</strong>
+            ${row.vendorName ? `<br><small class="text-muted"><i class="fa-solid fa-user"></i> ${row.vendorName} ${row.vendorPhone ? '(' + row.vendorPhone + ')' : ''}</small>` : ''}
+          </td>
+          <td style="text-align: right; font-family: 'JetBrains Mono', monospace;">${formatRupee(budget)}</td>
+          <td style="text-align: right; font-family: 'JetBrains Mono', monospace; color: #60a5fa;">${formatRupee(advance)}</td>
+          <td style="text-align: right; font-family: 'JetBrains Mono', monospace; color: #f87171; font-weight: 700;">${formatRupee(paid)}</td>
+          <td style="text-align: right; font-family: 'JetBrains Mono', monospace; color: #f5c518;">${formatRupee(due)}</td>
+          <td style="text-align: center;">
+            <button class="btn-action-sm btn-action-edit" onclick="openExpenseModal(${row.id})">
+              <i class="fa-solid fa-pen"></i> Edit
+            </button>
+          </td>
         `;
-
         tbody.appendChild(tr);
       });
 
-      // Update Footers
       document.getElementById('expense-foot-budget').textContent = formatRupee(grandBudget);
       document.getElementById('expense-foot-advance').textContent = formatRupee(grandAdvance);
       document.getElementById('expense-foot-paid').textContent = formatRupee(grandPaid);
       document.getElementById('expense-foot-due').textContent = formatRupee(grandDue);
     }
 
-    // Inline Cell Editing
-    let activeEditingCell = null;
+    // Render Part 3: Contributor Slips Table
+    function renderContributorsTable() {
+      const tbody = document.getElementById('slips-table-body');
+      tbody.innerHTML = '';
 
-    function enableInlineEdit(tdElement, datasetType, rowIndex, fieldKey, currentValue) {
-      if (activeEditingCell) {
-        cancelInlineEdit();
-      }
+      const filterPara = document.getElementById('filter-para-select').value;
+      const list = filterPara === 'all' 
+        ? contributorsList 
+        : contributorsList.filter(c => Number(c.paraId) === Number(filterPara));
 
-      activeEditingCell = {
-        td: tdElement,
-        originalHTML: tdElement.innerHTML,
-        datasetType,
-        rowIndex,
-        fieldKey,
-        currentValue
-      };
-
-      tdElement.classList.remove('editable-cell');
-      tdElement.innerHTML = `
-        <div class="editable-input-wrap">
-          <input 
-            type="number" 
-            class="editable-inline-input" 
-            id="inline-input-${fieldKey}" 
-            value="${currentValue}" 
-            min="0"
-            step="100"
-          >
-          <button type="button" class="action-btn-inline save" id="btn-save-inline" title="Save (Enter)">
-            <i class="fa-solid fa-check"></i>
-          </button>
-          <button type="button" class="action-btn-inline cancel" id="btn-cancel-inline" title="Cancel (Esc)">
-            <i class="fa-solid fa-xmark"></i>
-          </button>
-        </div>
-      `;
-
-      const input = tdElement.querySelector('input');
-      input.focus();
-      input.select();
-
-      input.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') {
-          saveInlineEdit();
-        } else if (e.key === 'Escape') {
-          cancelInlineEdit();
-        }
-      });
-
-      tdElement.querySelector('#btn-save-inline').addEventListener('click', (e) => {
-        e.stopPropagation();
-        saveInlineEdit();
-      });
-
-      tdElement.querySelector('#btn-cancel-inline').addEventListener('click', (e) => {
-        e.stopPropagation();
-        cancelInlineEdit();
-      });
-    }
-
-    function cancelInlineEdit() {
-      if (!activeEditingCell) return;
-      activeEditingCell.td.innerHTML = activeEditingCell.originalHTML;
-      activeEditingCell.td.classList.add('editable-cell');
-      activeEditingCell = null;
-    }
-
-    async function saveInlineEdit() {
-      if (!activeEditingCell) return;
-
-      const { td, datasetType, rowIndex, fieldKey } = activeEditingCell;
-      const input = td.querySelector('input');
-      const newValue = Number(input.value);
-
-      if (isNaN(newValue) || newValue < 0) {
-        showToast('Error', 'Please enter a valid positive number.', 'error');
+      if (list.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: #888; padding: 24px;">No individual slips entered yet for this section. Add one above!</td></tr>`;
         return;
       }
 
-      let updatedRow = null;
-      let endpoint = '';
+      list.forEach((item, idx) => {
+        const paraObj = collectionsList.find(c => c.id === item.paraId);
+        const paraName = paraObj ? paraObj.source : `Para ${item.paraId}`;
 
-      if (datasetType === 'collections') {
-        collectionsData[rowIndex][fieldKey] = newValue;
-        updatedRow = collectionsData[rowIndex];
-        endpoint = '/api/data/collections';
-      } else {
-        expensesData[rowIndex][fieldKey] = newValue;
-        if (fieldKey === 'budget') expensesData[rowIndex]['estimated'] = newValue;
-        if (fieldKey === 'totalPaid') expensesData[rowIndex]['paid'] = newValue;
-        updatedRow = expensesData[rowIndex];
-        endpoint = '/api/data/expenses';
-      }
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td style="text-align: center; color: var(--gold);">${idx + 1}</td>
+          <td><strong>${paraName}</strong></td>
+          <td>${item.donorName}</td>
+          <td><code>${item.receiptNo || '-'}</code></td>
+          <td>${item.houseNo || '-'}</td>
+          <td><span style="font-size: 11px; background: rgba(255,255,255,0.08); padding: 2px 6px; border-radius: 4px;">${item.paymentMode || 'Cash'}</span></td>
+          <td style="text-align: right; font-family: 'JetBrains Mono', monospace; color: #4ade80; font-weight: 700;">${formatRupee(item.amount)}</td>
+          <td style="text-align: center;">
+            <button class="btn-action-sm" style="background: rgba(230, 57, 70, 0.2); color: #ff6b6b;" onclick="deleteContributorSlip('${item.id}')" title="Delete slip">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
 
-      activeEditingCell = null;
-
-      if (datasetType === 'collections') {
-        renderCollectionsTable();
-      } else {
-        renderExpensesTable();
-      }
-      loadSummaryCards();
+    // Add Slip Form Handler
+    document.getElementById('add-slip-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const paraId = document.getElementById('slip-para-select').value;
+      const donorName = document.getElementById('slip-donor-name').value;
+      const amount = document.getElementById('slip-amount').value;
+      const receiptNo = document.getElementById('slip-receipt-no').value;
+      const houseNo = document.getElementById('slip-house-no').value;
+      const paymentMode = document.getElementById('slip-payment-mode').value;
 
       try {
-        const res = await fetch(endpoint, {
+        const res = await fetch('/api/data/contributors', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-          },
-          body: JSON.stringify(updatedRow)
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ paraId, donorName, amount, receiptNo, houseNo, paymentMode })
         });
+        const data = await res.json();
 
         if (res.ok) {
-          showToast('Success', 'Record updated successfully.', 'success');
+          showToast('Success', `Slip for ${donorName} (₹ ${amount}) recorded!`, 'success');
+          document.getElementById('slip-donor-name').value = '';
+          document.getElementById('slip-amount').value = '';
+          document.getElementById('slip-receipt-no').value = '';
+          document.getElementById('slip-house-no').value = '';
+          await loadAllData();
         } else {
-          showToast('Saved', 'Record updated locally.', 'info');
+          showToast('Error', data.error || 'Failed to save slip.', 'error');
         }
       } catch (err) {
-        showToast('Saved', 'Record updated locally (Offline mode).', 'info');
+        showToast('Error', 'Network error saving slip.', 'error');
       }
-    }
-
-    // Refresh All Data
-    async function refreshAllData(showNotification = false) {
-      const icon = document.getElementById('refresh-icon');
-      if (icon) icon.classList.add('spin');
-
-      try {
-        await Promise.all([
-          loadCollections(),
-          loadExpenses()
-        ]);
-        await loadSummaryCards();
-
-        if (showNotification) {
-          showToast('Refreshed', 'Latest financial ledger reloaded.', 'info');
-        }
-      } catch (err) {
-        console.error('Refresh error:', err);
-      } finally {
-        if (icon) icon.classList.remove('spin');
-        countdownSeconds = 30;
-      }
-    }
-
-    // Auto-refresh Timer Setup (every 30 seconds)
-    function setupAutoRefresh() {
-      if (countdownTimer) clearInterval(countdownTimer);
-
-      countdownSeconds = 30;
-      const syncText = document.getElementById('sync-time-text');
-
-      countdownTimer = setInterval(() => {
-        countdownSeconds--;
-        if (countdownSeconds <= 0) {
-          countdownSeconds = 30;
-          refreshAllData(false);
-        }
-        if (syncText) {
-          syncText.textContent = `Auto-refresh: ${countdownSeconds}s`;
-        }
-      }, 1000);
-    }
-
-    // Manual Refresh Button Event
-    document.getElementById('btn-manual-refresh').addEventListener('click', () => {
-      refreshAllData(true);
     });
 
-    // Logout Handler
-    document.getElementById('logout-btn').addEventListener('click', async () => {
+    async function deleteContributorSlip(id) {
+      if (!confirm('Are you sure you want to delete this contributor receipt?')) return;
       try {
-        await fetch('/api/auth/logout', { method: 'POST' });
+        const res = await fetch(`/api/data/contributors/${id}`, { method: 'DELETE' });
+        if (res.ok) {
+          showToast('Deleted', 'Receipt removed.', 'info');
+          await loadAllData();
+        }
+      } catch (e) {}
+    }
+
+    function goToDeepEntry(paraId) {
+      document.getElementById('slip-para-select').value = paraId;
+      document.getElementById('filter-para-select').value = paraId;
+      switchSection('deep-entry');
+      document.getElementById('slip-donor-name').focus();
+    }
+
+    // Edit Collection Modal
+    function openCollectionModal(id) {
+      const item = collectionsList.find(c => c.id === id);
+      if (!item) return;
+
+      document.getElementById('edit-coll-id').value = item.id;
+      document.getElementById('edit-coll-name').value = item.source;
+      document.getElementById('edit-coll-target').value = item.target || 0;
+      document.getElementById('edit-coll-collected').value = item.collected || 0;
+      document.getElementById('edit-collection-modal').classList.add('open');
+    }
+
+    function closeCollectionModal() {
+      document.getElementById('edit-collection-modal').classList.remove('open');
+    }
+
+    document.getElementById('form-edit-collection').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const id = document.getElementById('edit-coll-id').value;
+      const target = document.getElementById('edit-coll-target').value;
+      const collected = document.getElementById('edit-coll-collected').value;
+
+      try {
+        const res = await fetch('/api/data/collections', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id, target, collected })
+        });
+        if (res.ok) {
+          showToast('Updated', 'Collection record saved.', 'success');
+          closeCollectionModal();
+          await loadAllData();
+        }
+      } catch (err) {}
+    });
+
+    // Edit Expense Modal
+    function openExpenseModal(id) {
+      const item = expensesList.find(e => e.id === id);
+      if (!item) return;
+
+      document.getElementById('edit-exp-id').value = item.id;
+      document.getElementById('edit-exp-name').value = item.category;
+      document.getElementById('edit-exp-budget').value = item.budget || 0;
+      document.getElementById('edit-exp-advance').value = item.advance || 0;
+      document.getElementById('edit-exp-paid').value = item.totalPaid || 0;
+      document.getElementById('edit-exp-vendor').value = item.vendorName || '';
+      document.getElementById('edit-exp-phone').value = item.vendorPhone || '';
+      document.getElementById('edit-expense-modal').classList.add('open');
+    }
+
+    function closeExpenseModal() {
+      document.getElementById('edit-expense-modal').classList.remove('open');
+    }
+
+    document.getElementById('form-edit-expense').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const id = document.getElementById('edit-exp-id').value;
+      const budget = document.getElementById('edit-exp-budget').value;
+      const advance = document.getElementById('edit-exp-advance').value;
+      const totalPaid = document.getElementById('edit-exp-paid').value;
+      const vendorName = document.getElementById('edit-exp-vendor').value;
+      const vendorPhone = document.getElementById('edit-exp-phone').value;
+
+      try {
+        const res = await fetch('/api/data/expenses', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id, budget, advance, totalPaid, vendorName, vendorPhone })
+        });
+        if (res.ok) {
+          showToast('Updated', 'Expense category saved.', 'success');
+          closeExpenseModal();
+          await loadAllData();
+        }
+      } catch (err) {}
+    });
+
+    // Sync Sheet button
+    document.getElementById('btn-sync-sheet').addEventListener('click', async () => {
+      const icon = document.getElementById('sync-icon');
+      const label = document.getElementById('sync-btn-label');
+      icon.classList.add('fa-spin');
+      label.textContent = 'Syncing...';
+
+      try {
+        await fetch('/api/sync', { method: 'POST' });
+        await loadAllData();
+        showToast('Synced', 'Live synchronization with Master Google Sheet completed.', 'success');
       } catch (e) {
+        showToast('Notice', 'Ledger refreshed.', 'info');
       } finally {
-        localStorage.removeItem('kali_user');
-        localStorage.removeItem('kali_token');
-        sessionStorage.clear();
-        showToast('Logged out', 'Signed out successfully.', 'info');
-        setTimeout(() => {
-          window.location.href = '/index.html';
-        }, 300);
+        icon.classList.remove('fa-spin');
+        label.textContent = 'Sync Sheet';
       }
     });
 
-    // Initialize Dashboard
-    window.addEventListener('DOMContentLoaded', async () => {
-      const authed = await verifyAuth();
-      if (!authed) return;
+    // Logout
+    document.getElementById('logout-btn').addEventListener('click', async () => {
+      try { await fetch('/api/auth/logout', { method: 'POST' }); } catch (e) {}
+      localStorage.clear();
+      sessionStorage.clear();
+      window.location.href = '/index.html';
+    });
 
-      await refreshAllData(false);
-      setupAutoRefresh();
+    // Init
+    window.addEventListener('DOMContentLoaded', async () => {
+      try {
+        const res = await fetch('/api/auth/me');
+        if (!res.ok) {
+          window.location.href = '/index.html';
+          return;
+        }
+      } catch (e) {
+        window.location.href = '/index.html';
+        return;
+      }
+      await loadAllData();
     });
   </script>
 </body>

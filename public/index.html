@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sign In | Kali Puja Accounts & Audit 2026</title>
+  <title>Sign In | Kali Puja 2026 Accounts Portal</title>
   
   <!-- Google Fonts: Outfit & JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -15,61 +15,198 @@
   
   <!-- Main Stylesheet -->
   <link rel="stylesheet" href="styles.css">
+
+  <style>
+    .auth-page {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 24px;
+      background: radial-gradient(circle at 50% 15%, #1f1438 0%, #0a0a1a 80%);
+    }
+    .auth-card {
+      width: 100%;
+      max-width: 440px;
+      background: #14142b;
+      border: 1px solid #333355;
+      border-radius: 18px;
+      padding: 42px 36px;
+      box-shadow: 0 16px 50px rgba(0, 0, 0, 0.7), 0 0 25px rgba(245, 197, 24, 0.1);
+      position: relative;
+      overflow: hidden;
+    }
+    .auth-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #f5c518, #ff6b35, #e63946);
+    }
+    .brand-header {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+    .diya-icon {
+      font-size: 48px;
+      margin-bottom: 10px;
+      filter: drop-shadow(0 0 16px rgba(245, 197, 24, 0.75));
+      display: inline-block;
+      animation: pulseDiya 2.5s infinite ease-in-out;
+    }
+    @keyframes pulseDiya {
+      0%, 100% { transform: scale(1); filter: drop-shadow(0 0 14px rgba(245, 197, 24, 0.6)); }
+      50% { transform: scale(1.05); filter: drop-shadow(0 0 24px rgba(255, 107, 53, 0.85)); }
+    }
+    .brand-header h1 {
+      font-size: 24px;
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: -0.01em;
+      margin-bottom: 6px;
+    }
+    .subtitle {
+      font-size: 13.5px;
+      color: #a0a0c0;
+      margin-bottom: 0;
+    }
+    .auth-form .form-group {
+      margin-bottom: 20px;
+      text-align: left;
+    }
+    .auth-form label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #d0d0e0;
+      margin-bottom: 8px;
+    }
+    .auth-form input {
+      width: 100%;
+      padding: 12px 16px;
+      background: #090918;
+      border: 1px solid #333355;
+      border-radius: 8px;
+      color: #ffffff;
+      font-size: 14.5px;
+      font-family: inherit;
+      transition: all 0.25s ease;
+    }
+    .auth-form input:focus {
+      outline: none;
+      border-color: #f5c518;
+      box-shadow: 0 0 12px rgba(245, 197, 24, 0.35);
+      background: #0d0d22;
+    }
+    .btn-submit {
+      width: 100%;
+      padding: 14px;
+      font-size: 15px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #f5c518 0%, #ff6b35 100%);
+      color: #000000;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: all 0.25s ease;
+      margin-top: 10px;
+    }
+    .btn-submit:hover {
+      background: linear-gradient(135deg, #ffd700 0%, #ff8c42 100%);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(245, 197, 24, 0.4);
+    }
+    .auth-footer {
+      margin-top: 28px;
+      padding-top: 18px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      text-align: center;
+      font-size: 11.5px;
+      color: #8080a0;
+    }
+    .auth-footer a {
+      color: #f5c518;
+      text-decoration: none;
+    }
+    .auth-footer a:hover {
+      text-decoration: underline;
+    }
+    .alert-error {
+      background: rgba(230, 57, 70, 0.15);
+      border: 1px solid #e63946;
+      color: #ff6b6b;
+      padding: 11px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      margin-bottom: 18px;
+      display: none;
+    }
+  </style>
 </head>
 <body class="auth-page">
-  <div class="auth-container">
-    <div class="auth-card">
-      <div class="brand-header">
-        <div class="diya-icon">🪔</div>
-        <h1>NEIGHBOURHOOD CLUB 🔥</h1>
-        <p class="subtitle">Kali Puja 2026 | Accounts & Audit System</p>
-        <span class="badge-status" id="modeBadge">Checking connection...</span>
+  <div class="auth-card">
+    <div class="brand-header">
+      <div class="diya-icon">🪔</div>
+      <h1>NEIGHBOURHOOD CLUB 🔥</h1>
+      <p class="subtitle">Kali Puja 2026 | Financial Accounts & Audit Portal</p>
+    </div>
+
+    <div id="errorAlert" class="alert-error"></div>
+
+    <form id="loginForm" class="auth-form">
+      <div class="form-group">
+        <label for="username">
+          <i class="fa-solid fa-user" style="color: #f5c518; margin-right: 6px;"></i> Username
+        </label>
+        <input 
+          type="text" 
+          id="username" 
+          name="username" 
+          required 
+          placeholder="Enter username" 
+          autocomplete="username"
+          autofocus
+        >
       </div>
 
-      <div id="errorAlert" class="alert alert-error" style="display: none; background: rgba(230, 57, 70, 0.2); border: 1px solid var(--red); color: #ff6b6b; padding: 10px 14px; border-radius: 6px; font-size: 13px; margin-bottom: 16px;"></div>
-      <div id="successAlert" class="alert alert-success" style="display: none; background: rgba(46, 204, 113, 0.2); border: 1px solid var(--green); color: #2ecc71; padding: 10px 14px; border-radius: 6px; font-size: 13px; margin-bottom: 16px;"></div>
-
-      <form id="loginForm" class="auth-form">
-        <div class="form-group">
-          <label for="username">Username</label>
-          <input type="text" id="username" name="username" required placeholder="e.g. admin" autocomplete="username">
-        </div>
-
-        <div class="form-group">
-          <label for="password">Password</label>
-          <input type="password" id="password" name="password" required placeholder="••••••••" autocomplete="current-password">
-        </div>
-
-        <button type="submit" id="loginBtn" class="btn btn-primary btn-block" style="padding: 12px; font-size: 15px; font-weight: 700;">
-          <i class="fa-solid fa-right-to-bracket"></i> Sign In to Dashboard
-        </button>
-      </form>
-
-      <div class="quick-credentials">
-        <p class="quick-title">⚡ Quick Demo Login (Click to test):</p>
-        <div class="quick-btn-grid">
-          <button type="button" class="btn btn-chip" onclick="fillCreds('admin', 'admin123')">
-            👑 <strong>Admin</strong> &nbsp;— Full control & user management
-          </button>
-          <button type="button" class="btn btn-chip" onclick="fillCreds('collector1', 'collector123')">
-            📝 <strong>Collector</strong> &nbsp;— Update collection amounts
-          </button>
-          <button type="button" class="btn btn-chip" onclick="fillCreds('viewer1', 'viewer123')">
-            👀 <strong>Viewer</strong> &nbsp;— Read-only financial audit
-          </button>
-        </div>
+      <div class="form-group">
+        <label for="password">
+          <i class="fa-solid fa-lock" style="color: #f5c518; margin-right: 6px;"></i> Password
+        </label>
+        <input 
+          type="password" 
+          id="password" 
+          name="password" 
+          required 
+          placeholder="Enter password" 
+          autocomplete="current-password"
+        >
       </div>
 
-      <div class="auth-footer">
-        <p>Google Spreadsheet: <code>1bTBdyhZaQczAivGac...</code></p>
-        <p>Neighbourhood Club Audit Committee © 2026</p>
-      </div>
+      <button type="submit" id="loginBtn" class="btn-submit">
+        <i class="fa-solid fa-right-to-bracket"></i> Sign In to Accounts
+      </button>
+    </form>
+
+    <div class="auth-footer">
+      <p>Neighbourhood Club Audit Committee © 2026</p>
+      <p style="margin-top: 4px;">
+        <a href="https://docs.google.com/spreadsheets/d/1bTBdyhZaQczAivGacAVuHiwwjnxkikaEeQJaCoeRmTE/edit?usp=sharing" target="_blank" rel="noopener noreferrer">
+          <i class="fa-solid fa-table-cells"></i> Master Google Spreadsheet
+        </a>
+      </p>
     </div>
   </div>
 
   <script>
-    // Check if already authenticated
-    (async function checkExistingAuth() {
+    // If user is already authenticated, take them directly to the dashboard
+    (async function checkAuth() {
       try {
         const res = await fetch('/api/auth/me');
         if (res.ok) {
@@ -80,34 +217,6 @@
         }
       } catch (e) {}
     })();
-
-    // Fetch system status
-    fetch('/api/system/status')
-      .then(res => res.json())
-      .then(data => {
-        const badge = document.getElementById('modeBadge');
-        if (!badge) return;
-        if (data.isDemoMode) {
-          badge.textContent = '⚡ DEMO MODE (Local Data)';
-          badge.className = 'badge-status badge-demo';
-        } else {
-          badge.textContent = '🟢 LIVE SYNC (Google Sheets Connected)';
-          badge.className = 'badge-status badge-live';
-        }
-      })
-      .catch(() => {
-        const badge = document.getElementById('modeBadge');
-        if (badge) {
-          badge.textContent = '⚡ DEMO MODE (Local Data)';
-          badge.className = 'badge-status badge-demo';
-        }
-      });
-
-    function fillCreds(u, p) {
-      document.getElementById('username').value = u;
-      document.getElementById('password').value = p;
-      document.getElementById('loginBtn').focus();
-    }
 
     document.getElementById('loginForm').addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -136,13 +245,13 @@
           errorAlert.textContent = data.error || 'Invalid username or password.';
           errorAlert.style.display = 'block';
           loginBtn.disabled = false;
-          loginBtn.innerHTML = '<i class="fa-solid fa-right-to-bracket"></i> Sign In to Dashboard';
+          loginBtn.innerHTML = '<i class="fa-solid fa-right-to-bracket"></i> Sign In to Accounts';
         }
       } catch (err) {
         errorAlert.textContent = 'Unable to connect to server. Please try again.';
         errorAlert.style.display = 'block';
         loginBtn.disabled = false;
-        loginBtn.innerHTML = '<i class="fa-solid fa-right-to-bracket"></i> Sign In to Dashboard';
+        loginBtn.innerHTML = '<i class="fa-solid fa-right-to-bracket"></i> Sign In to Accounts';
       }
     });
   </script>
