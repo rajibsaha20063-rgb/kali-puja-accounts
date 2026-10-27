@@ -19,5 +19,12 @@
     "role": "collector",
     "name": "pakon",
     "createdAt": "2026-10-27T18:09:05.511Z"
+  },
+  {
+    "username": "om",
+    "password": "$2a$10$AEolrKaGCVaWXq2liZrhWu/e2ihkAFyiN3OAmHVq/JxWGdh4g/.DG",
+    "role": "admin",
+    "name": "om",
+    "createdAt": "2026-10-27T18:09:28.612Z"
   }
 ]
