@@ -1,81 +1,107 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>লগইন | কালী পূজা হিসাব ও নিরীক্ষা (Kali Puja Accounts)</title>
+  <title>Sign In | Kali Puja Accounts & Audit 2026</title>
+  
+  <!-- Google Fonts: Outfit & JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
-  <link rel="stylesheet" href="/styles.css">
+  
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body class="auth-page">
   <div class="auth-container">
     <div class="auth-card">
       <div class="brand-header">
         <div class="diya-icon">🪔</div>
-        <h1>কালী পূজা হিসাব ও নিরীক্ষা</h1>
-        <p class="subtitle">Neighbourhood Club Kali Puja Accounts & Audit</p>
-        <span class="badge-status" id="modeBadge">যাচাই করা হচ্ছে...</span>
+        <h1>NEIGHBOURHOOD CLUB 🔥</h1>
+        <p class="subtitle">Kali Puja 2026 | Accounts & Audit System</p>
+        <span class="badge-status" id="modeBadge">Checking connection...</span>
       </div>
 
-      <div id="errorAlert" class="alert alert-error" style="display: none;"></div>
-      <div id="successAlert" class="alert alert-success" style="display: none;"></div>
+      <div id="errorAlert" class="alert alert-error" style="display: none; background: rgba(230, 57, 70, 0.2); border: 1px solid var(--red); color: #ff6b6b; padding: 10px 14px; border-radius: 6px; font-size: 13px; margin-bottom: 16px;"></div>
+      <div id="successAlert" class="alert alert-success" style="display: none; background: rgba(46, 204, 113, 0.2); border: 1px solid var(--green); color: #2ecc71; padding: 10px 14px; border-radius: 6px; font-size: 13px; margin-bottom: 16px;"></div>
 
       <form id="loginForm" class="auth-form">
         <div class="form-group">
-          <label for="username">ব্যবহারকারীর নাম (Username)</label>
-          <input type="text" id="username" name="username" required placeholder="admin" autocomplete="username">
+          <label for="username">Username</label>
+          <input type="text" id="username" name="username" required placeholder="e.g. admin" autocomplete="username">
         </div>
 
         <div class="form-group">
-          <label for="password">পাসওয়ার্ড (Password)</label>
+          <label for="password">Password</label>
           <input type="password" id="password" name="password" required placeholder="••••••••" autocomplete="current-password">
         </div>
 
-        <button type="submit" id="loginBtn" class="btn btn-primary btn-block">
-          লগইন করুন (Sign In)
+        <button type="submit" id="loginBtn" class="btn btn-primary btn-block" style="padding: 12px; font-size: 15px; font-weight: 700;">
+          <i class="fa-solid fa-right-to-bracket"></i> Sign In to Dashboard
         </button>
       </form>
 
       <div class="quick-credentials">
-        <p class="quick-title">⚡ ডেমো অ্যাকাউন্ট দিয়ে দ্রুত প্রবেশ করুন:</p>
+        <p class="quick-title">⚡ Quick Demo Login (Click to test):</p>
         <div class="quick-btn-grid">
           <button type="button" class="btn btn-chip" onclick="fillCreds('admin', 'admin123')">
-            👑 Admin (সম্পূর্ণ অধিকার)
+            👑 <strong>Admin</strong> &nbsp;— Full control & user management
           </button>
           <button type="button" class="btn btn-chip" onclick="fillCreds('collector1', 'collector123')">
-            📝 Collector (চাঁদা তোলার দায়িত্ব)
+            📝 <strong>Collector</strong> &nbsp;— Update collection amounts
           </button>
           <button type="button" class="btn btn-chip" onclick="fillCreds('viewer1', 'viewer123')">
-            👀 Viewer (নিরীক্ষা ও হিসাব দেখা)
+            👀 <strong>Viewer</strong> &nbsp;— Read-only financial audit
           </button>
         </div>
       </div>
 
       <div class="auth-footer">
-        <p>Google Spreadsheet ID: <code>1bTBdyh...</code></p>
+        <p>Google Spreadsheet: <code>1bTBdyhZaQczAivGac...</code></p>
         <p>Neighbourhood Club Audit Committee © 2026</p>
       </div>
     </div>
   </div>
 
   <script>
+    // Check if already authenticated
+    (async function checkExistingAuth() {
+      try {
+        const res = await fetch('/api/auth/me');
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.user) {
+            window.location.href = '/dashboard.html';
+          }
+        }
+      } catch (e) {}
+    })();
+
     // Fetch system status
     fetch('/api/system/status')
       .then(res => res.json())
       .then(data => {
         const badge = document.getElementById('modeBadge');
+        if (!badge) return;
         if (data.isDemoMode) {
-          badge.textContent = '⚡ DEMO MODE (লোকাল ডাটা)';
+          badge.textContent = '⚡ DEMO MODE (Local Data)';
           badge.className = 'badge-status badge-demo';
         } else {
-          badge.textContent = '🟢 LIVE SYNC (Google Sheets সংযুক্ত)';
+          badge.textContent = '🟢 LIVE SYNC (Google Sheets Connected)';
           badge.className = 'badge-status badge-live';
         }
       })
-      .catch(() => {});
+      .catch(() => {
+        const badge = document.getElementById('modeBadge');
+        if (badge) {
+          badge.textContent = '⚡ DEMO MODE (Local Data)';
+          badge.className = 'badge-status badge-demo';
+        }
+      });
 
     function fillCreds(u, p) {
       document.getElementById('username').value = u;
@@ -92,7 +118,7 @@
 
       errorAlert.style.display = 'none';
       loginBtn.disabled = true;
-      loginBtn.textContent = 'যাচাই করা হচ্ছে...';
+      loginBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Signing in...';
 
       try {
         const res = await fetch('/api/auth/login', {
@@ -107,16 +133,16 @@
           if (data.token) localStorage.setItem('kali_token', data.token);
           window.location.href = '/dashboard.html';
         } else {
-          errorAlert.textContent = data.error || 'ভুল ইউজারনেম বা পাসওয়ার্ড!';
+          errorAlert.textContent = data.error || 'Invalid username or password.';
           errorAlert.style.display = 'block';
           loginBtn.disabled = false;
-          loginBtn.textContent = 'লগইন করুন (Sign In)';
+          loginBtn.innerHTML = '<i class="fa-solid fa-right-to-bracket"></i> Sign In to Dashboard';
         }
       } catch (err) {
-        errorAlert.textContent = 'সার্ভারে সংযোগ করা যায়নি। দয়া করে আবার চেষ্টা করুন।';
+        errorAlert.textContent = 'Unable to connect to server. Please try again.';
         errorAlert.style.display = 'block';
         loginBtn.disabled = false;
-        loginBtn.textContent = 'লগইন করুন (Sign In)';
+        loginBtn.innerHTML = '<i class="fa-solid fa-right-to-bracket"></i> Sign In to Dashboard';
       }
     });
   </script>

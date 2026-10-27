@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ড্যাশবোর্ড | NEIGHBOURHOOD CLUB 🔥 কালী পূজা ২০২৬ | Kali Puja Accounts & Audit</title>
+  <title>Dashboard | NEIGHBOURHOOD CLUB 🔥 Kali Puja 2026 Accounts & Audit</title>
   
-  <!-- Google Fonts: Noto Sans Bengali & Outfit -->
+  <!-- Google Fonts: Outfit & JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   
   <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -17,7 +17,6 @@
   <link rel="stylesheet" href="styles.css">
 
   <style>
-    /* Dashboard specific polish */
     .sync-badge {
       display: inline-flex;
       align-items: center;
@@ -108,30 +107,30 @@
       <span class="nav-logo-icon">🔥</span>
       <div class="nav-brand-text">
         <span class="nav-brand-title">NEIGHBOURHOOD CLUB</span>
-        <span class="nav-brand-sub">কালী পূজা ২০২৬ | Kali Puja Accounts & Audit</span>
+        <span class="nav-brand-sub">Kali Puja 2026 | Accounts & Audit</span>
       </div>
     </a>
 
     <ul class="nav-menu">
       <li class="nav-item">
         <a href="dashboard.html" class="active">
-          <i class="fa-solid fa-chart-pie"></i> ড্যাশবোর্ড (Dashboard)
+          <i class="fa-solid fa-chart-pie"></i> Dashboard
         </a>
       </li>
       <li class="nav-item">
         <a href="#collections-section">
-          <i class="fa-solid fa-hand-holding-dollar"></i> কালেকশন (Income)
+          <i class="fa-solid fa-hand-holding-dollar"></i> Collections (Income)
         </a>
       </li>
       <li class="nav-item">
         <a href="#expenses-section">
-          <i class="fa-solid fa-receipt"></i> পূজা খরচ (Expenses)
+          <i class="fa-solid fa-receipt"></i> Puja Expenses
         </a>
       </li>
       <!-- Admin Nav Item (visible only for admin) -->
       <li class="nav-item" id="nav-admin-link" style="display: none;">
         <a href="admin.html">
-          <i class="fa-solid fa-shield-halved text-gold"></i> অ্যাডমিন প্যানেল (Admin)
+          <i class="fa-solid fa-shield-halved text-gold"></i> Admin Panel
         </a>
       </li>
     </ul>
@@ -140,14 +139,14 @@
       <div class="user-profile">
         <div class="user-avatar" id="user-avatar-initial">A</div>
         <div class="user-details">
-          <span class="username-display" id="user-display-name">ব্যবহারকারী</span>
+          <span class="username-display" id="user-display-name">User</span>
           <span class="role-badge" id="user-role-badge">VIEWER</span>
         </div>
       </div>
 
-      <button type="button" class="btn btn-secondary btn-sm" id="logout-btn" title="লগআউট করুন">
+      <button type="button" class="btn btn-secondary btn-sm" id="logout-btn" title="Sign out">
         <i class="fa-solid fa-right-from-bracket"></i>
-        <span class="d-none-mobile">লগআউট</span>
+        <span class="d-none-mobile">Logout</span>
       </button>
     </div>
   </nav>
@@ -159,10 +158,10 @@
     <div class="page-header">
       <div class="page-title-box">
         <h1 class="page-title">
-          <span>কালী পূজা ২০২৬ অডিট ও হিসাব সারসংক্ষেপ</span>
+          <span>Kali Puja 2026 Audit & Accounts Summary</span>
         </h1>
-        <p class="page-subtitle bengali-text">
-          ক্লাবের বার্ষিক পূজা ও উৎসবের আয়-ব্যয় এবং ক্যাশ ব্যালেন্স বিবরণী (Real-time Audit Ledger)
+        <p class="page-subtitle">
+          Real-time Income, Expenditure, and Net Cash in Hand Ledger
         </p>
       </div>
 
@@ -170,17 +169,17 @@
         <!-- Auto-refresh status -->
         <div class="sync-badge" id="sync-status-badge">
           <span class="sync-pulse"></span>
-          <span id="sync-time-text">স্বয়ংক্রিয় রিফ্রেশ: ৩০ সেকেন্ড</span>
+          <span id="sync-time-text">Auto-refresh: 30s</span>
         </div>
 
         <!-- Manual refresh button -->
-        <button class="btn btn-secondary btn-sm" id="btn-manual-refresh" title="তাত্ক্ষণিক রিফ্রেশ করুন">
-          <i class="fa-solid fa-arrows-rotate" id="refresh-icon"></i> রিফ্রেশ
+        <button class="btn btn-secondary btn-sm" id="btn-manual-refresh" title="Refresh data now">
+          <i class="fa-solid fa-arrows-rotate" id="refresh-icon"></i> Refresh
         </button>
 
         <!-- Print report button -->
-        <button class="btn btn-primary btn-sm" onclick="window.print()" title="হিসাব প্রিন্ট করুন বা PDF সেভ করুন">
-          <i class="fa-solid fa-print"></i> অডিট রিপোর্ট প্রিন্ট
+        <button class="btn btn-primary btn-sm" onclick="window.print()" title="Print ledger report or save as PDF">
+          <i class="fa-solid fa-print"></i> Print Audit Report
         </button>
       </div>
     </div>
@@ -192,7 +191,7 @@
         <div class="stat-header">
           <div class="stat-title-wrap">
             <span class="stat-label-en">Total Income / Collection</span>
-            <span class="stat-label-bn bengali-text">💰 মোট চাঁদা ও আয় কালেকশন</span>
+            <span class="stat-label-bn">💰 Total Collections from all Sources</span>
           </div>
           <div class="stat-icon">
             <i class="fa-solid fa-hand-holding-dollar"></i>
@@ -200,8 +199,8 @@
         </div>
         <div class="stat-value" id="total-income-display">₹ 0</div>
         <div class="stat-footer">
-          <span id="income-target-display">মোট টার্গেট: ₹ 0</span>
-          <span id="income-percentage" class="text-green fw-bold">0% আদায়</span>
+          <span id="income-target-display">Total Target: ₹ 0</span>
+          <span id="income-percentage" class="text-green fw-bold">0% Achieved</span>
         </div>
       </div>
 
@@ -210,7 +209,7 @@
         <div class="stat-header">
           <div class="stat-title-wrap">
             <span class="stat-label-en">Total Expenses / Kharcha</span>
-            <span class="stat-label-bn bengali-text">💸 মোট পূজা খরচ ও অগ্রিম পরিশোধ</span>
+            <span class="stat-label-bn">💸 Total Budget Spent & Paid</span>
           </div>
           <div class="stat-icon">
             <i class="fa-solid fa-money-bill-wave"></i>
@@ -218,8 +217,8 @@
         </div>
         <div class="stat-value" id="total-expense-display">₹ 0</div>
         <div class="stat-footer">
-          <span id="expense-budget-display">মোট বাজেট: ₹ 0</span>
-          <span id="expense-pending-display" class="text-red fw-bold">বকেয়া: ₹ 0</span>
+          <span id="expense-budget-display">Total Budget: ₹ 0</span>
+          <span id="expense-pending-display" class="text-red fw-bold">Pending Due: ₹ 0</span>
         </div>
       </div>
 
@@ -228,7 +227,7 @@
         <div class="stat-header">
           <div class="stat-title-wrap">
             <span class="stat-label-en">Net Balance / Cash in Hand</span>
-            <span class="stat-label-bn bengali-text">🏦 নেট উদ্বৃত্ত / ক্লাবের হাতে নগদ</span>
+            <span class="stat-label-bn">🏦 Net Cash Available</span>
           </div>
           <div class="stat-icon">
             <i class="fa-solid fa-vault"></i>
@@ -236,8 +235,8 @@
         </div>
         <div class="stat-value" id="net-balance-display">₹ 0</div>
         <div class="stat-footer">
-          <span>হিসাব স্থিতি: <strong id="balance-status" class="text-blue">ব্যালেন্স ইতিবাচক</strong></span>
-          <span id="last-updated-time">আপডেট: এইমাত্র</span>
+          <span>Status: <strong id="balance-status" class="text-blue">Surplus</strong></span>
+          <span id="last-updated-time">Updated: Just now</span>
         </div>
       </div>
     </div>
@@ -245,25 +244,25 @@
     <!-- Quick info notification banner for permissions -->
     <div id="permission-banner" class="alert alert-warning" style="display: none;">
       <i class="fa-solid fa-circle-info"></i>
-      <span id="permission-text">ভিউয়ার মোডে আছেন: তথ্য কেবলমাত্র দেখার জন্য। সম্পাদনা করতে কালেক্টর বা অ্যাডমিন হিসেবে লগইন করুন।</span>
+      <span id="permission-text">You are signed in as Viewer: Data is view-only. Log in as Collector or Admin to make updates.</span>
     </div>
 
-    <!-- 2. Income Breakdown Table (কালেকশন বিবরণী) -->
+    <!-- 2. Income Breakdown Table -->
     <section class="content-section" id="collections-section">
       <div class="section-header">
         <div>
           <h2 class="section-title">
             <i class="fa-solid fa-coins"></i>
-            <span>কালেকশন বিবরণী (Income Breakdown)</span>
+            <span>Collection Breakdown (Income)</span>
           </h2>
           <span class="text-muted" style="font-size: 0.85rem;">
-            বিভিন্ন পাড়া, দোকান ও উৎস ভিত্তিক চাঁদা আদায়ের তথ্য
+            Collections from Paras, Market, Shops, and Spot donations
           </span>
         </div>
         <div style="display: flex; align-items: center; gap: 0.5rem;">
-          <span class="section-badge">৭ টি প্রধান উৎস</span>
+          <span class="section-badge">7 Primary Sources</span>
           <span class="edit-tooltip" id="collection-edit-hint" style="display: none;">
-            <i class="fa-solid fa-pencil"></i> ক্লিক করে পরিবর্তন করুন (Enter চাপলে সেভ হবে)
+            <i class="fa-solid fa-pencil"></i> Click cells to edit (Press Enter to save)
           </span>
         </div>
       </div>
@@ -272,12 +271,12 @@
         <table class="custom-table" id="income-table">
           <thead>
             <tr>
-              <th style="width: 70px; text-align: center;">ক্রঃ নং<br><small>Sl No</small></th>
-              <th>উৎস / খাতের নাম<br><small>Source / Head</small></th>
-              <th style="text-align: right;">টার্গেট / দাবি (₹)<br><small>Target / Demand</small></th>
-              <th style="text-align: right;">মোট সংগৃহীত (₹)<br><small>Total Collected</small></th>
-              <th style="text-align: right;">বকেয়া / পাওনা (₹)<br><small>Pending Due</small></th>
-              <th style="text-align: center; width: 140px;">স্থিতি<br><small>Status</small></th>
+              <th style="width: 70px; text-align: center;">Sl No</th>
+              <th>Source / Head</th>
+              <th style="text-align: right;">Target / Demand (₹)</th>
+              <th style="text-align: right;">Total Collected (₹)</th>
+              <th style="text-align: right;">Pending Due (₹)</th>
+              <th style="text-align: center; width: 150px;">Status</th>
             </tr>
           </thead>
           <tbody id="income-table-body">
@@ -285,33 +284,33 @@
           </tbody>
           <tfoot>
             <tr>
-              <td colspan="2" style="text-align: right;">সর্বমোট আয় (Grand Total Income):</td>
-              <td style="text-align: right;" id="income-foot-target">₹ 0</td>
-              <td style="text-align: right; color: #4ade80;" id="income-foot-collected">₹ 0</td>
-              <td style="text-align: right; color: #f87171;" id="income-foot-due">₹ 0</td>
-              <td style="text-align: center;" id="income-foot-rate">100%</td>
+              <td colspan="2" style="text-align: right; font-weight: 700;">Grand Total Income:</td>
+              <td style="text-align: right; font-weight: 700;" id="income-foot-target">₹ 0</td>
+              <td style="text-align: right; color: #4ade80; font-weight: 700;" id="income-foot-collected">₹ 0</td>
+              <td style="text-align: right; color: #f87171; font-weight: 700;" id="income-foot-due">₹ 0</td>
+              <td style="text-align: center; font-weight: 700;" id="income-foot-rate">100%</td>
             </tr>
           </tfoot>
         </table>
       </div>
     </section>
 
-    <!-- 3. Expense Breakdown Table (পূজা খরচের সারসংক্ষেপ) -->
+    <!-- 3. Expense Breakdown Table -->
     <section class="content-section" id="expenses-section">
       <div class="section-header">
         <div>
           <h2 class="section-title">
             <i class="fa-solid fa-file-invoice-dollar"></i>
-            <span>পূজা খরচের সারসংক্ষেপ (Puja Expense & Audit Summary)</span>
+            <span>Expense Breakdown & Audit Summary</span>
           </h2>
           <span class="text-muted" style="font-size: 0.85rem;">
-            প্রতিমা, আলোকসজ্জা, মণ্ডপ, ভোগ সহ সমস্ত খাতের ব্যয় ও বকেয়া বিবরণী
+            Pandal, Lighting, Idol, Sound, Bhog, and all authorized expenses
           </span>
         </div>
         <div style="display: flex; align-items: center; gap: 0.5rem;">
-          <span class="section-badge">১২ টি আবশ্যকীয় খাত</span>
+          <span class="section-badge">12 Essential Categories</span>
           <span class="edit-tooltip" id="expense-edit-hint" style="display: none;">
-            <i class="fa-solid fa-shield-halved"></i> অ্যাডমিন মোড: মান সম্পাদনাযোগ্য
+            <i class="fa-solid fa-shield-halved"></i> Admin Mode: Editable Cells
           </span>
         </div>
       </div>
@@ -320,13 +319,13 @@
         <table class="custom-table" id="expense-table">
           <thead>
             <tr>
-              <th style="width: 70px; text-align: center;">ক্রঃ নং<br><small>Sl No</small></th>
-              <th>খরচের খাত<br><small>Expense Category</small></th>
-              <th style="text-align: right;">অনুমোদিত বাজেট (₹)<br><small>Estimated / Budget</small></th>
-              <th style="text-align: right;">অগ্রিম প্রদান (₹)<br><small>Advance Paid</small></th>
-              <th style="text-align: right;">মোট পরিশোধিত ব্যয় (₹)<br><small>Total Expense Paid</small></th>
-              <th style="text-align: right;">বকেয়া পাওনা (₹)<br><small>Pending Due</small></th>
-              <th style="text-align: center; width: 140px;">অবস্থা<br><small>Audit Status</small></th>
+              <th style="width: 70px; text-align: center;">Sl No</th>
+              <th>Expense Category</th>
+              <th style="text-align: right;">Estimated / Budget (₹)</th>
+              <th style="text-align: right;">Advance Paid (₹)</th>
+              <th style="text-align: right;">Total Expense Paid (₹)</th>
+              <th style="text-align: right;">Pending Due (₹)</th>
+              <th style="text-align: center; width: 150px;">Audit Status</th>
             </tr>
           </thead>
           <tbody id="expense-table-body">
@@ -334,12 +333,12 @@
           </tbody>
           <tfoot>
             <tr>
-              <td colspan="2" style="text-align: right;">সর্বমোট পূজা খরচ (Grand Total Expenses):</td>
-              <td style="text-align: right;" id="expense-foot-budget">₹ 0</td>
-              <td style="text-align: right; color: #60a5fa;" id="expense-foot-advance">₹ 0</td>
-              <td style="text-align: right; color: #f87171;" id="expense-foot-paid">₹ 0</td>
-              <td style="text-align: right; color: #f5c518;" id="expense-foot-due">₹ 0</td>
-              <td style="text-align: center;">অডিট সম্পন্ন</td>
+              <td colspan="2" style="text-align: right; font-weight: 700;">Grand Total Expenses:</td>
+              <td style="text-align: right; font-weight: 700;" id="expense-foot-budget">₹ 0</td>
+              <td style="text-align: right; color: #60a5fa; font-weight: 700;" id="expense-foot-advance">₹ 0</td>
+              <td style="text-align: right; color: #f87171; font-weight: 700;" id="expense-foot-paid">₹ 0</td>
+              <td style="text-align: right; color: #f5c518; font-weight: 700;" id="expense-foot-due">₹ 0</td>
+              <td style="text-align: center; font-weight: 700;">Audited</td>
             </tr>
           </tfoot>
         </table>
@@ -357,34 +356,33 @@
     let currentUser = null;
     let collectionsData = [];
     let expensesData = [];
-    let refreshTimer = null;
     let countdownSeconds = 30;
     let countdownTimer = null;
 
-    // Default Fallback Datasets (Festive Kali Puja 2026 data structure)
+    // Default Fallback Datasets (English)
     const DEFAULT_COLLECTIONS = [
-      { id: 1, source: "উত্তর পাড়া চাঁদা (North Para Collection)", target: 80000, collected: 72500 },
-      { id: 2, source: "দক্ষিণ পাড়া চাঁদা (South Para Collection)", target: 95000, collected: 88000 },
-      { id: 3, source: "পূর্ব ও পশ্চিম পাড়া চাঁদা (East & West Para)", target: 65000, collected: 59000 },
-      { id: 4, source: "স্থানীয় বাজার ও দোকান কালেকশন (Market & Shops)", target: 75000, collected: 68500 },
-      { id: 5, source: "মেন রোড ও ট্রাফিক ডোনেশন (Main Road Collection)", target: 50000, collected: 44000 },
-      { id: 6, source: "বিশিষ্ট পৃষ্ঠপোষক ও বিশেষ অনুদান (Patron Donations)", target: 110000, collected: 105000 },
-      { id: 7, source: "ভোগ কুপন ও বিজ্ঞাপন স্পনসর (Bhog & Banner Sponsors)", target: 45000, collected: 39500 }
+      { id: 1, source: "Para 1 Collection", target: 80000, collected: 72500 },
+      { id: 2, source: "Para 2 Collection", target: 95000, collected: 88000 },
+      { id: 3, source: "Para 3 Collection", target: 65000, collected: 59000 },
+      { id: 4, source: "Para 4 Collection", target: 75000, collected: 68500 },
+      { id: 5, source: "Para 5 Collection", target: 50000, collected: 44000 },
+      { id: 6, source: "Shop & Market Collection", target: 110000, collected: 105000 },
+      { id: 7, source: "Road & Spot Collection", target: 45000, collected: 39500 }
     ];
 
     const DEFAULT_EXPENSES = [
-      { id: 1, category: "প্রতিমা নির্মাণ ও অলংকার (Maa Kali Idol & Ornaments)", budget: 65000, advance: 25000, totalPaid: 55000 },
-      { id: 2, category: "মণ্ডপ ও তোরণ ডেকোরেশন (Pandal, Gate & Structure)", budget: 110000, advance: 40000, totalPaid: 95000 },
-      { id: 3, category: "আলোকসজ্জা ও বিদ্যুৎ ব্যবস্থা (Lighting & Illumination)", budget: 85000, advance: 30000, totalPaid: 75000 },
-      { id: 4, category: "সাউন্ড সিস্টেম ও জেনারেটর (Sound System & Generator)", budget: 35000, advance: 15000, totalPaid: 30000 },
-      { id: 5, category: "পুরোহিত প্রণামী ও পূজা সামগ্রী (Priest & Puja Rituals)", budget: 28000, advance: 10000, totalPaid: 24000 },
-      { id: 6, category: "মহাপ্রসাদ, ভোগ ও ফল-মিষ্টি বিতরণ (Maha Bhog & Sweets)", budget: 52000, advance: 20000, totalPaid: 48000 },
-      { id: 7, category: "ঢাক, কাঁসি ও সানাই বাদক (Dhak Players & Musicians)", budget: 25000, advance: 8000, totalPaid: 22000 },
-      { id: 8, category: "বিসর্জন শোভাযাত্রা ও পরিবহন (Immersion & Trolley)", budget: 30000, advance: 10000, totalPaid: 26000 },
-      { id: 9, category: "নিরাপত্তা ও ভলান্টিয়ার টিফিন (Security & Volunteer Tiffin)", budget: 18000, advance: 5000, totalPaid: 15500 },
-      { id: 10, category: "রসিদ বই, পোস্টার ও ব্যানার প্রিন্টিং (Printing & Publicity)", budget: 14000, advance: 5000, totalPaid: 13500 },
-      { id: 11, category: "প্রশাসনিক অনুমতি, দমকল ও সিইএসসি ফি (Govt & CESC Fees)", budget: 15000, advance: 15000, totalPaid: 15000 },
-      { id: 12, category: "জরুরি আপদকালীন ও বিবিধ খরচ (Contingency & Misc)", budget: 20000, advance: 5000, totalPaid: 12000 }
+      { id: 1, category: "Lighting & Illumination", budget: 85000, advance: 30000, totalPaid: 75000 },
+      { id: 2, category: "Pandal & Stage Decoration", budget: 110000, advance: 40000, totalPaid: 95000 },
+      { id: 3, category: "Kali Idol (Murti)", budget: 65000, advance: 25000, totalPaid: 55000 },
+      { id: 4, category: "Sound System & Audio", budget: 35000, advance: 15000, totalPaid: 30000 },
+      { id: 5, category: "Puja Items (Dashakarma)", budget: 28000, advance: 10000, totalPaid: 24000 },
+      { id: 6, category: "Priest & Purohit Honorarium", budget: 25000, advance: 8000, totalPaid: 22000 },
+      { id: 7, category: "Bhog & Prasad Preparation", budget: 52000, advance: 20000, totalPaid: 48000 },
+      { id: 8, category: "Cook & Kitchen Staff", budget: 18000, advance: 5000, totalPaid: 15500 },
+      { id: 9, category: "Cultural Program", budget: 30000, advance: 10000, totalPaid: 26000 },
+      { id: 10, category: "Miscellaneous 1", budget: 14000, advance: 5000, totalPaid: 13500 },
+      { id: 11, category: "Miscellaneous 2", budget: 15000, advance: 15000, totalPaid: 15000 },
+      { id: 12, category: "Miscellaneous 3", budget: 20000, advance: 5000, totalPaid: 12000 }
     ];
 
     // Toast Notification helper
@@ -465,7 +463,6 @@
           currentUser = data.user || data;
           localStorage.setItem('kali_user', JSON.stringify(currentUser));
         } else {
-          // Check localStorage as fallback if server is headless
           const stored = localStorage.getItem('kali_user');
           if (stored) {
             currentUser = JSON.parse(stored);
@@ -475,7 +472,6 @@
           }
         }
       } catch (err) {
-        console.warn('Auth check fallback to local storage:', err);
         const stored = localStorage.getItem('kali_user');
         if (stored) {
           currentUser = JSON.parse(stored);
@@ -492,7 +488,7 @@
     function applyUserUI() {
       if (!currentUser) return;
       const role = (currentUser.role || 'viewer').toLowerCase();
-      const username = currentUser.username || 'ব্যবহারকারী';
+      const username = currentUser.username || 'User';
 
       document.getElementById('user-display-name').textContent = username;
       document.getElementById('user-avatar-initial').textContent = username.charAt(0).toUpperCase();
@@ -522,7 +518,7 @@
         collHint.style.display = 'none';
         expHint.style.display = 'none';
         banner.style.display = 'flex';
-        bannerText.textContent = 'আপনি ভিউয়ার হিসেবে লগইন করেছেন। আপনি সমস্ত অডিট ডাটা দেখতে পাবেন, কিন্তু কোনো পরিবর্তন করতে পারবেন না।';
+        bannerText.textContent = 'You are signed in as Viewer: Read-only access to all financial audit records.';
       }
     }
 
@@ -534,42 +530,42 @@
         try {
           const res = await fetch('/api/data/summary');
           if (res.ok) {
-            summary = await res.json();
+            const data = await res.json();
+            summary = data.summary || data;
           }
         } catch (e) {
-          console.warn('Could not fetch /api/data/summary, computing locally:', e);
+          console.warn('Could not fetch /api/data/summary:', e);
         }
       }
 
-      // Compute from current tables if not provided
       const totalIncome = summary?.totalIncome ?? collectionsData.reduce((acc, row) => acc + (Number(row.collected) || 0), 0);
       const totalTarget = collectionsData.reduce((acc, row) => acc + (Number(row.target) || 0), 0);
-      const totalExpense = summary?.totalExpenses ?? expensesData.reduce((acc, row) => acc + (Number(row.totalPaid) || 0), 0);
-      const totalBudget = expensesData.reduce((acc, row) => acc + (Number(row.budget) || 0), 0);
-      const totalExpDue = expensesData.reduce((acc, row) => acc + Math.max(0, (Number(row.budget) || 0) - (Number(row.totalPaid) || 0)), 0);
+      const totalExpense = summary?.totalExpenses ?? expensesData.reduce((acc, row) => acc + (Number(row.totalPaid) || Number(row.paid) || 0), 0);
+      const totalBudget = expensesData.reduce((acc, row) => acc + (Number(row.budget) || Number(row.estimated) || 0), 0);
+      const totalExpDue = expensesData.reduce((acc, row) => acc + Math.max(0, (Number(row.budget) || Number(row.estimated) || 0) - (Number(row.totalPaid) || Number(row.paid) || 0)), 0);
       const netBalance = summary?.netBalance ?? (totalIncome - totalExpense);
 
       animateValue('total-income-display', 0, totalIncome);
       animateValue('total-expense-display', 0, totalExpense);
       animateValue('net-balance-display', 0, netBalance);
 
-      document.getElementById('income-target-display').textContent = `মোট টার্গেট: ${formatRupee(totalTarget)}`;
+      document.getElementById('income-target-display').textContent = `Total Target: ${formatRupee(totalTarget)}`;
       const percentage = totalTarget > 0 ? Math.round((totalIncome / totalTarget) * 100) : 0;
-      document.getElementById('income-percentage').textContent = `${percentage}% আদায়`;
+      document.getElementById('income-percentage').textContent = `${percentage}% Achieved`;
 
-      document.getElementById('expense-budget-display').textContent = `মোট বাজেট: ${formatRupee(totalBudget)}`;
-      document.getElementById('expense-pending-display').textContent = `বকেয়া: ${formatRupee(totalExpDue)}`;
+      document.getElementById('expense-budget-display').textContent = `Total Budget: ${formatRupee(totalBudget)}`;
+      document.getElementById('expense-pending-display').textContent = `Pending Due: ${formatRupee(totalExpDue)}`;
 
       const balStatus = document.getElementById('balance-status');
       if (netBalance >= 0) {
-        balStatus.textContent = 'ব্যালেন্স ইতিবাচক (Surplus)';
+        balStatus.textContent = 'Surplus (Positive)';
         balStatus.className = 'text-green fw-bold';
       } else {
-        balStatus.textContent = 'ঘাটতি রয়েছে (Deficit)';
+        balStatus.textContent = 'Deficit (Negative)';
         balStatus.className = 'text-red fw-bold';
       }
 
-      document.getElementById('last-updated-time').textContent = 'আপডেট: ' + new Date().toLocaleTimeString('bn-IN');
+      document.getElementById('last-updated-time').textContent = 'Updated: ' + new Date().toLocaleTimeString('en-US');
     }
 
     async function loadCollections() {
@@ -582,7 +578,6 @@
           collectionsData = DEFAULT_COLLECTIONS;
         }
       } catch (e) {
-        console.warn('API error for collections, using default set:', e);
         if (collectionsData.length === 0) collectionsData = DEFAULT_COLLECTIONS;
       }
       renderCollectionsTable();
@@ -598,7 +593,6 @@
           expensesData = DEFAULT_EXPENSES;
         }
       } catch (e) {
-        console.warn('API error for expenses, using default set:', e);
         if (expensesData.length === 0) expensesData = DEFAULT_EXPENSES;
       }
       renderExpensesTable();
@@ -628,22 +622,22 @@
 
         let statusPill = '';
         if (due === 0 && collected >= target) {
-          statusPill = '<span class="status-pill paid"><i class="fa-solid fa-check"></i> সম্পূর্ণ আদায়</span>';
+          statusPill = '<span class="status-pill paid"><i class="fa-solid fa-check"></i> Completed</span>';
         } else if (collected > 0) {
-          statusPill = `<span class="status-pill partial">${percent}% আদায়</span>`;
+          statusPill = `<span class="status-pill partial">${percent}% Paid</span>`;
         } else {
-          statusPill = '<span class="status-pill due"><i class="fa-solid fa-clock"></i> সম্পূর্ণ বকেয়া</span>';
+          statusPill = '<span class="status-pill due"><i class="fa-solid fa-clock"></i> Pending</span>';
         }
 
         const tr = document.createElement('tr');
         tr.id = `income-row-${row.id || index}`;
 
         const targetCell = canEdit
-          ? `<td class="editable-cell mono-text" style="text-align: right;" onclick="enableInlineEdit(this, 'collections', ${index}, 'target', ${target})" title="ক্লিক করে টার্গেট এডিট করুন">${formatRupee(target)}</td>`
+          ? `<td class="editable-cell mono-text" style="text-align: right;" onclick="enableInlineEdit(this, 'collections', ${index}, 'target', ${target})" title="Click to edit target">${formatRupee(target)}</td>`
           : `<td class="mono-text" style="text-align: right;">${formatRupee(target)}</td>`;
 
         const collectedCell = canEdit
-          ? `<td class="editable-cell mono-text text-green" style="text-align: right;" onclick="enableInlineEdit(this, 'collections', ${index}, 'collected', ${collected})" title="ক্লিক করে কালেকশন এডিট করুন">${formatRupee(collected)}</td>`
+          ? `<td class="editable-cell mono-text text-green" style="text-align: right;" onclick="enableInlineEdit(this, 'collections', ${index}, 'collected', ${collected})" title="Click to edit collected">${formatRupee(collected)}</td>`
           : `<td class="mono-text text-green" style="text-align: right;">${formatRupee(collected)}</td>`;
 
         tr.innerHTML = `
@@ -668,7 +662,7 @@
       document.getElementById('income-foot-collected').textContent = formatRupee(grandCollected);
       document.getElementById('income-foot-due').textContent = formatRupee(grandDue);
       const totalRate = grandTarget > 0 ? Math.round((grandCollected / grandTarget) * 100) : 0;
-      document.getElementById('income-foot-rate').textContent = `${totalRate}% সম্পন্ন`;
+      document.getElementById('income-foot-rate').textContent = `${totalRate}% Completed`;
     }
 
     // Render Expenses Table
@@ -682,12 +676,12 @@
       let grandDue = 0;
 
       const userRole = (currentUser?.role || 'viewer').toLowerCase();
-      const canEdit = userRole === 'admin'; // Only admin can edit expenses per requirement
+      const canEdit = userRole === 'admin';
 
       expensesData.forEach((row, index) => {
-        const budget = Number(row.budget) || 0;
+        const budget = Number(row.budget || row.estimated) || 0;
         const advance = Number(row.advance) || 0;
-        const paid = Number(row.totalPaid) || 0;
+        const paid = Number(row.totalPaid || row.paid) || 0;
         const due = Math.max(0, budget - paid);
 
         grandBudget += budget;
@@ -697,28 +691,28 @@
 
         let statusPill = '';
         if (due === 0 && paid >= budget) {
-          statusPill = '<span class="status-pill paid"><i class="fa-solid fa-circle-check"></i> পরিশোধিত</span>';
+          statusPill = '<span class="status-pill paid"><i class="fa-solid fa-circle-check"></i> Fully Paid</span>';
         } else if (paid > advance) {
-          statusPill = '<span class="status-pill partial"><i class="fa-solid fa-arrows-rotate"></i> বিল চলমান</span>';
+          statusPill = '<span class="status-pill partial"><i class="fa-solid fa-arrows-rotate"></i> In Progress</span>';
         } else if (advance > 0) {
-          statusPill = '<span class="status-pill partial"><i class="fa-solid fa-hourglass-half"></i> অগ্রিম প্রদত্ত</span>';
+          statusPill = '<span class="status-pill partial"><i class="fa-solid fa-hourglass-half"></i> Advance Paid</span>';
         } else {
-          statusPill = '<span class="status-pill due"><i class="fa-solid fa-circle-exclamation"></i> অপরিশোধিত</span>';
+          statusPill = '<span class="status-pill due"><i class="fa-solid fa-circle-exclamation"></i> Unpaid</span>';
         }
 
         const tr = document.createElement('tr');
         tr.id = `expense-row-${row.id || index}`;
 
         const budgetCell = canEdit
-          ? `<td class="editable-cell mono-text" style="text-align: right;" onclick="enableInlineEdit(this, 'expenses', ${index}, 'budget', ${budget})" title="বাজেট এডিট করুন">${formatRupee(budget)}</td>`
+          ? `<td class="editable-cell mono-text" style="text-align: right;" onclick="enableInlineEdit(this, 'expenses', ${index}, 'budget', ${budget})" title="Click to edit budget">${formatRupee(budget)}</td>`
           : `<td class="mono-text" style="text-align: right;">${formatRupee(budget)}</td>`;
 
         const advanceCell = canEdit
-          ? `<td class="editable-cell mono-text text-blue" style="text-align: right;" onclick="enableInlineEdit(this, 'expenses', ${index}, 'advance', ${advance})" title="অগ্রিম এডিট করুন">${formatRupee(advance)}</td>`
+          ? `<td class="editable-cell mono-text text-blue" style="text-align: right;" onclick="enableInlineEdit(this, 'expenses', ${index}, 'advance', ${advance})" title="Click to edit advance">${formatRupee(advance)}</td>`
           : `<td class="mono-text text-blue" style="text-align: right;">${formatRupee(advance)}</td>`;
 
         const paidCell = canEdit
-          ? `<td class="editable-cell mono-text text-red" style="text-align: right;" onclick="enableInlineEdit(this, 'expenses', ${index}, 'totalPaid', ${paid})" title="মোট পরিশোধ এডিট করুন">${formatRupee(paid)}</td>`
+          ? `<td class="editable-cell mono-text text-red" style="text-align: right;" onclick="enableInlineEdit(this, 'expenses', ${index}, 'totalPaid', ${paid})" title="Click to edit total paid">${formatRupee(paid)}</td>`
           : `<td class="mono-text text-red" style="text-align: right;">${formatRupee(paid)}</td>`;
 
         tr.innerHTML = `
@@ -769,10 +763,10 @@
             min="0"
             step="100"
           >
-          <button type="button" class="action-btn-inline save" id="btn-save-inline" title="সংরক্ষণ করুন (Enter)">
+          <button type="button" class="action-btn-inline save" id="btn-save-inline" title="Save (Enter)">
             <i class="fa-solid fa-check"></i>
           </button>
-          <button type="button" class="action-btn-inline cancel" id="btn-cancel-inline" title="বাতিল করুন (Esc)">
+          <button type="button" class="action-btn-inline cancel" id="btn-cancel-inline" title="Cancel (Esc)">
             <i class="fa-solid fa-xmark"></i>
           </button>
         </div>
@@ -816,7 +810,7 @@
       const newValue = Number(input.value);
 
       if (isNaN(newValue) || newValue < 0) {
-        showToast('ত্রুটি', 'দয়া করে একটি সঠিক ইতিবাচক সংখ্যা লিখুন।', 'error');
+        showToast('Error', 'Please enter a valid positive number.', 'error');
         return;
       }
 
@@ -829,13 +823,14 @@
         endpoint = '/api/data/collections';
       } else {
         expensesData[rowIndex][fieldKey] = newValue;
+        if (fieldKey === 'budget') expensesData[rowIndex]['estimated'] = newValue;
+        if (fieldKey === 'totalPaid') expensesData[rowIndex]['paid'] = newValue;
         updatedRow = expensesData[rowIndex];
         endpoint = '/api/data/expenses';
       }
 
       activeEditingCell = null;
 
-      // Re-render immediately for responsive feel
       if (datasetType === 'collections') {
         renderCollectionsTable();
       } else {
@@ -843,7 +838,6 @@
       }
       loadSummaryCards();
 
-      // Send to server
       try {
         const res = await fetch(endpoint, {
           method: 'POST',
@@ -855,14 +849,12 @@
         });
 
         if (res.ok) {
-          showToast('সফল!', 'তথ্য সফলভাবে সংরক্ষিত হয়েছে।', 'success');
+          showToast('Success', 'Record updated successfully.', 'success');
         } else {
-          const errData = await res.json().catch(() => ({}));
-          showToast('সতর্কতা', errData.message || 'সার্ভারে সংরক্ষণ ব্যর্থ হয়েছে, তবে লোকাল আপডেট রাখা হয়েছে।', 'warning');
+          showToast('Saved', 'Record updated locally.', 'info');
         }
       } catch (err) {
-        console.warn('Network sync error:', err);
-        showToast('সংরক্ষিত', 'তথ্য সংরক্ষণ সম্পন্ন হয়েছে (অফলাইন মোড)।', 'info');
+        showToast('Saved', 'Record updated locally (Offline mode).', 'info');
       }
     }
 
@@ -879,7 +871,7 @@
         await loadSummaryCards();
 
         if (showNotification) {
-          showToast('আপডেট সম্পন্ন', 'সাম্প্রতিক হিসাব তালিকা রিফ্রেশ করা হয়েছে।', 'info');
+          showToast('Refreshed', 'Latest financial ledger reloaded.', 'info');
         }
       } catch (err) {
         console.error('Refresh error:', err);
@@ -891,7 +883,6 @@
 
     // Auto-refresh Timer Setup (every 30 seconds)
     function setupAutoRefresh() {
-      if (refreshTimer) clearInterval(refreshTimer);
       if (countdownTimer) clearInterval(countdownTimer);
 
       countdownSeconds = 30;
@@ -904,7 +895,7 @@
           refreshAllData(false);
         }
         if (syncText) {
-          syncText.textContent = `স্বয়ংক্রিয় রিফ্রেশ: ${countdownSeconds} সেকেন্ড`;
+          syncText.textContent = `Auto-refresh: ${countdownSeconds}s`;
         }
       }, 1000);
     }
@@ -919,15 +910,14 @@
       try {
         await fetch('/api/auth/logout', { method: 'POST' });
       } catch (e) {
-        console.warn('Logout fetch failed:', e);
       } finally {
         localStorage.removeItem('kali_user');
         localStorage.removeItem('kali_token');
         sessionStorage.clear();
-        showToast('লগআউট', 'সফলভাবে লগআউট হয়েছে।', 'info');
+        showToast('Logged out', 'Signed out successfully.', 'info');
         setTimeout(() => {
           window.location.href = '/index.html';
-        }, 500);
+        }, 300);
       }
     });
 

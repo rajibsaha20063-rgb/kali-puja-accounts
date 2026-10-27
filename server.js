@@ -40,27 +40,27 @@ app.use(cookieParser());
 // ==========================================
 const INITIAL_DEMO_DATA = {
   income: [
-    { id: 1, source: 'Para 1 Collection (পাড়া ১)', target: 25000, collected: 22000, pending: 3000 },
-    { id: 2, source: 'Para 2 Collection (পাড়া ২)', target: 30000, collected: 28500, pending: 1500 },
-    { id: 3, source: 'Para 3 Collection (পাড়া ৩)', target: 20000, collected: 17000, pending: 3000 },
-    { id: 4, source: 'Para 4 Collection (পাড়া ৪)', target: 22000, collected: 21000, pending: 1000 },
-    { id: 5, source: 'Para 5 Collection (পাড়া ৫)', target: 18000, collected: 15500, pending: 2500 },
-    { id: 6, source: 'Shop & Market Collection (দোকান কালেকশন)', target: 35000, collected: 31000, pending: 4000 },
-    { id: 7, source: 'Road & Night Collection (রোড ও স্পট কালেকশন)', target: 15000, collected: 14200, pending: 800 }
+    { id: 1, source: 'Para 1 Collection', target: 25000, collected: 22000, pending: 3000 },
+    { id: 2, source: 'Para 2 Collection', target: 30000, collected: 28500, pending: 1500 },
+    { id: 3, source: 'Para 3 Collection', target: 20000, collected: 17000, pending: 3000 },
+    { id: 4, source: 'Para 4 Collection', target: 22000, collected: 21000, pending: 1000 },
+    { id: 5, source: 'Para 5 Collection', target: 18000, collected: 15500, pending: 2500 },
+    { id: 6, source: 'Shop & Market Collection', target: 35000, collected: 31000, pending: 4000 },
+    { id: 7, source: 'Road & Spot Collection', target: 15000, collected: 14200, pending: 800 }
   ],
   expenses: [
-    { id: 1, category: 'লাইট (Light)', estimated: 4500, advance: 2000, paid: 4500, pending: 0 },
-    { id: 2, category: 'প্যান্ডেল (Pandal)', estimated: 15000, advance: 5000, paid: 12000, pending: 3000 },
-    { id: 3, category: 'ঠাকুর (Thakur / Idol)', estimated: 7500, advance: 3000, paid: 7500, pending: 0 },
-    { id: 4, category: 'সাউন্ড সিস্টেম (Sound System)', estimated: 8000, advance: 2500, paid: 6000, pending: 2000 },
-    { id: 5, category: 'দশকর্মা (Dashakarma)', estimated: 3500, advance: 1000, paid: 3200, pending: 300 },
-    { id: 6, category: 'পূজারী (Pujari / Purohit)', estimated: 3000, advance: 1000, paid: 3000, pending: 0 },
-    { id: 7, category: 'ভোগ (Bhog)', estimated: 6000, advance: 2000, paid: 5500, pending: 500 },
-    { id: 8, category: 'ভোগ রান্না করার মাসি (Cook / Bhog Ranna)', estimated: 2500, advance: 500, paid: 2500, pending: 0 },
-    { id: 9, category: 'প্রোগ্রাম (Program)', estimated: 10000, advance: 3000, paid: 8500, pending: 1500 },
-    { id: 10, category: 'মিসলেনিয়াস ১ (Miscellaneous 1)', estimated: 2000, advance: 500, paid: 1800, pending: 200 },
-    { id: 11, category: 'মিসলেনিয়াস ২ (Miscellaneous 2)', estimated: 1500, advance: 0, paid: 1200, pending: 300 },
-    { id: 12, category: 'মিসলেনিয়াস ৩ (Miscellaneous 3)', estimated: 1500, advance: 0, paid: 1000, pending: 500 }
+    { id: 1, category: 'Lighting & Illumination', estimated: 4500, advance: 2000, paid: 4500, pending: 0 },
+    { id: 2, category: 'Pandal & Stage Decoration', estimated: 15000, advance: 5000, paid: 12000, pending: 3000 },
+    { id: 3, category: 'Kali Idol (Murti)', estimated: 7500, advance: 3000, paid: 7500, pending: 0 },
+    { id: 4, category: 'Sound System & Audio', estimated: 8000, advance: 2500, paid: 6000, pending: 2000 },
+    { id: 5, category: 'Puja Items (Dashakarma)', estimated: 3500, advance: 1000, paid: 3200, pending: 300 },
+    { id: 6, category: 'Priest & Purohit Honorarium', estimated: 3000, advance: 1000, paid: 3000, pending: 0 },
+    { id: 7, category: 'Bhog & Prasad Preparation', estimated: 6000, advance: 2000, paid: 5500, pending: 500 },
+    { id: 8, category: 'Cook & Kitchen Staff', estimated: 2500, advance: 500, paid: 2500, pending: 0 },
+    { id: 9, category: 'Cultural Program', estimated: 10000, advance: 3000, paid: 8500, pending: 1500 },
+    { id: 10, category: 'Miscellaneous 1', estimated: 2000, advance: 500, paid: 1800, pending: 200 },
+    { id: 11, category: 'Miscellaneous 2', estimated: 1500, advance: 0, paid: 1200, pending: 300 },
+    { id: 12, category: 'Miscellaneous 3', estimated: 1500, advance: 0, paid: 1000, pending: 500 }
   ]
 };
 
@@ -1014,19 +1014,23 @@ app.post('/api/data/refresh', authMiddleware, async (req, res) => {
 // ==========================================
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Root route redirects based on authentication status
+// Root route serves the login page or redirects to dashboard if authenticated
 app.get('/', (req, res) => {
   const token = req.cookies.token;
-  if (!token) {
-    return res.redirect('/login.html');
+  if (token) {
+    try {
+      jwt.verify(token, JWT_SECRET);
+      return res.redirect('/dashboard.html');
+    } catch (err) {
+      res.clearCookie('token');
+    }
   }
-  try {
-    jwt.verify(token, JWT_SECRET);
-    return res.redirect('/dashboard.html');
-  } catch (err) {
-    res.clearCookie('token');
-    return res.redirect('/login.html');
-  }
+  return res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+// Alias for /login.html
+app.get('/login.html', (req, res) => {
+  return res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 // Global 404 handler for API routes
