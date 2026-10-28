@@ -33,5 +33,12 @@
     "role": "admin",
     "name": "rajibsha",
     "createdAt": "2026-10-27T18:10:29.333Z"
+  },
+  {
+    "username": "shubham mallick",
+    "password": "$2a$10$uo7LEq7cdvAPCJHHqbbvcuLhBrP3czluMDHbnkYtdTr0TW2RbY11W",
+    "role": "collector",
+    "name": "Shubham mallick",
+    "createdAt": "2026-10-28T15:47:21.273Z"
   }
 ]
