@@ -10,8 +10,8 @@
     {
       "id": 2,
       "source": "Para 2 Collection",
-      "target": 6500,
-      "collected": 200,
+      "target": 6300,
+      "collected": 0,
       "pending": 6300
     },
     {
@@ -38,9 +38,9 @@
     {
       "id": 6,
       "source": "Shop Collection",
-      "target": 37600,
-      "collected": 600,
-      "pending": 37000
+      "target": 36000,
+      "collected": 0,
+      "pending": 36000
     },
     {
       "id": 7,
