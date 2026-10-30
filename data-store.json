@@ -38,9 +38,9 @@
     {
       "id": 6,
       "source": "Shop Collection",
-      "target": 21500,
+      "target": 28500,
       "collected": 0,
-      "pending": 21500
+      "pending": 28500
     },
     {
       "id": 7,
@@ -142,10 +142,10 @@
     {
       "id": 9,
       "category": "Cultural Program",
-      "vendorName": "",
-      "budget": 0,
-      "advance": 0,
-      "totalPaid": 0,
+      "vendorName": "khata copy",
+      "budget": 50,
+      "advance": 50,
+      "totalPaid": 50,
       "pending": 0,
       "vendorPhone": "",
       "notes": ""
@@ -156,8 +156,8 @@
       "vendorName": "khata copy",
       "budget": 50,
       "advance": 50,
-      "totalPaid": 50,
-      "pending": 0,
+      "totalPaid": 0,
+      "pending": 50,
       "vendorPhone": "",
       "notes": ""
     },
