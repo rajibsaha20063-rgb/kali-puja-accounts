@@ -570,7 +570,9 @@ async function parseAllGoogleSheetTabs(sheetId) {
       }
 
       if (headerIdx !== -1) {
-        for (let i = headerIdx + 1; i < rows.length; i++) {
+        // Data entries strictly start from row 5 (0-based index 4). Row 4 is phone number / collector info row.
+        const startIdx = Math.max(headerIdx + 1, 4);
+        for (let i = startIdx; i < rows.length; i++) {
           const r = rows[i];
           const name = (isFirstColSlNo ? r[1] : r[0]) || '';
           const trimmed = name.trim();
@@ -639,7 +641,9 @@ async function parseAllGoogleSheetTabs(sheetId) {
     }
 
     if (headerIdx !== -1) {
-      for (let i = headerIdx + 1; i < rows.length; i++) {
+      // Data entries strictly start from row 5 (0-based index 4). Row 4 is phone number / location info row.
+      const startIdx = Math.max(headerIdx + 1, 4);
+      for (let i = startIdx; i < rows.length; i++) {
         const r = rows[i];
         const name = (isFirstColSlNo ? r[1] : r[0]) || '';
         const trimmed = name.trim();
@@ -701,7 +705,9 @@ async function parseAllGoogleSheetTabs(sheetId) {
     }
 
     if (headerIdx !== -1) {
-      for (let i = headerIdx + 1; i < rows.length; i++) {
+      // Data entries strictly start from row 5 (0-based index 4). Row 4 is phone number / location info row.
+      const startIdx = Math.max(headerIdx + 1, 4);
+      for (let i = startIdx; i < rows.length; i++) {
         const r = rows[i];
         const date = (r[1] || '').trim();
         const spot = (r[2] || '').trim();
@@ -757,8 +763,13 @@ async function syncAllDataFromSheet(sheetId) {
 
   // 1. Merge Contributors
   const existingContributors = loadContributors();
-  // Keep entries created manually on the website (slip_...) that are not from google_sheets_live
-  const manualEntries = existingContributors.filter(c => c.source !== 'google_sheets_live');
+  // Keep entries created manually on the website (slip_...) that are not from google_sheets_live,
+  // and discard any legacy entries pulled from row 4 or earlier (e.g. sheet_*_r0 to r3)
+  const manualEntries = existingContributors.filter(c => {
+    if (c.source === 'google_sheets_live') return false;
+    if (c.id && c.id.match(/^sheet_.*_r[0-3]$/)) return false;
+    return true;
+  });
 
   // Also retain seed if no other entries in Para 1 yet
   const hasPara1SheetEntry = parsed.contributors.some(c => c.paraId === 1);
@@ -1316,19 +1327,69 @@ app.put('/api/data/contributors/:id', authMiddleware, editorAccess, (req, res) =
   try {
     const entryId = req.params.id;
     const contributors = loadContributors();
-    const idx = contributors.findIndex(c => c.id === entryId);
+    const idx = contributors.findIndex(c => String(c.id) === String(entryId));
 
     if (idx === -1) {
       return res.status(404).json({ success: false, error: 'Entry not found.' });
     }
 
+    const oldEntry = { ...contributors[idx] };
+    const pId = Number(req.body.paraId || oldEntry.paraId);
+    
+    // Normalize amounts and names
+    const tgt = req.body.targetAmount !== undefined ? Number(req.body.targetAmount) : (req.body.agreedTarget !== undefined ? Number(req.body.agreedTarget) : (Number(oldEntry.targetAmount || oldEntry.agreedTarget) || 0));
+    const colAmt = req.body.collectedAmount !== undefined ? Number(req.body.collectedAmount) : (req.body.amountPaid !== undefined ? Number(req.body.amountPaid) : (req.body.totalCollection !== undefined ? Number(req.body.totalCollection) : (req.body.amount !== undefined ? Number(req.body.amount) : (Number(oldEntry.collectedAmount || oldEntry.amountPaid || oldEntry.totalCollection || oldEntry.amount) || 0))));
+    const due = req.body.dueBalance !== undefined ? Number(req.body.dueBalance) : Math.max(0, tgt - colAmt);
+    const donorName = (req.body.donorName || req.body.familyHeadName || req.body.shopName || req.body.eventSpotType || oldEntry.donorName || '').trim();
+
     contributors[idx] = {
-      ...contributors[idx],
+      ...oldEntry,
       ...req.body,
+      paraId: pId,
+      donorName: donorName,
+      targetAmount: tgt,
+      agreedTarget: tgt,
+      collectedAmount: colAmt,
+      amountPaid: colAmt,
+      totalCollection: colAmt,
+      amount: colAmt,
+      dueBalance: due,
       updatedAt: new Date().toISOString()
     };
 
+    if (pId >= 1 && pId <= 5) {
+      contributors[idx].familyHeadName = donorName;
+      contributors[idx].sectionType = 'family';
+    } else if (pId === 6) {
+      contributors[idx].shopName = donorName;
+      contributors[idx].sectionType = 'shop';
+    } else if (pId === 7) {
+      contributors[idx].eventSpotType = donorName;
+      contributors[idx].sectionType = 'road';
+    }
+
     saveContributors(contributors);
+
+    // Recalculate collection section totals in data-store
+    const store = loadDataStore();
+    if (store && store.income) {
+      const secIdx = store.income.findIndex(item => Number(item.id) === pId);
+      if (secIdx !== -1) {
+        const secEntries = contributors.filter(c => Number(c.paraId) === pId);
+        store.income[secIdx].target = secEntries.reduce((acc, c) => acc + (Number(c.targetAmount || c.agreedTarget) || 0), 0);
+        store.income[secIdx].collected = secEntries.reduce((acc, c) => acc + (Number(c.collectedAmount || c.amountPaid || c.totalCollection || c.amount) || 0), 0);
+        store.income[secIdx].pending = Math.max(0, store.income[secIdx].target - store.income[secIdx].collected);
+        saveDataStore(store);
+      }
+    }
+
+    // Trigger webhook if active
+    triggerSheetWebhook({
+      action: 'update_collection_entry',
+      oldName: oldEntry.donorName || oldEntry.familyHeadName || oldEntry.shopName || oldEntry.eventSpotType,
+      ...contributors[idx]
+    });
+
     return res.json({ success: true, message: 'Entry updated successfully.', entry: contributors[idx] });
   } catch (err) {
     return res.status(500).json({ success: false, error: err.message });

@@ -3,16 +3,16 @@
     {
       "id": 1,
       "source": "Para 1 Collection",
-      "target": 650,
-      "collected": 52,
-      "pending": 598
+      "target": 0,
+      "collected": 0,
+      "pending": 0
     },
     {
       "id": 2,
       "source": "Para 2 Collection",
-      "target": 0,
+      "target": 6300,
       "collected": 0,
-      "pending": 0
+      "pending": 6300
     },
     {
       "id": 3,
@@ -38,9 +38,9 @@
     {
       "id": 6,
       "source": "Shop Collection",
-      "target": 0,
+      "target": 36000,
       "collected": 0,
-      "pending": 0
+      "pending": 36000
     },
     {
       "id": 7,
@@ -54,44 +54,44 @@
     {
       "id": 1,
       "category": "Light & Electricals",
-      "vendorName": "malay da",
-      "budget": 4500,
+      "vendorName": "kamal",
+      "budget": 8000,
       "advance": 0,
       "totalPaid": 0,
-      "pending": 4500,
+      "pending": 8000,
       "vendorPhone": "",
       "notes": ""
     },
     {
       "id": 2,
       "category": "Pandal & Decoration",
-      "vendorName": "sayan da",
-      "budget": 15000,
+      "vendorName": "",
+      "budget": 0,
       "advance": 0,
       "totalPaid": 0,
-      "pending": 15000,
+      "pending": 0,
       "vendorPhone": "",
       "notes": ""
     },
     {
       "id": 3,
       "category": "Thakur / Idol",
-      "vendorName": "dulal dokan",
-      "budget": 7500,
+      "vendorName": "",
+      "budget": 0,
       "advance": 0,
       "totalPaid": 0,
-      "pending": 7500,
+      "pending": 0,
       "vendorPhone": "",
       "notes": ""
     },
     {
       "id": 4,
       "category": "Sound System",
-      "vendorName": "kamal",
-      "budget": 8000,
+      "vendorName": "",
+      "budget": 0,
       "advance": 0,
       "totalPaid": 0,
-      "pending": 8000,
+      "pending": 0,
       "vendorPhone": "",
       "notes": ""
     },
@@ -131,10 +131,10 @@
     {
       "id": 8,
       "category": "Cook & Kitchen Staff",
-      "vendorName": "",
-      "budget": 0,
-      "advance": 0,
-      "totalPaid": 0,
+      "vendorName": "khata copy",
+      "budget": 50,
+      "advance": 50,
+      "totalPaid": 50,
       "pending": 0,
       "vendorPhone": "",
       "notes": ""
@@ -142,11 +142,11 @@
     {
       "id": 9,
       "category": "Cultural Program",
-      "vendorName": "",
-      "budget": 0,
-      "advance": 0,
+      "vendorName": "khata copy",
+      "budget": 50,
+      "advance": 50,
       "totalPaid": 0,
-      "pending": 0,
+      "pending": 50,
       "vendorPhone": "",
       "notes": ""
     },

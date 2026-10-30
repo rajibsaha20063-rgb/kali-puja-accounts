@@ -5,5 +5,40 @@
     "role": "admin",
     "name": "Master Admin",
     "createdAt": "2026-10-27T18:00:23.239Z"
+  },
+  {
+    "username": "angshu",
+    "password": "$2a$10$4pzKcyHzBqkEUHu85R5ywekMTgihmA0TrDQkWf.lUhMdhfFIN5SR.",
+    "role": "admin",
+    "name": "angshu",
+    "createdAt": "2026-10-27T18:08:35.308Z"
+  },
+  {
+    "username": "pakon",
+    "password": "$2a$10$Y2xu/TIB.jDuaBWtEj08bupwKWLCAeZEuko.VQEsqLd7k//gAnSN.",
+    "role": "collector",
+    "name": "pakon",
+    "createdAt": "2026-10-27T18:09:05.511Z"
+  },
+  {
+    "username": "om",
+    "password": "$2a$10$AEolrKaGCVaWXq2liZrhWu/e2ihkAFyiN3OAmHVq/JxWGdh4g/.DG",
+    "role": "admin",
+    "name": "om",
+    "createdAt": "2026-10-27T18:09:28.612Z"
+  },
+  {
+    "username": "rajibsha",
+    "password": "$2a$10$sqof.xlYS6bK35eDZZZLV.O3mGMlRhWwc5I6EIm0TvaHclw362FL.",
+    "role": "admin",
+    "name": "rajibsha",
+    "createdAt": "2026-10-27T18:10:29.333Z"
+  },
+  {
+    "username": "shubham mallick",
+    "password": "$2a$10$uo7LEq7cdvAPCJHHqbbvcuLhBrP3czluMDHbnkYtdTr0TW2RbY11W",
+    "role": "collector",
+    "name": "Shubham mallick",
+    "createdAt": "2026-10-28T15:47:21.273Z"
   }
 ]

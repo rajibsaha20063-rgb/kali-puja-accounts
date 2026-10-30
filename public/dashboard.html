@@ -869,7 +869,94 @@
   </div>
 
   <!-- ========================================================
-       MODAL 3: GOOGLE SHEETS 2-WAY WEBHOOK SETUP
+       MODAL 3: EDIT INDIVIDUAL COLLECTION ENTRY (Para 1-5 / Shop / Road)
+       ======================================================== -->
+  <div class="modal-overlay" id="edit-contributor-modal">
+    <div class="modal-content-card" style="max-width: 540px;">
+      <div class="modal-header-custom">
+        <h3 id="modal-contrib-title">
+          <i class="fa-solid fa-pen-to-square text-gold"></i>
+          <span>Edit Collection Entry</span>
+        </h3>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="closeEditContributorModal()">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <form id="form-edit-contributor">
+        <div class="modal-body-custom">
+          <input type="hidden" id="edit-contrib-id">
+          <input type="hidden" id="edit-contrib-paraId">
+
+          <!-- Name field (Family Head / Shop / Spot) -->
+          <div class="form-group-custom" style="margin-bottom: 14px;">
+            <label id="lbl-edit-contrib-name" for="edit-contrib-name">Name</label>
+            <input type="text" id="edit-contrib-name" required placeholder="Enter name">
+          </div>
+
+          <!-- Shop Location (visible only for Shop Collection, paraId === 6) -->
+          <div class="form-group-custom" id="group-edit-contrib-location" style="margin-bottom: 14px; display: none;">
+            <label for="edit-contrib-location">Market / Location (বাজার / এলাকা)</label>
+            <input type="text" id="edit-contrib-location" placeholder="e.g. Station Road / Main Market">
+          </div>
+
+          <!-- Target / Demanded Amount (Para 1-5 and Shop) -->
+          <div class="form-group-custom" id="group-edit-contrib-target" style="margin-bottom: 14px;">
+            <label for="edit-contrib-target">Target / Demanded Amount (₹)</label>
+            <input type="number" id="edit-contrib-target" min="0" step="any" placeholder="0">
+          </div>
+
+          <!-- Collected / Paid Amount -->
+          <div class="form-group-custom" style="margin-bottom: 14px;">
+            <label id="lbl-edit-contrib-collected" for="edit-contrib-collected">Collected Amount (₹)</label>
+            <input type="number" id="edit-contrib-collected" min="0" step="any" required placeholder="0">
+          </div>
+
+          <!-- Due Balance (auto-calculated / preview) -->
+          <div class="form-group-custom" id="group-edit-contrib-due" style="margin-bottom: 14px;">
+            <label for="edit-contrib-due">Due Balance (₹)</label>
+            <input type="number" id="edit-contrib-due" min="0" step="any" placeholder="0">
+          </div>
+
+          <!-- Payment Mode (Para 1-5 and Shop) -->
+          <div class="form-group-custom" id="group-edit-contrib-mode" style="margin-bottom: 14px;">
+            <label for="edit-contrib-mode">Payment Mode</label>
+            <select id="edit-contrib-mode">
+              <option value="Cash">Cash (নগদ)</option>
+              <option value="UPI">UPI / Online</option>
+              <option value="Cheque">Cheque</option>
+            </select>
+          </div>
+
+          <!-- Date -->
+          <div class="form-group-custom" style="margin-bottom: 14px;">
+            <label for="edit-contrib-date">Date of Payment / Entry</label>
+            <input type="date" id="edit-contrib-date">
+          </div>
+
+          <!-- Collector / Volunteer Name -->
+          <div class="form-group-custom" id="group-edit-contrib-collector" style="margin-bottom: 14px;">
+            <label id="lbl-edit-contrib-collector" for="edit-contrib-collector">Collected By (কালেক্টরের নাম)</label>
+            <input type="text" id="edit-contrib-collector" placeholder="Collector name">
+          </div>
+
+          <!-- Handed Over To (Road Collection only, paraId === 7) -->
+          <div class="form-group-custom" id="group-edit-contrib-receiver" style="margin-bottom: 14px; display: none;">
+            <label for="edit-contrib-receiver">Cash Handed Over To (জমা গ্রহণকারী)</label>
+            <input type="text" id="edit-contrib-receiver" placeholder="e.g. Treasurer / Committee">
+          </div>
+        </div>
+        <div class="modal-footer-custom">
+          <button type="button" class="btn btn-secondary btn-sm" onclick="closeEditContributorModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary btn-sm">
+            <i class="fa-solid fa-check"></i> Save Changes
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       MODAL 4: GOOGLE SHEETS 2-WAY WEBHOOK SETUP
        ======================================================== -->
   <div class="modal-overlay" id="webhook-setup-modal">
     <div class="modal-content-card" style="max-width: 620px;">
@@ -896,19 +983,32 @@
           </button>
           <pre class="code-preview-box" id="modal-script-code" style="max-height: 150px; font-size: 11.5px; overflow-y: auto; background: #080814; border: 1px solid var(--border); border-radius: 8px; padding: 12px; color: #93c5fd; white-space: pre-wrap; font-family: monospace;">function doPost(e) {
   try {
+    if (!e || !e.postData || !e.postData.contents) return ContentService.createTextOutput(JSON.stringify({ status: 'error' })).setMimeType(ContentService.MimeType.JSON);
     var data = JSON.parse(e.postData.contents);
     var ss = SpreadsheetApp.getActiveSpreadsheet();
+
+    // 1. ADD SINGLE ENTRY (Starts from Row 5, never overwrites Row 4)
     if (data.action === 'add_collection_entry') {
       var sName = data.paraId <= 5 ? 'Para ' + data.paraId : (data.paraId === 6 ? 'Shop Collection' : 'Road Collection');
       var sheet = ss.getSheetByName(sName);
       if (sheet) {
-        var r = Math.max(1, sheet.getLastRow() - 3);
-        if (data.paraId <= 5) sheet.appendRow([r, data.familyHeadName||data.donorName, data.targetAmount||0, data.collectedAmount||data.amount||0, data.dueBalance||0, data.paymentMode||'Cash', data.dateOfPayment||data.date||'', data.collectedBy||'']);
-        else if (data.paraId === 6) sheet.appendRow([r, data.shopName||data.donorName, data.marketLocation||'', data.agreedTarget||data.targetAmount||0, data.amountPaid||data.amount||0, data.dueBalance||0, data.paymentMode||'Cash', data.date||'']);
-        else if (data.paraId === 7) sheet.appendRow([r, data.date||'', data.eventSpotType||data.donorName, data.totalCollection||data.amount||0, data.leadVolunteer||'', data.handedOverTo||'']);
+        var targetRow = 5;
+        var lastRow = sheet.getLastRow();
+        if (lastRow >= 5) {
+          var names = sheet.getRange(5, 2, Math.max(lastRow - 4, 1), 1).getValues();
+          var found = false;
+          for (var r = 0; r < names.length; r++) {
+            if (!names[r][0] || String(names[r][0]).trim() === '') { targetRow = 5 + r; found = true; break; }
+          }
+          if (!found) targetRow = 5 + names.length;
+        }
+        var slNo = Math.max(1, targetRow - 4);
+        if (data.paraId <= 5) sheet.getRange(targetRow, 1, 1, 8).setValues([[slNo, data.familyHeadName||data.donorName||'', Number(data.targetAmount)||0, Number(data.collectedAmount)||Number(data.amount)||0, Number(data.dueBalance)||0, data.paymentMode||'Cash', data.dateOfPayment||data.date||'', data.collectedBy||'']]);
+        else if (data.paraId === 6) sheet.getRange(targetRow, 1, 1, 8).setValues([[slNo, data.shopName||data.donorName||'', data.marketLocation||'', Number(data.agreedTarget)||Number(data.targetAmount)||0, Number(data.amountPaid)||Number(data.amount)||0, Number(data.dueBalance)||0, data.paymentMode||'Cash', data.date||'']]);
+        else if (data.paraId === 7) sheet.getRange(targetRow, 1, 1, 6).setValues([[slNo, data.date||'', data.eventSpotType||data.donorName||'', Number(data.totalCollection)||Number(data.amount)||0, data.leadVolunteer||'', data.handedOverTo||'']]);
       }
     } else if (data.action === 'batch_sync') {
-      // Handles full batch synchronization of all collections and expenses
+      // Handles batch push starting strictly from Row 5 (see google-apps-script.js)
     }
     return ContentService.createTextOutput(JSON.stringify({ status: 'success' })).setMimeType(ContentService.MimeType.JSON);
   } catch(err) {
@@ -1133,7 +1233,7 @@
             <th style="text-align: center;">Payment Mode (Cash/UPI)</th>
             <th style="text-align: center;">Date of Payment</th>
             <th>Collected By</th>
-            <th style="text-align: center; width: 75px;">Action</th>
+            <th style="text-align: center; width: 145px;">Action</th>
           </tr>
         `;
 
@@ -1164,8 +1264,11 @@
               <td style="text-align: center;"><span style="font-size: 11px; background: rgba(255,255,255,0.08); padding: 2px 7px; border-radius: 4px;">${slip.paymentMode || 'Cash'}</span></td>
               <td style="text-align: center;"><small class="text-muted">${slip.dateOfPayment || slip.date || '-'}</small></td>
               <td>${slip.collectedBy || slip.createdBy || '-'}</td>
-              <td style="text-align: center;">
+              <td style="text-align: center; white-space: nowrap;">
                 ${currentUser && currentUser.role === 'viewer' ? '-' : `
+                <button class="btn-action-sm btn-action-edit" style="padding: 4px 8px; border-radius: 6px; font-weight: 600; font-size: 11px; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; margin-right: 4px;" onclick="openEditContributorModal('${slip.id}')" title="Edit entry">
+                  <i class="fa-solid fa-pen-to-square"></i> Edit
+                </button>
                 <button class="btn-action-sm" style="background: rgba(230, 57, 70, 0.25); color: #ff6b6b; border: 1px solid rgba(230,57,70,0.4); padding: 4px 8px; border-radius: 6px; font-weight: 600; font-size: 11px; cursor: pointer; display: inline-flex; align-items: center; gap: 4px;" onclick="deleteContributorSlip('${slip.id}')" title="Delete entry">
                   <i class="fa-solid fa-trash-can"></i> Delete
                 </button>
@@ -1299,7 +1402,7 @@
             <th style="text-align: right;">Due Balance (₹)</th>
             <th style="text-align: center;">Payment Mode (Cash/UPI)</th>
             <th style="text-align: center;">Date</th>
-            <th style="text-align: center; width: 75px;">Action</th>
+            <th style="text-align: center; width: 145px;">Action</th>
           </tr>
         `;
 
@@ -1330,8 +1433,11 @@
               <td style="text-align: right; font-family: 'JetBrains Mono', monospace; color: #f87171;">${formatRupee(dueAmt)}</td>
               <td style="text-align: center;"><span style="font-size: 11px; background: rgba(255,255,255,0.08); padding: 2px 7px; border-radius: 4px;">${slip.paymentMode || 'Cash'}</span></td>
               <td style="text-align: center;"><small class="text-muted">${slip.date || '-'}</small></td>
-              <td style="text-align: center;">
+              <td style="text-align: center; white-space: nowrap;">
                 ${currentUser && currentUser.role === 'viewer' ? '-' : `
+                <button class="btn-action-sm btn-action-edit" style="padding: 4px 8px; border-radius: 6px; font-weight: 600; font-size: 11px; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; margin-right: 4px;" onclick="openEditContributorModal('${slip.id}')" title="Edit entry">
+                  <i class="fa-solid fa-pen-to-square"></i> Edit
+                </button>
                 <button class="btn-action-sm" style="background: rgba(230, 57, 70, 0.25); color: #ff6b6b; border: 1px solid rgba(230,57,70,0.4); padding: 4px 8px; border-radius: 6px; font-weight: 600; font-size: 11px; cursor: pointer; display: inline-flex; align-items: center; gap: 4px;" onclick="deleteContributorSlip('${slip.id}')" title="Delete entry">
                   <i class="fa-solid fa-trash-can"></i> Delete
                 </button>
@@ -1451,7 +1557,7 @@
             <th style="text-align: right;">Total Collection (₹) (কালেকশন)</th>
             <th>Lead Volunteer / Team</th>
             <th>Cash Handed Over To (জমা গ্রহণকারী)</th>
-            <th style="text-align: center; width: 75px;">Action</th>
+            <th style="text-align: center; width: 145px;">Action</th>
           </tr>
         `;
 
@@ -1473,8 +1579,11 @@
               <td style="text-align: right; font-family: 'JetBrains Mono', monospace; color: #4ade80; font-weight: 700;">${formatRupee(amt)}</td>
               <td>${slip.leadVolunteer || '-' }</td>
               <td>${slip.handedOverTo || '-' }</td>
-              <td style="text-align: center;">
+              <td style="text-align: center; white-space: nowrap;">
                 ${currentUser && currentUser.role === 'viewer' ? '-' : `
+                <button class="btn-action-sm btn-action-edit" style="padding: 4px 8px; border-radius: 6px; font-weight: 600; font-size: 11px; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; margin-right: 4px;" onclick="openEditContributorModal('${slip.id}')" title="Edit entry">
+                  <i class="fa-solid fa-pen-to-square"></i> Edit
+                </button>
                 <button class="btn-action-sm" style="background: rgba(230, 57, 70, 0.25); color: #ff6b6b; border: 1px solid rgba(230,57,70,0.4); padding: 4px 8px; border-radius: 6px; font-weight: 600; font-size: 11px; cursor: pointer; display: inline-flex; align-items: center; gap: 4px;" onclick="deleteContributorSlip('${slip.id}')" title="Delete entry">
                   <i class="fa-solid fa-trash-can"></i> Delete
                 </button>
@@ -1763,9 +1872,222 @@
         if (res.ok) {
           showToast('Deleted', 'Entry removed.', 'info');
           await loadAllData();
+          if (typeof activeWorkspace === 'number') {
+            renderSectionWorkspace(activeWorkspace);
+          }
         }
       } catch (e) {}
     }
+
+    // Edit Contributor / Collection Entry Modal
+    function openEditContributorModal(id) {
+      const item = contributorsList.find(c => String(c.id) === String(id));
+      if (!item) {
+        showToast('Error', 'Entry not found.', 'error');
+        return;
+      }
+
+      const pId = Number(item.paraId);
+      document.getElementById('edit-contrib-id').value = item.id;
+      document.getElementById('edit-contrib-paraId').value = pId;
+
+      const titleEl = document.getElementById('modal-contrib-title');
+      const nameLbl = document.getElementById('lbl-edit-contrib-name');
+      const nameInput = document.getElementById('edit-contrib-name');
+      const groupLoc = document.getElementById('group-edit-contrib-location');
+      const locInput = document.getElementById('edit-contrib-location');
+      const groupTgt = document.getElementById('group-edit-contrib-target');
+      const tgtInput = document.getElementById('edit-contrib-target');
+      const colLbl = document.getElementById('lbl-edit-contrib-collected');
+      const colInput = document.getElementById('edit-contrib-collected');
+      const groupDue = document.getElementById('group-edit-contrib-due');
+      const dueInput = document.getElementById('edit-contrib-due');
+      const groupMode = document.getElementById('group-edit-contrib-mode');
+      const modeInput = document.getElementById('edit-contrib-mode');
+      const dateInput = document.getElementById('edit-contrib-date');
+      const groupCol = document.getElementById('group-edit-contrib-collector');
+      const colNameLbl = document.getElementById('lbl-edit-contrib-collector');
+      const colNameInput = document.getElementById('edit-contrib-collector');
+      const groupRec = document.getElementById('group-edit-contrib-receiver');
+      const recInput = document.getElementById('edit-contrib-receiver');
+
+      // Fill Date
+      dateInput.value = item.dateOfPayment || item.date || new Date().toISOString().split('T')[0];
+
+      if (pId >= 1 && pId <= 5) {
+        // Para 1 - 5: Family Collection
+        titleEl.innerHTML = `<i class="fa-solid fa-pen-to-square text-gold"></i> <span>Edit Family Collection (Para ${pId})</span>`;
+        nameLbl.textContent = 'Family Head Name (পরিবারের কর্তার নাম)';
+        nameInput.value = item.familyHeadName || item.donorName || '';
+        
+        groupLoc.style.display = 'none';
+        groupRec.style.display = 'none';
+        
+        groupTgt.style.display = 'block';
+        const tgt = Number(item.targetAmount) || 0;
+        tgtInput.value = tgt;
+
+        colLbl.textContent = 'Collected Amount (₹) (কালেকশন)';
+        const coll = Number(item.collectedAmount || item.amount) || 0;
+        colInput.value = coll;
+
+        groupDue.style.display = 'block';
+        dueInput.value = item.dueBalance !== undefined ? Number(item.dueBalance) : Math.max(0, tgt - coll);
+
+        groupMode.style.display = 'block';
+        modeInput.value = item.paymentMode || 'Cash';
+
+        groupCol.style.display = 'block';
+        colNameLbl.textContent = 'Collected By (কালেক্টরের নাম)';
+        colNameInput.value = item.collectedBy || item.createdBy || '';
+      } else if (pId === 6) {
+        // Shop Collection
+        titleEl.innerHTML = `<i class="fa-solid fa-pen-to-square text-gold"></i> <span>Edit Shop Collection Entry</span>`;
+        nameLbl.textContent = 'Shop / Business Name (দোকান / প্রতিষ্ঠানের নাম)';
+        nameInput.value = item.shopName || item.donorName || '';
+
+        groupLoc.style.display = 'block';
+        locInput.value = item.marketLocation || item.houseNo || '';
+
+        groupTgt.style.display = 'block';
+        const tgt = Number(item.agreedTarget || item.targetAmount) || 0;
+        tgtInput.value = tgt;
+
+        colLbl.textContent = 'Amount Paid (₹) (পরিশোধিত টাকা)';
+        const paid = Number(item.amountPaid || item.amount) || 0;
+        colInput.value = paid;
+
+        groupDue.style.display = 'block';
+        dueInput.value = item.dueBalance !== undefined ? Number(item.dueBalance) : Math.max(0, tgt - paid);
+
+        groupMode.style.display = 'block';
+        modeInput.value = item.paymentMode || 'Cash';
+
+        groupCol.style.display = 'none';
+        groupRec.style.display = 'none';
+      } else if (pId === 7) {
+        // Road Collection
+        titleEl.innerHTML = `<i class="fa-solid fa-pen-to-square text-gold"></i> <span>Edit Road Collection Entry</span>`;
+        nameLbl.textContent = 'Event / Spot Type (ধরন / স্থান)';
+        nameInput.value = item.eventSpotType || item.donorName || '';
+
+        groupLoc.style.display = 'none';
+        groupTgt.style.display = 'none';
+        groupDue.style.display = 'none';
+        groupMode.style.display = 'none';
+
+        colLbl.textContent = 'Total Collection (₹) (কালেকশন)';
+        colInput.value = Number(item.totalCollection || item.amount) || 0;
+
+        groupCol.style.display = 'block';
+        colNameLbl.textContent = 'Lead Volunteer / Team';
+        colNameInput.value = item.leadVolunteer || item.createdBy || '';
+
+        groupRec.style.display = 'block';
+        recInput.value = item.handedOverTo || '';
+      }
+
+      // Auto calculate due balance when target or collected changes
+      const calcDue = () => {
+        if (pId <= 6) {
+          const t = parseFloat(tgtInput.value) || 0;
+          const c = parseFloat(colInput.value) || 0;
+          dueInput.value = Math.max(0, t - c);
+        }
+      };
+      tgtInput.oninput = calcDue;
+      colInput.oninput = calcDue;
+
+      document.getElementById('edit-contributor-modal').classList.add('open');
+    }
+
+    function closeEditContributorModal() {
+      document.getElementById('edit-contributor-modal').classList.remove('open');
+    }
+
+    document.getElementById('form-edit-contributor').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const id = document.getElementById('edit-contrib-id').value;
+      const pId = Number(document.getElementById('edit-contrib-paraId').value);
+      const name = document.getElementById('edit-contrib-name').value.trim();
+      const date = document.getElementById('edit-contrib-date').value;
+      const collected = parseFloat(document.getElementById('edit-contrib-collected').value) || 0;
+
+      if (!name) {
+        alert('Please enter a name.');
+        return;
+      }
+
+      let payload = {
+        paraId: pId,
+        donorName: name,
+        date: date
+      };
+
+      if (pId >= 1 && pId <= 5) {
+        const target = parseFloat(document.getElementById('edit-contrib-target').value) || 0;
+        const due = document.getElementById('edit-contrib-due').value !== '' ? parseFloat(document.getElementById('edit-contrib-due').value) : Math.max(0, target - collected);
+        payload = {
+          ...payload,
+          sectionType: 'family',
+          familyHeadName: name,
+          targetAmount: target,
+          collectedAmount: collected,
+          amount: collected,
+          dueBalance: due,
+          paymentMode: document.getElementById('edit-contrib-mode').value || 'Cash',
+          dateOfPayment: date,
+          collectedBy: document.getElementById('edit-contrib-collector').value.trim()
+        };
+      } else if (pId === 6) {
+        const target = parseFloat(document.getElementById('edit-contrib-target').value) || 0;
+        const due = document.getElementById('edit-contrib-due').value !== '' ? parseFloat(document.getElementById('edit-contrib-due').value) : Math.max(0, target - collected);
+        payload = {
+          ...payload,
+          sectionType: 'shop',
+          shopName: name,
+          marketLocation: document.getElementById('edit-contrib-location').value.trim(),
+          agreedTarget: target,
+          targetAmount: target,
+          amountPaid: collected,
+          amount: collected,
+          dueBalance: due,
+          paymentMode: document.getElementById('edit-contrib-mode').value || 'Cash'
+        };
+      } else if (pId === 7) {
+        payload = {
+          ...payload,
+          sectionType: 'road',
+          eventSpotType: name,
+          totalCollection: collected,
+          amount: collected,
+          leadVolunteer: document.getElementById('edit-contrib-collector').value.trim(),
+          handedOverTo: document.getElementById('edit-contrib-receiver').value.trim()
+        };
+      }
+
+      try {
+        const res = await fetch(`/api/data/contributors/${id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await res.json();
+        if (res.ok && data.success) {
+          closeEditContributorModal();
+          showToast('Updated', `Entry for ${name} updated successfully!`, 'success');
+          await loadAllData();
+          if (typeof activeWorkspace === 'number') {
+            renderSectionWorkspace(activeWorkspace);
+          }
+        } else {
+          alert(data.error || 'Failed to update entry.');
+        }
+      } catch (err) {
+        alert('Network error while updating entry.');
+      }
+    });
 
     function openActiveParaModal() {
       if (typeof activeWorkspace === 'number') {
