@@ -1,5 +1,22 @@
 [
   {
+    "id": "slip_1793386559484_504",
+    "paraId": 2,
+    "createdAt": "2026-10-30T18:55:59.484Z",
+    "createdBy": "om",
+    "sectionType": "family",
+    "familyHeadName": "nayan saha",
+    "donorName": "nayan saha",
+    "targetAmount": 50,
+    "collectedAmount": 50,
+    "amount": 50,
+    "dueBalance": 0,
+    "paymentMode": "Cash",
+    "dateOfPayment": "2026-10-30",
+    "date": "2026-10-30",
+    "collectedBy": "om"
+  },
+  {
     "id": "slip_1793386548622_579",
     "paraId": 2,
     "createdAt": "2026-10-30T18:55:48.622Z",
