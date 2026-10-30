@@ -38,9 +38,9 @@
     {
       "id": 6,
       "source": "Shop Collection",
-      "target": 0,
+      "target": 2000,
       "collected": 0,
-      "pending": 0
+      "pending": 2000
     },
     {
       "id": 7,
