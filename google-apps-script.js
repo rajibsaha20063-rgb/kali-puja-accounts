@@ -1,7 +1,7 @@
 /**
  * =========================================================================
  * NEIGHBOURHOOD CLUB 🔥 KALI PUJA 2026
- * 2-WAY AUTOMATIC GOOGLE APPS SCRIPT WEBHOOK
+ * 2-WAY AUTOMATIC GOOGLE APPS SCRIPT WEBHOOK (ZERO DOUBLE-ENTRY ENGINE)
  * =========================================================================
  * How to Install:
  * 1. Open your Google Spreadsheet (https://docs.google.com/spreadsheets/d/1bTBdyhZaQczAivGacAVuHiwwjnxkikaEeQJaCoeRmTE/edit)
@@ -25,28 +25,45 @@ function doPost(e) {
     var ss = SpreadsheetApp.getActiveSpreadsheet();
 
     // -------------------------------------------------------------
-    // ACTION 1: ADD SINGLE ENTRY FROM WEBSITE (STARTS AT ROW 5)
+    // ACTION 1: ADD / MERGE SINGLE ENTRY (STARTS AT ROW 5 - PREVENTS DUPLICATES)
     // -------------------------------------------------------------
     if (data.action === 'add_collection_entry') {
       var sheetName = getSheetNameForParaId(data.paraId);
       var sheet = ss.getSheetByName(sheetName);
       if (!sheet) return jsonResponse({ status: 'error', message: 'Sheet not found: ' + sheetName });
 
-      // Find first empty row starting strictly from Row 5 (Row 4 is reserved for phone/collector header)
-      var targetRow = 5;
+      var targetRow = -1;
       var lastRow = sheet.getLastRow();
-      if (lastRow >= 5) {
-        var names = sheet.getRange(5, 2, Math.max(lastRow - 4, 1), 1).getValues();
-        var foundEmpty = false;
-        for (var r = 0; r < names.length; r++) {
-          if (!names[r][0] || String(names[r][0]).trim() === '') {
+      var inputName = String(data.familyHeadName || data.shopName || data.eventSpotType || data.donorName || '').trim().toLowerCase();
+
+      // Check if entry already exists on Row 5 onwards - if so, update in-place to prevent double entry!
+      if (lastRow >= 5 && inputName) {
+        var colIdx = (data.paraId === 7) ? 3 : 2; // Column B for Para 1-6, Column C for Road
+        var existingNames = sheet.getRange(5, colIdx, lastRow - 4, 1).getValues();
+        for (var r = 0; r < existingNames.length; r++) {
+          if (String(existingNames[r][0] || '').trim().toLowerCase() === inputName) {
             targetRow = 5 + r;
-            foundEmpty = true;
             break;
           }
         }
-        if (!foundEmpty) {
-          targetRow = 5 + names.length;
+      }
+
+      // If not existing, find first empty row starting strictly from Row 5 (Row 4 is reserved for phone/collector header)
+      if (targetRow === -1) {
+        targetRow = 5;
+        if (lastRow >= 5) {
+          var names = sheet.getRange(5, 2, Math.max(lastRow - 4, 1), 1).getValues();
+          var foundEmpty = false;
+          for (var r = 0; r < names.length; r++) {
+            if (!names[r][0] || String(names[r][0]).trim() === '') {
+              targetRow = 5 + r;
+              foundEmpty = true;
+              break;
+            }
+          }
+          if (!foundEmpty) {
+            targetRow = 5 + names.length;
+          }
         }
       }
       var slNo = Math.max(1, targetRow - 4);
@@ -83,7 +100,7 @@ function doPost(e) {
           data.handedOverTo || ''
         ]]);
       }
-      return jsonResponse({ status: 'success', message: 'Added entry to ' + sheetName + ' at row ' + targetRow });
+      return jsonResponse({ status: 'success', message: 'Saved entry to ' + sheetName + ' at row ' + targetRow });
     }
 
     // -------------------------------------------------------------
@@ -109,18 +126,33 @@ function doPost(e) {
     }
 
     // -------------------------------------------------------------
-    // ACTION 3: BATCH PUSH ALL WEBSITE DATA TO SPREADSHEET (STARTS AT ROW 5)
+    // ACTION 3: BATCH PUSH (ROW 4 FOR EXPENSE TRACKER, ROW 5 FOR COLLECTIONS)
     // -------------------------------------------------------------
     if (data.action === 'batch_sync') {
-      var contributors = data.contributors || [];
+      var rawContributors = data.contributors || [];
       var expenses = data.expenses || [];
 
-      // Update Expenses (Item 1 on row 4, Item 2 on row 5, row 3 is header)
+      // Deduplicate contributors before pushing to sheet
+      var cleanContributors = [];
+      var seenContrib = {};
+      for (var cIdx = 0; cIdx < rawContributors.length; cIdx++) {
+        var cItem = rawContributors[cIdx];
+        var cName = String(cItem.familyHeadName || cItem.shopName || cItem.eventSpotType || cItem.donorName || '').trim().toLowerCase();
+        if (!cName) continue;
+        var cKey = cItem.paraId + '_' + cName;
+        if (!seenContrib[cKey]) {
+          seenContrib[cKey] = true;
+          cleanContributors.push(cItem);
+        }
+      }
+
+      // Update Expenses (STRICTLY ROW 4 FOR EXPENSE TRACKER ONLY!)
+      // Row 1: Title, Row 2: Info, Row 3: Table Header, Row 4: Item 1 (Light & Electricals)
       var expSheet = ss.getSheetByName('Expense Tracker');
       if (expSheet && expenses.length > 0) {
         expenses.forEach(function(item) {
           if (item.id >= 1 && item.id <= 12) {
-            var rowNum = item.id + 3;
+            var rowNum = item.id + 3; // Item 1 -> Row 4; Item 12 -> Row 15
             if (item.vendorName !== undefined) expSheet.getRange(rowNum, 3).setValue(item.vendorName);
             if (item.budget !== undefined) expSheet.getRange(rowNum, 4).setValue(item.budget);
             if (item.advance !== undefined) expSheet.getRange(rowNum, 5).setValue(item.advance);
@@ -135,14 +167,15 @@ function doPost(e) {
         var sSheet = ss.getSheetByName(sName);
         if (!sSheet) continue;
 
-        var entries = contributors.filter(function(c) { return Number(c.paraId) === p; });
-        if (entries.length > 0) {
-          // Clear previous data rows from Row 5 onwards (never touch Row 4 - phone number row)
-          var currentLast = sSheet.getLastRow();
-          if (currentLast >= 5) {
-            sSheet.getRange(5, 1, Math.max(currentLast - 4, entries.length + 10), 8).clearContent();
-          }
+        var entries = cleanContributors.filter(function(c) { return Number(c.paraId) === p; });
+        var currentLast = sSheet.getLastRow();
 
+        // Wipe out old duplicate rows from row 5 onwards (never touch row 4 - phone/header row)
+        if (currentLast >= 5) {
+          sSheet.getRange(5, 1, Math.max(currentLast - 4, 100), 8).clearContent();
+        }
+
+        if (entries.length > 0) {
           for (var i = 0; i < entries.length; i++) {
             var entry = entries[i];
             var rowNum = 5 + i; // Strictly Row 5 onwards!
@@ -184,27 +217,27 @@ function doPost(e) {
 
       return jsonResponse({
         status: 'success',
-        message: 'Successfully batch-synced ' + contributors.length + ' entries (starting from Row 5) and ' + expenses.length + ' expenses.'
+        message: 'Successfully batch-synced ' + cleanContributors.length + ' entries (starting from Row 5) and ' + expenses.length + ' expenses (starting from Row 4).'
       });
     }
 
     // -------------------------------------------------------------
-    // ACTION 4: UPDATE EXPENSE
+    // ACTION 4: UPDATE EXPENSE (STRICTLY ROW 4 ONWARDS)
     // -------------------------------------------------------------
     if (data.action === 'update_expense') {
       var sheet = ss.getSheetByName('Expense Tracker');
       if (sheet && data.id) {
-        var rowNum = data.id + 3;
+        var rowNum = data.id + 3; // Item 1 -> Row 4
         if (data.vendorName !== undefined) sheet.getRange(rowNum, 3).setValue(data.vendorName);
         if (data.budget !== undefined) sheet.getRange(rowNum, 4).setValue(data.budget);
         if (data.advance !== undefined) sheet.getRange(rowNum, 5).setValue(data.advance);
         if (data.totalPaid !== undefined) sheet.getRange(rowNum, 6).setValue(data.totalPaid);
       }
-      return jsonResponse({ status: 'success', message: 'Expense updated' });
+      return jsonResponse({ status: 'success', message: 'Expense updated at row ' + (data.id + 3) });
     }
 
     // -------------------------------------------------------------
-    // ACTION 5: UPDATE COLLECTION ENTRY IN GOOGLE SHEET
+    // ACTION 5: UPDATE COLLECTION ENTRY IN GOOGLE SHEET (ROW 5 ONWARDS)
     // -------------------------------------------------------------
     if (data.action === 'update_collection_entry') {
       var sheetName = getSheetNameForParaId(data.paraId);

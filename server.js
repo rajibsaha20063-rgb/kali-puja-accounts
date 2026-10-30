@@ -298,6 +298,52 @@ function saveDataStore(data) {
   }
 }
 
+// ==========================================
+// DEDUPLICATION ENGINE (ELIMINATES DOUBLE ENTRIES)
+// ==========================================
+function deduplicateContributors(list) {
+  if (!Array.isArray(list)) return [];
+  const map = new Map();
+  for (const c of list) {
+    if (!c) continue;
+    const donor = String(c.donorName || c.familyHeadName || c.shopName || c.eventSpotType || '').trim();
+    if (!donor) continue;
+    const pId = Number(c.paraId);
+    const key = `${pId}_${donor.toLowerCase()}`;
+    if (!map.has(key)) {
+      map.set(key, { ...c, donorName: donor, paraId: pId });
+    } else {
+      const existing = map.get(key);
+      const collNew = Number(c.collectedAmount || c.amountPaid || c.totalCollection || c.amount) || 0;
+      const collOld = Number(existing.collectedAmount || existing.amountPaid || existing.totalCollection || existing.amount) || 0;
+      const tgtNew = Number(c.targetAmount || c.agreedTarget) || 0;
+      const tgtOld = Number(existing.targetAmount || existing.agreedTarget) || 0;
+
+      const bestColl = Math.max(collNew, collOld);
+      const bestTgt = Math.max(tgtNew, tgtOld);
+
+      existing.targetAmount = bestTgt;
+      existing.agreedTarget = bestTgt;
+      existing.collectedAmount = bestColl;
+      existing.amount = bestColl;
+      existing.amountPaid = bestColl;
+      existing.totalCollection = bestColl;
+      existing.dueBalance = Math.max(0, bestTgt - bestColl);
+
+      if (c.paymentMode && c.paymentMode !== 'Cash') existing.paymentMode = c.paymentMode;
+      if (c.dateOfPayment || c.date) {
+        existing.dateOfPayment = c.dateOfPayment || c.date;
+        existing.date = existing.dateOfPayment;
+      }
+      if (c.collectedBy && !existing.collectedBy) existing.collectedBy = c.collectedBy;
+      if (c.marketLocation && !existing.marketLocation) existing.marketLocation = c.marketLocation;
+      if (c.leadVolunteer && !existing.leadVolunteer) existing.leadVolunteer = c.leadVolunteer;
+      if (c.handedOverTo && !existing.handedOverTo) existing.handedOverTo = c.handedOverTo;
+    }
+  }
+  return Array.from(map.values());
+}
+
 function loadContributors() {
   try {
     if (!fs.existsSync(CONTRIBUTORS_FILE)) {
@@ -309,7 +355,7 @@ function loadContributors() {
     if (!Array.isArray(parsed)) {
       return [];
     }
-    return parsed;
+    return deduplicateContributors(parsed);
   } catch (err) {
     return [];
   }
@@ -317,8 +363,9 @@ function loadContributors() {
 
 function saveContributors(list) {
   try {
-    fs.writeFileSync(CONTRIBUTORS_FILE, JSON.stringify(list, null, 2), 'utf8');
-    saveCloudPersistentFile('contributors.json', list);
+    const cleanList = deduplicateContributors(list);
+    fs.writeFileSync(CONTRIBUTORS_FILE, JSON.stringify(cleanList, null, 2), 'utf8');
+    saveCloudPersistentFile('contributors.json', cleanList);
     return true;
   } catch (err) {
     return false;
@@ -514,13 +561,18 @@ async function parseAllGoogleSheetTabs(sheetId) {
     }
   };
 
-  // 1. Fetch Expenses (GID 1297226491)
+  // 1. Fetch Expenses (GID 1297226491) - STRICTLY ROW 4 FOR EXPENSE TRACKER ONLY
   try {
     const csvUrl = `https://docs.google.com/spreadsheets/d/${currentSheetId}/export?format=csv&gid=${SHEET_GIDS.expenses}&t=${Date.now()}`;
     const csvText = await fetchRedirectingURL(csvUrl);
     const rows = parseCSVLines(csvText);
 
-    for (const r of rows) {
+    // Row 1 (i=0): Sheet Title
+    // Row 2 (i=1): Subtitle / Info
+    // Row 3 (i=2): Column Headers: Sl No, Expense Category, Vendor Name, Budget, Advance, Total Paid, Due, Status
+    // Row 4 (i=3): Data entry strictly starts from row number four ONLY for Expense Tracker!
+    for (let i = 3; i < rows.length; i++) {
+      const r = rows[i];
       const slNo = parseInt(r[0], 10);
       if (!isNaN(slNo) && slNo >= 1 && slNo <= 12) {
         const vendor = (r[2] || '').trim();
@@ -540,7 +592,7 @@ async function parseAllGoogleSheetTabs(sheetId) {
     console.warn('[Sync Expenses]:', err.message);
   }
 
-  // 2. Fetch Para 1 to 5 (Family Collections)
+  // 2. Fetch Para 1 to 5 (Family Collections - STRICTLY ROW 5 ONWARDS)
   const paraTabs = [
     { id: 1, gid: SHEET_GIDS.para1, key: 'para1' },
     { id: 2, gid: SHEET_GIDS.para2, key: 'para2' },
@@ -572,6 +624,8 @@ async function parseAllGoogleSheetTabs(sheetId) {
       if (headerIdx !== -1) {
         // Data entries strictly start from row 5 (0-based index 4). Row 4 is phone number / collector info row.
         const startIdx = Math.max(headerIdx + 1, 4);
+        const seenInTab = new Set();
+
         for (let i = startIdx; i < rows.length; i++) {
           const r = rows[i];
           const name = (isFirstColSlNo ? r[1] : r[0]) || '';
@@ -582,8 +636,15 @@ async function parseAllGoogleSheetTabs(sheetId) {
             continue;
           }
 
+          // Strict Deduplication: skip duplicate rows in Google Sheet
+          const lowerName = trimmed.toLowerCase();
+          if (seenInTab.has(lowerName)) {
+            continue;
+          }
+          seenInTab.add(lowerName);
+
           // Skip if previously deleted by user
-          const slipSig = `${p.id}_${trimmed.toLowerCase()}`;
+          const slipSig = `${p.id}_${lowerName}`;
           const rowId = `sheet_p${p.id}_r${i}`;
           if (deletedSignatures.includes(slipSig) || deletedSignatures.includes(rowId)) {
             continue;
@@ -620,7 +681,7 @@ async function parseAllGoogleSheetTabs(sheetId) {
     }
   }
 
-  // 3. Fetch Shop Collection (GID 1441381613)
+  // 3. Fetch Shop Collection (GID 1441381613 - STRICTLY ROW 5 ONWARDS)
   try {
     const csvUrl = `https://docs.google.com/spreadsheets/d/${currentSheetId}/export?format=csv&gid=${SHEET_GIDS.shop}&t=${Date.now()}`;
     const csvText = await fetchRedirectingURL(csvUrl);
@@ -643,6 +704,8 @@ async function parseAllGoogleSheetTabs(sheetId) {
     if (headerIdx !== -1) {
       // Data entries strictly start from row 5 (0-based index 4). Row 4 is phone number / location info row.
       const startIdx = Math.max(headerIdx + 1, 4);
+      const seenInShop = new Set();
+
       for (let i = startIdx; i < rows.length; i++) {
         const r = rows[i];
         const name = (isFirstColSlNo ? r[1] : r[0]) || '';
@@ -652,8 +715,15 @@ async function parseAllGoogleSheetTabs(sheetId) {
           continue;
         }
 
+        // Strict Deduplication: skip duplicate rows in Google Sheet
+        const lowerName = trimmed.toLowerCase();
+        if (seenInShop.has(lowerName)) {
+          continue;
+        }
+        seenInShop.add(lowerName);
+
         // Skip if previously deleted by user
-        const slipSig = `6_${trimmed.toLowerCase()}`;
+        const slipSig = `6_${lowerName}`;
         const rowId = `sheet_shop_r${i}`;
         if (deletedSignatures.includes(slipSig) || deletedSignatures.includes(rowId)) {
           continue;
@@ -689,7 +759,7 @@ async function parseAllGoogleSheetTabs(sheetId) {
     console.warn('[Sync Shop]:', err.message);
   }
 
-  // 4. Fetch Road Collection (GID 256485470)
+  // 4. Fetch Road Collection (GID 256485470 - STRICTLY ROW 5 ONWARDS)
   try {
     const csvUrl = `https://docs.google.com/spreadsheets/d/${currentSheetId}/export?format=csv&gid=${SHEET_GIDS.road}&t=${Date.now()}`;
     const csvText = await fetchRedirectingURL(csvUrl);
@@ -707,6 +777,8 @@ async function parseAllGoogleSheetTabs(sheetId) {
     if (headerIdx !== -1) {
       // Data entries strictly start from row 5 (0-based index 4). Row 4 is phone number / location info row.
       const startIdx = Math.max(headerIdx + 1, 4);
+      const seenInRoad = new Set();
+
       for (let i = startIdx; i < rows.length; i++) {
         const r = rows[i];
         const date = (r[1] || '').trim();
@@ -718,6 +790,13 @@ async function parseAllGoogleSheetTabs(sheetId) {
         if (!spot || spot.startsWith('[') || spot.toLowerCase().includes('total') || spot.includes('মোট')) {
           continue;
         }
+
+        // Strict Deduplication
+        const lowerSpot = `${date}_${spot.toLowerCase()}`;
+        if (seenInRoad.has(lowerSpot)) {
+          continue;
+        }
+        seenInRoad.add(lowerSpot);
 
         // Skip if previously deleted by user
         const slipSig = `7_${spot.toLowerCase()}`;
@@ -761,28 +840,23 @@ async function syncAllDataFromSheet(sheetId) {
 
   const parsed = await parseAllGoogleSheetTabs(currentSheetId);
 
-  // 1. Merge Contributors
+  // 1. Merge Contributors with Zero-Double-Entry Deduplication
   const existingContributors = loadContributors();
-  // Keep entries created manually on the website (slip_...) that are not from google_sheets_live,
-  // and discard any legacy entries pulled from row 4 or earlier (e.g. sheet_*_r0 to r3)
   const manualEntries = existingContributors.filter(c => {
     if (c.source === 'google_sheets_live') return false;
     if (c.id && c.id.match(/^sheet_.*_r[0-3]$/)) return false;
     return true;
   });
 
-  // Also retain seed if no other entries in Para 1 yet
-  const hasPara1SheetEntry = parsed.contributors.some(c => c.paraId === 1);
-  const finalContributors = [...parsed.contributors];
-
+  const merged = [...parsed.contributors];
   for (const m of manualEntries) {
-    // Avoid exact duplicate donor name in the same section
-    const exists = finalContributors.some(c => c.paraId === m.paraId && c.donorName.toLowerCase() === m.donorName.toLowerCase());
+    const exists = merged.some(c => c.paraId === m.paraId && (c.donorName || '').trim().toLowerCase() === (m.donorName || '').trim().toLowerCase());
     if (!exists) {
-      finalContributors.unshift(m);
+      merged.unshift(m);
     }
   }
 
+  const finalContributors = deduplicateContributors(merged);
   saveContributors(finalContributors);
 
   // 2. Update Expenses in Data Store
@@ -1304,7 +1378,19 @@ app.post('/api/data/contributors', authMiddleware, editorAccess, (req, res) => {
       };
     }
 
-    contributors.unshift(newEntry);
+    // Deduplicate against existing entries in this section to avoid double entries
+    const existingIdx = contributors.findIndex(c => Number(c.paraId) === pId && (c.donorName || '').trim().toLowerCase() === (newEntry.donorName || '').trim().toLowerCase());
+    if (existingIdx !== -1) {
+      contributors[existingIdx] = {
+        ...contributors[existingIdx],
+        ...newEntry,
+        id: contributors[existingIdx].id // preserve existing id
+      };
+      newEntry = contributors[existingIdx];
+    } else {
+      contributors.unshift(newEntry);
+    }
+
     saveContributors(contributors);
 
     // Write-back to Google Sheet via Webhook
