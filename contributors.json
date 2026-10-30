@@ -1,5 +1,39 @@
 [
   {
+    "id": "slip_1793385099331_924",
+    "paraId": 6,
+    "createdAt": "2026-10-30T18:31:39.331Z",
+    "createdBy": "admin",
+    "sectionType": "shop",
+    "shopName": "FALAKATA services stations",
+    "donorName": "FALAKATA services stations",
+    "marketLocation": "Dhupghuri more",
+    "agreedTarget": 1000,
+    "targetAmount": 1000,
+    "amountPaid": 0,
+    "amount": 0,
+    "dueBalance": 1000,
+    "paymentMode": "Cash",
+    "date": "2026-10-30"
+  },
+  {
+    "id": "slip_1793385098994_766",
+    "paraId": 6,
+    "createdAt": "2026-10-30T18:31:38.994Z",
+    "createdBy": "admin",
+    "sectionType": "shop",
+    "shopName": "Cosmo bazar",
+    "donorName": "Cosmo bazar",
+    "marketLocation": "CB",
+    "agreedTarget": 500,
+    "targetAmount": 500,
+    "amountPaid": 0,
+    "amount": 0,
+    "dueBalance": 500,
+    "paymentMode": "Cash",
+    "date": "2026-10-30"
+  },
+  {
     "id": "slip_1793385098326_639",
     "paraId": 2,
     "createdAt": "2026-10-30T18:31:38.326Z",
@@ -149,7 +183,9 @@
     "dateOfPayment": "2026-10-30",
     "date": "2026-10-30",
     "collectedBy": "om",
-    "source": "google_sheets_live"
+    "source": "google_sheets_live",
+    "createdAt": "2026-10-30T18:31:38.662Z",
+    "createdBy": "admin"
   },
   {
     "id": "sheet_road_r4",
