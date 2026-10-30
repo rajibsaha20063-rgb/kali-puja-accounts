@@ -1,5 +1,22 @@
 [
   {
+    "id": "slip_1793374320722_785",
+    "paraId": 6,
+    "createdAt": "2026-10-30T15:32:00.722Z",
+    "createdBy": "om",
+    "sectionType": "shop",
+    "shopName": "Cosmo bazar",
+    "donorName": "Cosmo bazar",
+    "marketLocation": "CB",
+    "agreedTarget": 500,
+    "targetAmount": 500,
+    "amountPaid": 0,
+    "amount": 0,
+    "dueBalance": 500,
+    "paymentMode": "Cash",
+    "date": "2026-10-30"
+  },
+  {
     "id": "slip_1793371678605_439",
     "paraId": 6,
     "createdAt": "2026-10-30T14:47:58.605Z",
