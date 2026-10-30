@@ -1,5 +1,22 @@
 [
   {
+    "id": "slip_1793375151554_23",
+    "paraId": 6,
+    "createdAt": "2026-10-30T15:45:51.554Z",
+    "createdBy": "om",
+    "sectionType": "shop",
+    "shopName": "Jay ma tara dresses",
+    "donorName": "Jay ma tara dresses",
+    "marketLocation": "Payeldi",
+    "agreedTarget": 500,
+    "targetAmount": 500,
+    "amountPaid": 0,
+    "amount": 0,
+    "dueBalance": 500,
+    "paymentMode": "Cash",
+    "date": "2026-10-30"
+  },
+  {
     "id": "slip_1793375133022_533",
     "paraId": 6,
     "createdAt": "2026-10-30T15:45:33.022Z",
