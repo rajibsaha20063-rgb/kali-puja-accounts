@@ -805,9 +805,6 @@ async function parseAllGoogleSheetTabs(sheetId) {
           continue;
         }
 
-        // Include entry if collection > 0 or a date was entered
-        if (col <= 0 && !date) continue;
-
         result.contributors.push({
           id: `sheet_road_r${i}`,
           paraId: 7,
@@ -1020,38 +1017,56 @@ function editorAccess(req, res, next) {
 // 2-Way Write: Google Apps Script Webhook trigger
 function triggerSheetWebhook(payload) {
   const webhookUrl = appSettings.webhookUrl || process.env.GOOGLE_APPS_SCRIPT_WEBHOOK;
-  if (!webhookUrl) return;
+  if (!webhookUrl) return Promise.resolve(null);
 
-  try {
-    const url = new URL(webhookUrl);
-    const postData = JSON.stringify(payload);
-    const isHttps = url.protocol === 'https:';
-    const client = isHttps ? https : http;
+  return new Promise((resolve) => {
+    try {
+      const url = new URL(webhookUrl);
+      const postData = JSON.stringify(payload);
+      const isHttps = url.protocol === 'https:';
+      const client = isHttps ? https : http;
 
-    const options = {
-      hostname: url.hostname,
-      port: url.port || (isHttps ? 443 : 80),
-      path: url.pathname + url.search,
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Content-Length': Buffer.byteLength(postData)
-      }
-    };
+      const options = {
+        hostname: url.hostname,
+        port: url.port || (isHttps ? 443 : 80),
+        path: url.pathname + url.search,
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Content-Length': Buffer.byteLength(postData)
+        }
+      };
 
-    const req = client.request(options, (res) => {
-      // Follow redirect if Apps Script returns 302
-      if (res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) {
-        https.get(res.headers.location, () => {});
-      }
-    });
+      const req = client.request(options, (res) => {
+        // Follow redirect if Apps Script returns 302
+        if (res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) {
+          https.get(res.headers.location, (redRes) => {
+            let b = '';
+            redRes.on('data', c => b += c);
+            redRes.on('end', () => {
+              try { resolve(JSON.parse(b)); } catch(e) { resolve(b); }
+            });
+          }).on('error', () => resolve(null));
+        } else {
+          let b = '';
+          res.on('data', c => b += c);
+          res.on('end', () => {
+            try { resolve(JSON.parse(b)); } catch(e) { resolve(b); }
+          });
+        }
+      });
 
-    req.on('error', (e) => console.warn('[Webhook Error]:', e.message));
-    req.write(postData);
-    req.end();
-  } catch (e) {
-    console.warn('[Webhook Dispatch Failed]:', e.message);
-  }
+      req.on('error', (e) => {
+        console.warn('[Webhook Error]:', e.message);
+        resolve(null);
+      });
+      req.write(postData);
+      req.end();
+    } catch (e) {
+      console.warn('[Webhook Dispatch Failed]:', e.message);
+      resolve(null);
+    }
+  });
 }
 
 // ==========================================
@@ -1605,15 +1620,16 @@ app.post('/api/push-to-sheet', authMiddleware, editorAccess, async (req, res) =>
       pushedBy: req.user.username
     };
 
-    triggerSheetWebhook(payload);
+    const webhookResult = await triggerSheetWebhook(payload);
 
     return res.json({
       success: true,
-      message: `Pushed all data to Google Sheet successfully! (${contributors.length} collection records & ${store.expenses.length} expense items)`,
+      message: `Pushed all data to Google Sheet successfully! (${contributors.length} collection records & ${store.expenses.length} expense items across all tabs)`,
       counts: {
         contributors: contributors.length,
         expenses: store.expenses.length
-      }
+      },
+      webhookResult
     });
   } catch (err) {
     return res.status(500).json({ success: false, error: err.message });

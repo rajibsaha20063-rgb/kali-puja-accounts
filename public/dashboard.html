@@ -981,39 +981,338 @@
           <button type="button" class="btn btn-secondary btn-sm" id="btn-copy-script-modal" style="position: absolute; top: 6px; right: 6px; z-index: 5;">
             <i class="fa-solid fa-copy"></i> Copy Script
           </button>
-          <pre class="code-preview-box" id="modal-script-code" style="max-height: 150px; font-size: 11.5px; overflow-y: auto; background: #080814; border: 1px solid var(--border); border-radius: 8px; padding: 12px; color: #93c5fd; white-space: pre-wrap; font-family: monospace;">function doPost(e) {
+          <pre class="code-preview-box" id="modal-script-code" style="max-height: 180px; font-size: 11.5px; overflow-y: auto; background: #080814; border: 1px solid var(--border); border-radius: 8px; padding: 12px; color: #93c5fd; white-space: pre-wrap; font-family: monospace;">function doPost(e) {
   try {
-    if (!e || !e.postData || !e.postData.contents) return ContentService.createTextOutput(JSON.stringify({ status: 'error' })).setMimeType(ContentService.MimeType.JSON);
+    if (!e || !e.postData || !e.postData.contents) return jsonResponse({ status: 'error', message: 'No POST data received' });
     var data = JSON.parse(e.postData.contents);
     var ss = SpreadsheetApp.getActiveSpreadsheet();
 
-    // 1. ADD SINGLE ENTRY (Starts from Row 5, never overwrites Row 4)
+    // 1. ADD / MERGE SINGLE ENTRY (STARTS AT ROW 5)
     if (data.action === 'add_collection_entry') {
-      var sName = data.paraId <= 5 ? 'Para ' + data.paraId : (data.paraId === 6 ? 'Shop Collection' : 'Road Collection');
-      var sheet = ss.getSheetByName(sName);
-      if (sheet) {
-        var targetRow = 5;
-        var lastRow = sheet.getLastRow();
+      var sheetName = getSheetNameForParaId(data.paraId);
+      var sheet = ss.getSheetByName(sheetName);
+      if (!sheet) return jsonResponse({ status: 'error', message: 'Sheet not found: ' + sheetName });
+
+      var targetRow = -1;
+      var lastRow = sheet.getLastRow();
+      var inputName = String(data.familyHeadName || data.shopName || data.eventSpotType || data.donorName || '').trim().toLowerCase();
+
+      if (lastRow >= 5 && inputName) {
+        var colIdx = (data.paraId === 7) ? 3 : 2;
+        var existingNames = sheet.getRange(5, colIdx, lastRow - 4, 1).getValues();
+        for (var r = 0; r < existingNames.length; r++) {
+          if (String(existingNames[r][0] || '').trim().toLowerCase() === inputName) {
+            targetRow = 5 + r;
+            break;
+          }
+        }
+      }
+
+      if (targetRow === -1) {
+        targetRow = 5;
         if (lastRow >= 5) {
           var names = sheet.getRange(5, 2, Math.max(lastRow - 4, 1), 1).getValues();
-          var found = false;
+          var foundEmpty = false;
           for (var r = 0; r < names.length; r++) {
-            if (!names[r][0] || String(names[r][0]).trim() === '') { targetRow = 5 + r; found = true; break; }
+            if (!names[r][0] || String(names[r][0]).trim() === '') {
+              targetRow = 5 + r;
+              foundEmpty = true;
+              break;
+            }
           }
-          if (!found) targetRow = 5 + names.length;
+          if (!foundEmpty) targetRow = 5 + names.length;
         }
-        var slNo = Math.max(1, targetRow - 4);
-        if (data.paraId <= 5) sheet.getRange(targetRow, 1, 1, 8).setValues([[slNo, data.familyHeadName||data.donorName||'', Number(data.targetAmount)||0, Number(data.collectedAmount)||Number(data.amount)||0, Number(data.dueBalance)||0, data.paymentMode||'Cash', data.dateOfPayment||data.date||'', data.collectedBy||'']]);
-        else if (data.paraId === 6) sheet.getRange(targetRow, 1, 1, 8).setValues([[slNo, data.shopName||data.donorName||'', data.marketLocation||'', Number(data.agreedTarget)||Number(data.targetAmount)||0, Number(data.amountPaid)||Number(data.amount)||0, Number(data.dueBalance)||0, data.paymentMode||'Cash', data.date||'']]);
-        else if (data.paraId === 7) sheet.getRange(targetRow, 1, 1, 6).setValues([[slNo, data.date||'', data.eventSpotType||data.donorName||'', Number(data.totalCollection)||Number(data.amount)||0, data.leadVolunteer||'', data.handedOverTo||'']]);
       }
-    } else if (data.action === 'batch_sync') {
-      // Handles batch push starting strictly from Row 5 (see google-apps-script.js)
+      var slNo = Math.max(1, targetRow - 4);
+
+      if (data.paraId >= 1 && data.paraId <= 5) {
+        sheet.getRange(targetRow, 1, 1, 8).setValues([[
+          slNo,
+          data.familyHeadName || data.donorName || '',
+          Number(data.targetAmount) || 0,
+          Number(data.collectedAmount) || Number(data.amount) || 0,
+          Number(data.dueBalance) || 0,
+          data.paymentMode || 'Cash',
+          data.dateOfPayment || data.date || '',
+          data.collectedBy || ''
+        ]]);
+      } else if (data.paraId === 6) {
+        sheet.getRange(targetRow, 1, 1, 8).setValues([[
+          slNo,
+          data.shopName || data.donorName || '',
+          data.marketLocation || '',
+          Number(data.agreedTarget) || Number(data.targetAmount) || 0,
+          Number(data.amountPaid) || Number(data.amount) || 0,
+          Number(data.dueBalance) || 0,
+          data.paymentMode || 'Cash',
+          data.date || ''
+        ]]);
+      } else if (data.paraId === 7) {
+        sheet.getRange(targetRow, 1, 1, 6).setValues([[
+          slNo,
+          data.date || '',
+          data.eventSpotType || data.donorName || '',
+          Number(data.totalCollection) || Number(data.amount) || 0,
+          data.leadVolunteer || '',
+          data.handedOverTo || ''
+        ]]);
+      }
+      return jsonResponse({ status: 'success', message: 'Saved entry to ' + sheetName + ' at row ' + targetRow });
     }
-    return ContentService.createTextOutput(JSON.stringify({ status: 'success' })).setMimeType(ContentService.MimeType.JSON);
+
+    // 2. DELETE SINGLE ENTRY (ROW 5 ONWARDS)
+    if (data.action === 'delete_collection_entry') {
+      var sheetName = getSheetNameForParaId(data.paraId);
+      var sheet = ss.getSheetByName(sheetName);
+      if (sheet && data.name) {
+        var values = sheet.getDataRange().getValues();
+        var targetName = String(data.name).trim().toLowerCase();
+        for (var r = values.length - 1; r >= 4; r--) {
+          var rowName1 = String(values[r][1] || '').trim().toLowerCase();
+          var rowName2 = String(values[r][2] || '').trim().toLowerCase();
+          if (rowName1 === targetName || rowName2 === targetName) {
+            sheet.deleteRow(r + 1);
+            break;
+          }
+        }
+      }
+      return jsonResponse({ status: 'success', message: 'Deleted entry' });
+    }
+
+    // 3. FULL BATCH PUSH (ALL TABS: ROW 4 EXPENSES, ROW 5 COLLECTIONS, AND DASHBOARD)
+    if (data.action === 'batch_sync') {
+      var rawContributors = data.contributors || [];
+      var expenses = data.expenses || [];
+      var income = data.income || [];
+
+      var cleanContributors = [];
+      var seenContrib = {};
+      for (var cIdx = 0; cIdx < rawContributors.length; cIdx++) {
+        var cItem = rawContributors[cIdx];
+        var cName = String(cItem.familyHeadName || cItem.shopName || cItem.eventSpotType || cItem.donorName || '').trim().toLowerCase();
+        if (!cName) continue;
+        var cKey = cItem.paraId + '_' + cName;
+        if (!seenContrib[cKey]) {
+          seenContrib[cKey] = true;
+          cleanContributors.push(cItem);
+        }
+      }
+
+      // Update Expenses: Strictly Row 4 for Expense Tracker
+      var expSheet = ss.getSheetByName('Expense Tracker');
+      if (expSheet && expenses.length > 0) {
+        expenses.forEach(function(item) {
+          if (item.id >= 1 && item.id <= 12) {
+            var rowNum = item.id + 3;
+            if (item.vendorName !== undefined) expSheet.getRange(rowNum, 3).setValue(item.vendorName);
+            if (item.budget !== undefined) expSheet.getRange(rowNum, 4).setValue(item.budget);
+            if (item.advance !== undefined) expSheet.getRange(rowNum, 5).setValue(item.advance);
+            if (item.totalPaid !== undefined) expSheet.getRange(rowNum, 6).setValue(item.totalPaid);
+            var b = Number(item.budget) || 0;
+            var p = Number(item.totalPaid) || 0;
+            expSheet.getRange(rowNum, 7).setValue(Math.max(0, b - p));
+          }
+        });
+      }
+
+      // Update Collections: Strictly Row 5 for Para 1-5, Shop, Road
+      var sectionSums = {};
+      for (var s = 1; s <= 7; s++) sectionSums[s] = { target: 0, collected: 0 };
+
+      for (var p = 1; p <= 7; p++) {
+        var sName = getSheetNameForParaId(p);
+        var sSheet = ss.getSheetByName(sName);
+        if (!sSheet) continue;
+
+        var entries = cleanContributors.filter(function(c) { return Number(c.paraId) === p; });
+        var currentLast = sSheet.getLastRow();
+
+        if (entries.length > 0) {
+          if (currentLast >= 5) {
+            sSheet.getRange(5, 1, Math.max(currentLast - 4, entries.length + 10), 8).clearContent();
+          }
+
+          for (var i = 0; i < entries.length; i++) {
+            var entry = entries[i];
+            var rowNum = 5 + i;
+            if (p >= 1 && p <= 5) {
+              var tgt = Number(entry.targetAmount) || 0;
+              var coll = Number(entry.collectedAmount) || Number(entry.amount) || 0;
+              var due = Number(entry.dueBalance) || Math.max(0, tgt - coll);
+              sectionSums[p].target += tgt;
+              sectionSums[p].collected += coll;
+
+              sSheet.getRange(rowNum, 1, 1, 8).setValues([[
+                i + 1,
+                entry.familyHeadName || entry.donorName || '',
+                tgt,
+                coll,
+                due,
+                entry.paymentMode || 'Cash',
+                entry.dateOfPayment || entry.date || '',
+                entry.collectedBy || ''
+              ]]);
+            } else if (p === 6) {
+              var tgt = Number(entry.agreedTarget) || Number(entry.targetAmount) || 0;
+              var paid = Number(entry.amountPaid) || Number(entry.amount) || 0;
+              var due = Number(entry.dueBalance) || Math.max(0, tgt - paid);
+              sectionSums[p].target += tgt;
+              sectionSums[p].collected += paid;
+
+              sSheet.getRange(rowNum, 1, 1, 8).setValues([[
+                i + 1,
+                entry.shopName || entry.donorName || '',
+                entry.marketLocation || '',
+                tgt,
+                paid,
+                due,
+                entry.paymentMode || 'Cash',
+                entry.date || ''
+              ]]);
+            } else if (p === 7) {
+              var coll = Number(entry.totalCollection) || Number(entry.amount) || 0;
+              sectionSums[p].collected += coll;
+
+              sSheet.getRange(rowNum, 1, 1, 6).setValues([[
+                i + 1,
+                entry.date || '',
+                entry.eventSpotType || entry.donorName || '',
+                coll,
+                entry.leadVolunteer || '',
+                entry.handedOverTo || ''
+              ]]);
+            }
+          }
+        }
+      }
+
+      // Also update Dashboard & Summary Tab
+      var summarySheet = ss.getSheetByName('Dashboard & Summary');
+      if (summarySheet) {
+        var totalIncome = 0;
+        var totalExpenses = 0;
+
+        for (var p = 1; p <= 7; p++) {
+          var row = 10 + p;
+          var incItem = (income || []).find(function(item) { return item.id === p; }) || {};
+          var tgt = sectionSums[p].target || Number(incItem.target) || 0;
+          var coll = sectionSums[p].collected || Number(incItem.collected) || 0;
+          var pending = Math.max(0, tgt - coll);
+          totalIncome += coll;
+          summarySheet.getRange(row, 3).setValue(tgt);
+          summarySheet.getRange(row, 4).setValue(coll);
+          summarySheet.getRange(row, 5).setValue(pending);
+        }
+
+        if (expenses.length > 0) {
+          expenses.forEach(function(exp) {
+            if (exp.id >= 1 && exp.id <= 12) {
+              var expRow = 22 + exp.id;
+              var b = Number(exp.budget) || 0;
+              var a = Number(exp.advance) || 0;
+              var tp = Number(exp.totalPaid) || 0;
+              totalExpenses += tp;
+              summarySheet.getRange(expRow, 3).setValue(b);
+              summarySheet.getRange(expRow, 4).setValue(a);
+              summarySheet.getRange(expRow, 5).setValue(tp);
+              summarySheet.getRange(expRow, 6).setValue(Math.max(0, b - tp));
+            }
+          });
+        }
+
+        summarySheet.getRange(6, 2).setValue(totalIncome);
+        summarySheet.getRange(6, 4).setValue(totalExpenses);
+        summarySheet.getRange(6, 6).setValue(totalIncome - totalExpenses);
+        summarySheet.getRange(18, 4).setValue(totalIncome);
+        summarySheet.getRange(35, 5).setValue(totalExpenses);
+      }
+
+      return jsonResponse({
+        status: 'success',
+        message: 'Successfully pushed all data to Google Sheet: Para 1-5, Shop, Road (Row 5+), Expenses (Row 4+), and Dashboard!'
+      });
+    }
+
+    // 4. UPDATE EXPENSE
+    if (data.action === 'update_expense') {
+      var sheet = ss.getSheetByName('Expense Tracker');
+      if (sheet && data.id) {
+        var rowNum = data.id + 3;
+        if (data.vendorName !== undefined) sheet.getRange(rowNum, 3).setValue(data.vendorName);
+        if (data.budget !== undefined) sheet.getRange(rowNum, 4).setValue(data.budget);
+        if (data.advance !== undefined) sheet.getRange(rowNum, 5).setValue(data.advance);
+        if (data.totalPaid !== undefined) sheet.getRange(rowNum, 6).setValue(data.totalPaid);
+      }
+      return jsonResponse({ status: 'success', message: 'Expense updated at row ' + (data.id + 3) });
+    }
+
+    // 5. UPDATE COLLECTION ENTRY
+    if (data.action === 'update_collection_entry') {
+      var sheetName = getSheetNameForParaId(data.paraId);
+      var sheet = ss.getSheetByName(sheetName);
+      if (sheet && (data.oldName || data.donorName || data.familyHeadName || data.shopName || data.eventSpotType)) {
+        var values = sheet.getDataRange().getValues();
+        var targetName = String(data.oldName || data.donorName || data.familyHeadName || data.shopName || data.eventSpotType || '').trim().toLowerCase();
+        for (var r = 4; r < values.length; r++) {
+          var rowName1 = String(values[r][1] || '').trim().toLowerCase();
+          var rowName2 = String(values[r][2] || '').trim().toLowerCase();
+          if (rowName1 === targetName || rowName2 === targetName) {
+            var rowNum = r + 1;
+            if (data.paraId >= 1 && data.paraId <= 5) {
+              sheet.getRange(rowNum, 2).setValue(data.familyHeadName || data.donorName || '');
+              if (data.targetAmount !== undefined) sheet.getRange(rowNum, 3).setValue(Number(data.targetAmount) || 0);
+              if (data.collectedAmount !== undefined) sheet.getRange(rowNum, 4).setValue(Number(data.collectedAmount) || 0);
+              if (data.dueBalance !== undefined) sheet.getRange(rowNum, 5).setValue(Number(data.dueBalance) || 0);
+              if (data.paymentMode) sheet.getRange(rowNum, 6).setValue(data.paymentMode);
+              if (data.dateOfPayment || data.date) sheet.getRange(rowNum, 7).setValue(data.dateOfPayment || data.date);
+              if (data.collectedBy) sheet.getRange(rowNum, 8).setValue(data.collectedBy);
+            } else if (data.paraId === 6) {
+              sheet.getRange(rowNum, 2).setValue(data.shopName || data.donorName || '');
+              if (data.marketLocation !== undefined) sheet.getRange(rowNum, 3).setValue(data.marketLocation);
+              if (data.agreedTarget !== undefined) sheet.getRange(rowNum, 4).setValue(Number(data.agreedTarget) || 0);
+              if (data.amountPaid !== undefined) sheet.getRange(rowNum, 5).setValue(Number(data.amountPaid) || 0);
+              if (data.dueBalance !== undefined) sheet.getRange(rowNum, 6).setValue(Number(data.dueBalance) || 0);
+              if (data.paymentMode) sheet.getRange(rowNum, 7).setValue(data.paymentMode);
+              if (data.date) sheet.getRange(rowNum, 8).setValue(data.date);
+            } else if (data.paraId === 7) {
+              if (data.date) sheet.getRange(rowNum, 2).setValue(data.date);
+              sheet.getRange(rowNum, 3).setValue(data.eventSpotType || data.donorName || '');
+              if (data.totalCollection !== undefined) sheet.getRange(rowNum, 4).setValue(Number(data.totalCollection) || 0);
+              if (data.leadVolunteer) sheet.getRange(rowNum, 5).setValue(data.leadVolunteer);
+              if (data.handedOverTo) sheet.getRange(rowNum, 6).setValue(data.handedOverTo);
+            }
+            break;
+          }
+        }
+      }
+      return jsonResponse({ status: 'success', message: 'Collection entry updated in ' + sheetName });
+    }
+
+    return jsonResponse({ status: 'ignored', message: 'Unknown action' });
   } catch(err) {
-    return ContentService.createTextOutput(JSON.stringify({ status: 'error', error: err.toString() })).setMimeType(ContentService.MimeType.JSON);
+    return jsonResponse({ status: 'error', error: err.toString() });
   }
+}
+
+function doGet(e) {
+  return jsonResponse({
+    status: 'online',
+    message: 'Kali Puja 2-Way Sync Webhook is Active & Ready!',
+    timestamp: new Date().toISOString()
+  });
+}
+
+function getSheetNameForParaId(id) {
+  var p = Number(id);
+  if (p >= 1 && p <= 5) return 'Para ' + p;
+  if (p === 6) return 'Shop Collection';
+  if (p === 7) return 'Road Collection';
+  return 'Dashboard & Summary';
+}
+
+function jsonResponse(obj) {
+  return ContentService.createTextOutput(JSON.stringify(obj))
+    .setMimeType(ContentService.MimeType.JSON);
 }</pre>
         </div>
         <ol start="3" style="padding-left: 18px; margin-bottom: 14px; line-height: 1.6;">

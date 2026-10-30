@@ -1,18 +1,15 @@
 /**
  * =========================================================================
  * NEIGHBOURHOOD CLUB 🔥 KALI PUJA 2026
- * 2-WAY AUTOMATIC GOOGLE APPS SCRIPT WEBHOOK (ZERO DOUBLE-ENTRY ENGINE)
+ * 2-WAY AUTOMATIC GOOGLE APPS SCRIPT WEBHOOK (FULL MULTI-TAB ENGINE)
  * =========================================================================
  * How to Install:
  * 1. Open your Google Spreadsheet (https://docs.google.com/spreadsheets/d/1bTBdyhZaQczAivGacAVuHiwwjnxkikaEeQJaCoeRmTE/edit)
  * 2. Click Extensions ➔ Apps Script.
  * 3. Delete any text in Code.gs, paste this entire file, and click Save (💾).
- * 4. Click Deploy ➔ New deployment.
- * 5. Select type: "Web app".
- * 6. Set Description: "Kali Puja Accounts 2-Way Sync".
- * 7. Set "Who has access" to: "Anyone" (crucial for webhook to connect).
- * 8. Click Deploy, Authorize access, and copy the Web App URL.
- * 9. Paste that URL into the Admin Panel / Push to Sheet modal on your website!
+ * 4. Click Deploy ➔ Manage deployments ➔ Edit (pencil icon) ➔ New version ➔ Deploy.
+ *    (OR Deploy ➔ New deployment ➔ Web app ➔ Who has access: Anyone ➔ Deploy).
+ * 5. Copy the Web App URL and paste it into the website Admin Panel or Push modal!
  */
 
 function doPost(e) {
@@ -25,7 +22,7 @@ function doPost(e) {
     var ss = SpreadsheetApp.getActiveSpreadsheet();
 
     // -------------------------------------------------------------
-    // ACTION 1: ADD / MERGE SINGLE ENTRY (STARTS AT ROW 5 - PREVENTS DUPLICATES)
+    // ACTION 1: ADD / MERGE SINGLE ENTRY (STARTS AT ROW 5)
     // -------------------------------------------------------------
     if (data.action === 'add_collection_entry') {
       var sheetName = getSheetNameForParaId(data.paraId);
@@ -112,7 +109,6 @@ function doPost(e) {
       if (sheet && data.name) {
         var values = sheet.getDataRange().getValues();
         var targetName = String(data.name).trim().toLowerCase();
-        // Check rows 5 onwards (0-indexed: r >= 4) so rows 1 to 4 are never touched
         for (var r = values.length - 1; r >= 4; r--) {
           var rowName1 = String(values[r][1] || '').trim().toLowerCase();
           var rowName2 = String(values[r][2] || '').trim().toLowerCase();
@@ -126,13 +122,14 @@ function doPost(e) {
     }
 
     // -------------------------------------------------------------
-    // ACTION 3: BATCH PUSH (ROW 4 FOR EXPENSE TRACKER, ROW 5 FOR COLLECTIONS)
+    // ACTION 3: FULL BATCH PUSH (ALL TABS: ROW 4 EXPENSES, ROW 5 COLLECTIONS, AND DASHBOARD)
     // -------------------------------------------------------------
     if (data.action === 'batch_sync') {
       var rawContributors = data.contributors || [];
       var expenses = data.expenses || [];
+      var income = data.income || [];
 
-      // Deduplicate contributors before pushing to sheet
+      // 1. Deduplicate contributors
       var cleanContributors = [];
       var seenContrib = {};
       for (var cIdx = 0; cIdx < rawContributors.length; cIdx++) {
@@ -146,7 +143,7 @@ function doPost(e) {
         }
       }
 
-      // Update Expenses (STRICTLY ROW 4 FOR EXPENSE TRACKER ONLY!)
+      // 2. PUSH EXPENSES: STRICTLY ROW 4 FOR EXPENSE TRACKER TAB
       // Row 1: Title, Row 2: Info, Row 3: Table Header, Row 4: Item 1 (Light & Electricals)
       var expSheet = ss.getSheetByName('Expense Tracker');
       if (expSheet && expenses.length > 0) {
@@ -157,11 +154,20 @@ function doPost(e) {
             if (item.budget !== undefined) expSheet.getRange(rowNum, 4).setValue(item.budget);
             if (item.advance !== undefined) expSheet.getRange(rowNum, 5).setValue(item.advance);
             if (item.totalPaid !== undefined) expSheet.getRange(rowNum, 6).setValue(item.totalPaid);
+            // Auto-calculate remaining due on Row
+            var b = Number(item.budget) || 0;
+            var p = Number(item.totalPaid) || 0;
+            expSheet.getRange(rowNum, 7).setValue(Math.max(0, b - p));
           }
         });
       }
 
-      // Group contributors by section and write strictly starting at Row 5
+      // 3. PUSH COLLECTIONS: STRICTLY ROW 5 FOR PARA 1-5, SHOP, ROAD TABS
+      var sectionSums = {};
+      for (var s = 1; s <= 7; s++) {
+        sectionSums[s] = { target: 0, collected: 0 };
+      }
+
       for (var p = 1; p <= 7; p++) {
         var sName = getSheetNameForParaId(p);
         var sSheet = ss.getSheetByName(sName);
@@ -170,43 +176,58 @@ function doPost(e) {
         var entries = cleanContributors.filter(function(c) { return Number(c.paraId) === p; });
         var currentLast = sSheet.getLastRow();
 
-        // Wipe out old duplicate rows from row 5 onwards (never touch row 4 - phone/header row)
-        if (currentLast >= 5) {
-          sSheet.getRange(5, 1, Math.max(currentLast - 4, 100), 8).clearContent();
-        }
-
         if (entries.length > 0) {
+          // Clear previous data rows from Row 5 onwards (never touch Row 4 - phone/header row)
+          if (currentLast >= 5) {
+            sSheet.getRange(5, 1, Math.max(currentLast - 4, entries.length + 10), 8).clearContent();
+          }
+
           for (var i = 0; i < entries.length; i++) {
             var entry = entries[i];
             var rowNum = 5 + i; // Strictly Row 5 onwards!
             if (p >= 1 && p <= 5) {
+              var tgt = Number(entry.targetAmount) || 0;
+              var coll = Number(entry.collectedAmount) || Number(entry.amount) || 0;
+              var due = Number(entry.dueBalance) || Math.max(0, tgt - coll);
+              sectionSums[p].target += tgt;
+              sectionSums[p].collected += coll;
+
               sSheet.getRange(rowNum, 1, 1, 8).setValues([[
                 i + 1,
                 entry.familyHeadName || entry.donorName || '',
-                Number(entry.targetAmount) || 0,
-                Number(entry.collectedAmount) || Number(entry.amount) || 0,
-                Number(entry.dueBalance) || 0,
+                tgt,
+                coll,
+                due,
                 entry.paymentMode || 'Cash',
                 entry.dateOfPayment || entry.date || '',
                 entry.collectedBy || ''
               ]]);
             } else if (p === 6) {
+              var tgt = Number(entry.agreedTarget) || Number(entry.targetAmount) || 0;
+              var paid = Number(entry.amountPaid) || Number(entry.amount) || 0;
+              var due = Number(entry.dueBalance) || Math.max(0, tgt - paid);
+              sectionSums[p].target += tgt;
+              sectionSums[p].collected += paid;
+
               sSheet.getRange(rowNum, 1, 1, 8).setValues([[
                 i + 1,
                 entry.shopName || entry.donorName || '',
                 entry.marketLocation || '',
-                Number(entry.agreedTarget) || Number(entry.targetAmount) || 0,
-                Number(entry.amountPaid) || Number(entry.amount) || 0,
-                Number(entry.dueBalance) || 0,
+                tgt,
+                paid,
+                due,
                 entry.paymentMode || 'Cash',
                 entry.date || ''
               ]]);
             } else if (p === 7) {
+              var coll = Number(entry.totalCollection) || Number(entry.amount) || 0;
+              sectionSums[p].collected += coll;
+
               sSheet.getRange(rowNum, 1, 1, 6).setValues([[
                 i + 1,
                 entry.date || '',
                 entry.eventSpotType || entry.donorName || '',
-                Number(entry.totalCollection) || Number(entry.amount) || 0,
+                coll,
                 entry.leadVolunteer || '',
                 entry.handedOverTo || ''
               ]]);
@@ -215,14 +236,64 @@ function doPost(e) {
         }
       }
 
+      // 4. ALSO UPDATE "Dashboard & Summary" TAB IN GOOGLE SHEET
+      var summarySheet = ss.getSheetByName('Dashboard & Summary');
+      if (summarySheet) {
+        var totalIncome = 0;
+        var totalExpenses = 0;
+
+        // Collection Rows 11 to 17
+        for (var p = 1; p <= 7; p++) {
+          var row = 10 + p; // Para 1 -> Row 11, Shop -> Row 16, Road -> Row 17
+          var incItem = (income || []).find(function(item) { return item.id === p; }) || {};
+          var tgt = sectionSums[p].target || Number(incItem.target) || 0;
+          var coll = sectionSums[p].collected || Number(incItem.collected) || 0;
+          var pending = Math.max(0, tgt - coll);
+
+          totalIncome += coll;
+          summarySheet.getRange(row, 3).setValue(tgt);
+          summarySheet.getRange(row, 4).setValue(coll);
+          summarySheet.getRange(row, 5).setValue(pending);
+        }
+
+        // Expense Rows 23 to 34
+        if (expenses.length > 0) {
+          expenses.forEach(function(exp) {
+            if (exp.id >= 1 && exp.id <= 12) {
+              var expRow = 22 + exp.id; // Item 1 -> Row 23, Item 12 -> Row 34
+              var b = Number(exp.budget) || 0;
+              var a = Number(exp.advance) || 0;
+              var tp = Number(exp.totalPaid) || 0;
+              var pd = Math.max(0, b - tp);
+              totalExpenses += tp;
+
+              summarySheet.getRange(expRow, 3).setValue(b);
+              summarySheet.getRange(expRow, 4).setValue(a);
+              summarySheet.getRange(expRow, 5).setValue(tp);
+              summarySheet.getRange(expRow, 6).setValue(pd);
+            }
+          });
+        }
+
+        // KPI Summary Cards (Row 6)
+        summarySheet.getRange(6, 2).setValue(totalIncome);
+        summarySheet.getRange(6, 4).setValue(totalExpenses);
+        summarySheet.getRange(6, 6).setValue(totalIncome - totalExpenses);
+
+        // Row 18: Total Collection
+        summarySheet.getRange(18, 4).setValue(totalIncome);
+        // Row 35: Total Expenses
+        summarySheet.getRange(35, 5).setValue(totalExpenses);
+      }
+
       return jsonResponse({
         status: 'success',
-        message: 'Successfully batch-synced ' + cleanContributors.length + ' entries (starting from Row 5) and ' + expenses.length + ' expenses (starting from Row 4).'
+        message: 'Successfully pushed all data to Google Sheet: Para 1-5, Shop, Road (Row 5+), Expenses (Row 4+), and Dashboard!'
       });
     }
 
     // -------------------------------------------------------------
-    // ACTION 4: UPDATE EXPENSE (STRICTLY ROW 4 ONWARDS)
+    // ACTION 4: UPDATE EXPENSE (ROW 4 ONWARDS)
     // -------------------------------------------------------------
     if (data.action === 'update_expense') {
       var sheet = ss.getSheetByName('Expense Tracker');
@@ -237,7 +308,7 @@ function doPost(e) {
     }
 
     // -------------------------------------------------------------
-    // ACTION 5: UPDATE COLLECTION ENTRY IN GOOGLE SHEET (ROW 5 ONWARDS)
+    // ACTION 5: UPDATE COLLECTION ENTRY (ROW 5 ONWARDS)
     // -------------------------------------------------------------
     if (data.action === 'update_collection_entry') {
       var sheetName = getSheetNameForParaId(data.paraId);
@@ -245,7 +316,6 @@ function doPost(e) {
       if (sheet && (data.oldName || data.donorName || data.familyHeadName || data.shopName || data.eventSpotType)) {
         var values = sheet.getDataRange().getValues();
         var targetName = String(data.oldName || data.donorName || data.familyHeadName || data.shopName || data.eventSpotType || '').trim().toLowerCase();
-        // Check rows 5 onwards (0-indexed: r >= 4)
         for (var r = 4; r < values.length; r++) {
           var rowName1 = String(values[r][1] || '').trim().toLowerCase();
           var rowName2 = String(values[r][2] || '').trim().toLowerCase();

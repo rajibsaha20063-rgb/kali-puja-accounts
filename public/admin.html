@@ -518,9 +518,50 @@
         }
       }
 
+      // Also update Dashboard & Summary Tab
+      var summarySheet = ss.getSheetByName('Dashboard & Summary');
+      if (summarySheet) {
+        var totalIncome = 0;
+        var totalExpenses = 0;
+
+        for (var p = 1; p <= 7; p++) {
+          var row = 10 + p;
+          var incItem = (income || []).find(function(item) { return item.id === p; }) || {};
+          var tgt = sectionSums[p].target || Number(incItem.target) || 0;
+          var coll = sectionSums[p].collected || Number(incItem.collected) || 0;
+          var pending = Math.max(0, tgt - coll);
+          totalIncome += coll;
+          summarySheet.getRange(row, 3).setValue(tgt);
+          summarySheet.getRange(row, 4).setValue(coll);
+          summarySheet.getRange(row, 5).setValue(pending);
+        }
+
+        if (expenses.length > 0) {
+          expenses.forEach(function(exp) {
+            if (exp.id >= 1 && exp.id <= 12) {
+              var expRow = 22 + exp.id;
+              var b = Number(exp.budget) || 0;
+              var a = Number(exp.advance) || 0;
+              var tp = Number(exp.totalPaid) || 0;
+              totalExpenses += tp;
+              summarySheet.getRange(expRow, 3).setValue(b);
+              summarySheet.getRange(expRow, 4).setValue(a);
+              summarySheet.getRange(expRow, 5).setValue(tp);
+              summarySheet.getRange(expRow, 6).setValue(Math.max(0, b - tp));
+            }
+          });
+        }
+
+        summarySheet.getRange(6, 2).setValue(totalIncome);
+        summarySheet.getRange(6, 4).setValue(totalExpenses);
+        summarySheet.getRange(6, 6).setValue(totalIncome - totalExpenses);
+        summarySheet.getRange(18, 4).setValue(totalIncome);
+        summarySheet.getRange(35, 5).setValue(totalExpenses);
+      }
+
       return jsonResponse({
         status: 'success',
-        message: 'Successfully batch-synced ' + cleanContributors.length + ' entries (starting from Row 5) and ' + expenses.length + ' expenses (starting from Row 4).'
+        message: 'Successfully batch-synced ' + cleanContributors.length + ' entries (starting from Row 5) and ' + expenses.length + ' expenses (starting from Row 4), and updated Dashboard & Summary.'
       });
     }
 
