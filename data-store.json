@@ -38,9 +38,9 @@
     {
       "id": 6,
       "source": "Shop Collection",
-      "target": 6800,
-      "collected": 300,
-      "pending": 6500
+      "target": 15600,
+      "collected": 600,
+      "pending": 15000
     },
     {
       "id": 7,
@@ -54,17 +54,6 @@
     {
       "id": 1,
       "category": "Light & Electricals",
-      "vendorName": "malay da",
-      "budget": 4500,
-      "advance": 0,
-      "totalPaid": 0,
-      "pending": 4500,
-      "vendorPhone": "",
-      "notes": ""
-    },
-    {
-      "id": 2,
-      "category": "Pandal & Decoration",
       "vendorName": "sayan da",
       "budget": 15000,
       "advance": 0,
@@ -74,8 +63,8 @@
       "notes": ""
     },
     {
-      "id": 3,
-      "category": "Thakur / Idol",
+      "id": 2,
+      "category": "Pandal & Decoration",
       "vendorName": "dulal dokan",
       "budget": 7500,
       "advance": 0,
@@ -85,13 +74,24 @@
       "notes": ""
     },
     {
-      "id": 4,
-      "category": "Sound System",
+      "id": 3,
+      "category": "Thakur / Idol",
       "vendorName": "kamal",
       "budget": 8000,
       "advance": 0,
       "totalPaid": 0,
       "pending": 8000,
+      "vendorPhone": "",
+      "notes": ""
+    },
+    {
+      "id": 4,
+      "category": "Sound System",
+      "vendorName": "",
+      "budget": 0,
+      "advance": 0,
+      "totalPaid": 0,
+      "pending": 0,
       "vendorPhone": "",
       "notes": ""
     },
