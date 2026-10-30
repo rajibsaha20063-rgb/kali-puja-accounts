@@ -1260,18 +1260,21 @@ function jsonResponse(obj) {
       if (!isAuthorized) return;
       await loadSystemConfig();
       await loadUsers();
-      // Auto-trigger sync display on initial open
-      fetch('/api/sync', { method: 'POST' }).then(r => r.json()).then(result => {
-        if (result && result.counts) {
-          document.getElementById('chip-para1').textContent = `${result.counts.para1} rows`;
-          document.getElementById('chip-para2').textContent = `${result.counts.para2} rows`;
-          document.getElementById('chip-para3').textContent = `${result.counts.para3} rows`;
-          document.getElementById('chip-para4').textContent = `${result.counts.para4} rows`;
-          document.getElementById('chip-para5').textContent = `${result.counts.para5} rows`;
-          document.getElementById('chip-shop').textContent = `${result.counts.shop} shops`;
-          document.getElementById('chip-road').textContent = `${result.counts.road} spots`;
-          document.getElementById('chip-expenses').textContent = `${result.counts.expenses} items`;
-        }
+      // Load local record counts for display (no automatic sync)
+      Promise.all([
+        fetch('/api/data/contributors').then(r => r.json()),
+        fetch('/api/data/expenses').then(r => r.json())
+      ]).then(([contribRes, expRes]) => {
+        const contributors = (contribRes && contribRes.contributors) || [];
+        const expenses = (expRes && expRes.expenses) || [];
+        document.getElementById('chip-para1').textContent = `${contributors.filter(c => Number(c.paraId) === 1).length} rows`;
+        document.getElementById('chip-para2').textContent = `${contributors.filter(c => Number(c.paraId) === 2).length} rows`;
+        document.getElementById('chip-para3').textContent = `${contributors.filter(c => Number(c.paraId) === 3).length} rows`;
+        document.getElementById('chip-para4').textContent = `${contributors.filter(c => Number(c.paraId) === 4).length} rows`;
+        document.getElementById('chip-para5').textContent = `${contributors.filter(c => Number(c.paraId) === 5).length} rows`;
+        document.getElementById('chip-shop').textContent = `${contributors.filter(c => Number(c.paraId) === 6).length} shops`;
+        document.getElementById('chip-road').textContent = `${contributors.filter(c => Number(c.paraId) === 7).length} spots`;
+        document.getElementById('chip-expenses').textContent = `${expenses.length || 12} items`;
       }).catch(() => {});
     });
   </script>

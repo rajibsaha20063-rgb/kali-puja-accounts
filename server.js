@@ -1205,14 +1205,6 @@ app.post('/api/data/collections', authMiddleware, editorAccess, async (req, res)
 
     saveDataStore(store);
 
-    triggerSheetWebhook({
-      action: 'update_collection_target',
-      id: itemId,
-      target: Number(target),
-      collected: Number(collected),
-      updatedBy: req.user.username
-    });
-
     return res.json({
       success: true,
       message: 'Collection updated successfully.',
@@ -1266,16 +1258,6 @@ app.post('/api/data/expenses', authMiddleware, editorAccess, async (req, res) =>
     }
 
     saveDataStore(store);
-
-    triggerSheetWebhook({
-      action: 'update_expense',
-      id: itemId,
-      budget: effectiveBudget,
-      advance: Number(advance),
-      totalPaid: effectivePaid,
-      vendorName: vendorName || '',
-      updatedBy: req.user.username
-    });
 
     return res.json({
       success: true,
@@ -1408,12 +1390,6 @@ app.post('/api/data/contributors', authMiddleware, editorAccess, (req, res) => {
 
     saveContributors(contributors);
 
-    // Write-back to Google Sheet via Webhook
-    triggerSheetWebhook({
-      action: 'add_collection_entry',
-      ...newEntry
-    });
-
     return res.status(201).json({
       success: true,
       message: `Entry registered for ${newEntry.donorName} successfully.`,
@@ -1484,13 +1460,6 @@ app.put('/api/data/contributors/:id', authMiddleware, editorAccess, (req, res) =
       }
     }
 
-    // Trigger webhook if active
-    triggerSheetWebhook({
-      action: 'update_collection_entry',
-      oldName: oldEntry.donorName || oldEntry.familyHeadName || oldEntry.shopName || oldEntry.eventSpotType,
-      ...contributors[idx]
-    });
-
     return res.json({ success: true, message: 'Entry updated successfully.', entry: contributors[idx] });
   } catch (err) {
     return res.status(500).json({ success: false, error: err.message });
@@ -1530,14 +1499,6 @@ app.delete('/api/data/contributors/:id', authMiddleware, editorAccess, (req, res
       saveDataStore(store);
     }
 
-    // Trigger Webhook deletion on Google Sheet
-    triggerSheetWebhook({
-      action: 'delete_collection_entry',
-      id: slipId,
-      paraId: entryToDelete.paraId,
-      name: name
-    });
-
     return res.json({ success: true, message: `Entry for "${name || slipId}" deleted successfully.`, id: slipId });
   } catch (err) {
     return res.status(500).json({ success: false, error: err.message });
@@ -1573,12 +1534,6 @@ app.post('/api/data/contributors/clear-section', authMiddleware, editorAccess, (
       store.income[colIdx].pending = store.income[colIdx].target;
       saveDataStore(store);
     }
-
-    triggerSheetWebhook({
-      action: 'delete_collection_entry',
-      paraId: pId,
-      clearAll: true
-    });
 
     return res.json({
       success: true,
@@ -1932,20 +1887,6 @@ app.listen(PORT, async () => {
   console.log(` Linked Google Sheet: ${appSettings.spreadsheetId}`);
   console.log('=====================================================');
 
-  // Trigger initial background sync
-  try {
-    await syncAllDataFromSheet(appSettings.spreadsheetId);
-  } catch (err) {
-    console.warn('[Initial Startup Sync Warning]:', err.message);
-  }
-
-  // Periodic Auto-Sync every 5 minutes
-  setInterval(async () => {
-    try {
-      console.log('[Auto-Sync] Running scheduled 5-minute Google Sheet synchronization...');
-      await syncAllDataFromSheet(appSettings.spreadsheetId);
-    } catch (e) {
-      console.warn('[Auto-Sync Error]:', e.message);
-    }
-  }, (appSettings.autoSyncMinutes || 5) * 60 * 1000);
+  // Auto-sync is explicitly disabled. Only manual "Pull from Sheet" and "Push to Sheet" operations are active.
+  console.log(' Auto-sync is DISABLED. Synchronize data manually via "Pull from Sheet" and "Push to Sheet".');
 });
