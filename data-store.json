@@ -54,7 +54,7 @@
     {
       "id": 1,
       "category": "Light & Electricals",
-      "vendorName": "kamal",
+      "vendorName": "malay da",
       "budget": 4500,
       "advance": 0,
       "totalPaid": 0,
@@ -65,7 +65,7 @@
     {
       "id": 2,
       "category": "Pandal & Decoration",
-      "vendorName": "",
+      "vendorName": "sayan da",
       "budget": 15000,
       "advance": 0,
       "totalPaid": 0,
@@ -76,7 +76,7 @@
     {
       "id": 3,
       "category": "Thakur / Idol",
-      "vendorName": "",
+      "vendorName": "dula dokan",
       "budget": 7500,
       "advance": 0,
       "totalPaid": 0,
@@ -87,7 +87,7 @@
     {
       "id": 4,
       "category": "Sound System",
-      "vendorName": "",
+      "vendorName": "kamal",
       "budget": 8000,
       "advance": 0,
       "totalPaid": 0,
