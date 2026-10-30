@@ -10,9 +10,9 @@
     {
       "id": 2,
       "source": "Para 2 Collection",
-      "target": 0,
-      "collected": 0,
-      "pending": 0
+      "target": 4400,
+      "collected": 200,
+      "pending": 4200
     },
     {
       "id": 3,
@@ -38,9 +38,9 @@
     {
       "id": 6,
       "source": "Shop Collection",
-      "target": 15600,
-      "collected": 600,
-      "pending": 15000
+      "target": 21500,
+      "collected": 0,
+      "pending": 21500
     },
     {
       "id": 7,
@@ -54,17 +54,6 @@
     {
       "id": 1,
       "category": "Light & Electricals",
-      "vendorName": "sayan da",
-      "budget": 15000,
-      "advance": 0,
-      "totalPaid": 0,
-      "pending": 15000,
-      "vendorPhone": "",
-      "notes": ""
-    },
-    {
-      "id": 2,
-      "category": "Pandal & Decoration",
       "vendorName": "dulal dokan",
       "budget": 7500,
       "advance": 0,
@@ -74,13 +63,24 @@
       "notes": ""
     },
     {
-      "id": 3,
-      "category": "Thakur / Idol",
+      "id": 2,
+      "category": "Pandal & Decoration",
       "vendorName": "kamal",
       "budget": 8000,
       "advance": 0,
       "totalPaid": 0,
       "pending": 8000,
+      "vendorPhone": "",
+      "notes": ""
+    },
+    {
+      "id": 3,
+      "category": "Thakur / Idol",
+      "vendorName": "",
+      "budget": 0,
+      "advance": 0,
+      "totalPaid": 0,
+      "pending": 0,
       "vendorPhone": "",
       "notes": ""
     },
@@ -153,10 +153,10 @@
     {
       "id": 10,
       "category": "Miscellaneous 1",
-      "vendorName": "",
-      "budget": 0,
-      "advance": 0,
-      "totalPaid": 0,
+      "vendorName": "khata copy",
+      "budget": 50,
+      "advance": 50,
+      "totalPaid": 50,
       "pending": 0,
       "vendorPhone": "",
       "notes": ""
