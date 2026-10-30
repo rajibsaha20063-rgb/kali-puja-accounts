@@ -204,23 +204,6 @@
     "date": "2026-10-30"
   },
   {
-    "id": "slip_1793385098326_639",
-    "paraId": 2,
-    "createdAt": "2026-10-30T18:31:38.326Z",
-    "createdBy": "admin",
-    "sectionType": "family",
-    "familyHeadName": "Biman saha",
-    "donorName": "Biman saha",
-    "targetAmount": 500,
-    "collectedAmount": 0,
-    "amount": 0,
-    "dueBalance": 500,
-    "paymentMode": "Cash",
-    "dateOfPayment": "2026-10-30",
-    "date": "2026-10-30",
-    "collectedBy": "om"
-  },
-  {
     "id": "slip_1793385097995_112",
     "paraId": 2,
     "createdAt": "2026-10-30T18:31:37.995Z",
@@ -340,6 +323,22 @@
     "date": "2026-10-30"
   },
   {
+    "id": "sheet_p2_r4",
+    "paraId": 2,
+    "sectionType": "family",
+    "familyHeadName": "Biman saha",
+    "donorName": "Biman saha",
+    "targetAmount": 500,
+    "collectedAmount": 0,
+    "amount": 0,
+    "dueBalance": 500,
+    "paymentMode": "Cash",
+    "dateOfPayment": "2026-10-30",
+    "date": "2026-10-30",
+    "collectedBy": "om",
+    "source": "google_sheets_live"
+  },
+  {
     "id": "sheet_p2_r11",
     "paraId": 2,
     "sectionType": "family",
@@ -353,9 +352,7 @@
     "dateOfPayment": "2026-10-30",
     "date": "2026-10-30",
     "collectedBy": "om",
-    "source": "google_sheets_live",
-    "createdAt": "2026-10-30T18:31:38.662Z",
-    "createdBy": "admin"
+    "source": "google_sheets_live"
   },
   {
     "id": "sheet_road_r4",
@@ -368,9 +365,7 @@
     "amount": 0,
     "leadVolunteer": "Youth Volunteer Team",
     "handedOverTo": "Treasurer",
-    "source": "google_sheets_live",
-    "createdAt": "2026-10-30T18:31:42.954Z",
-    "createdBy": "admin"
+    "source": "google_sheets_live"
   },
   {
     "id": "sheet_road_r5",
@@ -383,9 +378,7 @@
     "amount": 0,
     "leadVolunteer": "Youth Volunteer Team",
     "handedOverTo": "Treasurer",
-    "source": "google_sheets_live",
-    "createdAt": "2026-10-30T18:31:43.279Z",
-    "createdBy": "admin"
+    "source": "google_sheets_live"
   },
   {
     "id": "sheet_road_r6",
@@ -398,9 +391,7 @@
     "amount": 0,
     "leadVolunteer": "Youth Volunteer Team",
     "handedOverTo": "Treasurer",
-    "source": "google_sheets_live",
-    "createdAt": "2026-10-30T18:31:43.608Z",
-    "createdBy": "admin"
+    "source": "google_sheets_live"
   },
   {
     "id": "sheet_road_r7",
@@ -413,9 +404,7 @@
     "amount": 0,
     "leadVolunteer": "Youth Volunteer Team",
     "handedOverTo": "Treasurer",
-    "source": "google_sheets_live",
-    "createdAt": "2026-10-30T18:31:43.939Z",
-    "createdBy": "admin"
+    "source": "google_sheets_live"
   },
   {
     "id": "sheet_road_r8",
@@ -428,9 +417,7 @@
     "amount": 0,
     "leadVolunteer": "Youth Volunteer Team",
     "handedOverTo": "Treasurer",
-    "source": "google_sheets_live",
-    "createdAt": "2026-10-30T18:31:44.547Z",
-    "createdBy": "admin"
+    "source": "google_sheets_live"
   },
   {
     "id": "sheet_road_r9",
