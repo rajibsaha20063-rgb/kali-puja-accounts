@@ -8,13 +8,17 @@
     "familyHeadName": "Xyz",
     "donorName": "Xyz",
     "targetAmount": 50,
-    "collectedAmount": 0,
-    "amount": 0,
-    "dueBalance": 50,
+    "collectedAmount": 50,
+    "amount": 50,
+    "dueBalance": 0,
     "paymentMode": "Cash",
     "dateOfPayment": "2026-11-01",
     "date": "2026-11-01",
-    "collectedBy": "om"
+    "collectedBy": "om",
+    "agreedTarget": 50,
+    "amountPaid": 50,
+    "totalCollection": 50,
+    "updatedAt": "2026-11-01T06:45:35.002Z"
   },
   {
     "id": "slip_1793515500384_684",
