@@ -177,9 +177,9 @@
       "category": "Miscellaneous 3",
       "vendorName": "Gg",
       "budget": 340,
-      "advance": 340,
-      "totalPaid": 0,
-      "pending": 340,
+      "advance": 0,
+      "totalPaid": 340,
+      "pending": 0,
       "vendorPhone": "",
       "notes": ""
     }
