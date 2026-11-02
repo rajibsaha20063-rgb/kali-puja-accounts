@@ -10,16 +10,16 @@
     {
       "id": 2,
       "source": "Para 2 Collection",
-      "target": 1600,
-      "collected": 0,
-      "pending": 1600
+      "target": 2100,
+      "collected": 100,
+      "pending": 2000
     },
     {
       "id": 3,
       "source": "Para 3 Collection",
-      "target": 0,
-      "collected": 0,
-      "pending": 0
+      "target": 2530,
+      "collected": 930,
+      "pending": 1600
     },
     {
       "id": 4,
@@ -31,16 +31,16 @@
     {
       "id": 5,
       "source": "Para 5 Collection",
-      "target": 1310,
-      "collected": 910,
+      "target": 1400,
+      "collected": 1000,
       "pending": 400
     },
     {
       "id": 6,
       "source": "Shop Collection",
-      "target": 8300,
+      "target": 19600,
       "collected": 300,
-      "pending": 8000
+      "pending": 19300
     },
     {
       "id": 7,
