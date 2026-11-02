@@ -44,7 +44,7 @@
   {
     "username": "view",
     "password": "$2a$10$vMhh0NCpux5LMGcsCA044u4b/a2FKA0LgL4D8Nd.IMUVaTKkNhR7S",
-    "role": "admin",
+    "role": "viewer",
     "name": "view",
     "createdAt": "2026-10-30T17:23:08.718Z"
   }
