@@ -17,8 +17,8 @@
     {
       "id": 3,
       "source": "Para 3 Collection",
-      "target": 6400,
-      "collected": 1650,
+      "target": 6380,
+      "collected": 1630,
       "pending": 4750
     },
     {
@@ -79,8 +79,8 @@
       "vendorName": "dula dokan",
       "budget": 7500,
       "advance": 0,
-      "totalPaid": 500,
-      "pending": 7000,
+      "totalPaid": 0,
+      "pending": 7500,
       "vendorPhone": "",
       "notes": ""
     },
