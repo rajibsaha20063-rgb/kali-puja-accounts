@@ -55,10 +55,10 @@
       "id": 1,
       "category": "Light & Electricals",
       "vendorName": "malay da",
-      "budget": 4500,
+      "budget": 4000,
       "advance": 0,
-      "totalPaid": 0,
-      "pending": 4500,
+      "totalPaid": 500,
+      "pending": 3500,
       "vendorPhone": "",
       "notes": ""
     },
